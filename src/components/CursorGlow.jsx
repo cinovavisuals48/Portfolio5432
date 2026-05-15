@@ -8,6 +8,13 @@
 import { useEffect, useState } from 'react'
 import { motion, useSpring } from 'framer-motion'
 
+const isTouchDevice = () =>
+  typeof window !== 'undefined' &&
+  (window.matchMedia('(any-hover: none)').matches ||
+    window.matchMedia('(pointer: coarse)').matches ||
+    'ontouchstart' in window ||
+    (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0))
+
 export default function CursorGlow() {
   const [mounted, setMounted] = useState(false)
   const [isTouch, setIsTouch] = useState(false)
@@ -16,7 +23,7 @@ export default function CursorGlow() {
   const mouseY = useSpring(0, { stiffness: 80, damping: 30, mass: 0.5 })
 
   useEffect(() => {
-    setIsTouch(window.matchMedia('(hover: none)').matches)
+    setIsTouch(isTouchDevice())
     setMounted(true)
 
     const move = (e) => {
@@ -24,8 +31,16 @@ export default function CursorGlow() {
       mouseY.set(e.clientY)
     }
 
+    const handleTouchStart = () => {
+      setIsTouch(true)
+    }
+
     window.addEventListener('mousemove', move, { passive: true })
-    return () => window.removeEventListener('mousemove', move)
+    window.addEventListener('touchstart', handleTouchStart, { passive: true })
+    return () => {
+      window.removeEventListener('mousemove', move)
+      window.removeEventListener('touchstart', handleTouchStart)
+    }
   }, [mouseX, mouseY])
 
   if (!mounted || isTouch) return null
