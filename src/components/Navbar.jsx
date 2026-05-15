@@ -77,10 +77,19 @@ export default function Navbar() {
       e.preventDefault()
       setMobileOpen(false)
       const target = href.replace('/#', '#')
-      triggerPageWipe(() => {
-        const el = document.querySelector(target)
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      })
+      const el = document.querySelector(target)
+      
+      // If element exists on current page, scroll to it
+      if (el) {
+        triggerPageWipe(() => {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        })
+      } else {
+        // If element doesn't exist (e.g., on /projects page), navigate to home with hash
+        triggerPageWipe(() => {
+          window.location.href = href
+        })
+      }
     }
   }
 
