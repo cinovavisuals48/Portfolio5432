@@ -66,7 +66,7 @@ aspectRatio: '1 / 1',
 ### Save and check
 - Save `src/data/projects.js`
 - Refresh the site
-- The new project should appear automatically
+- The new project should appear automatically.
 
 ---
 
