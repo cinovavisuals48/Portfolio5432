@@ -55,27 +55,18 @@ export default function Navbar() {
 
   useEffect(() => {
     const collapseThreshold = 72
-    const expandThreshold = 64
-    let ticking = false
+    const expandThreshold = 52
 
     const onScroll = () => {
       const currentScrollY = window.scrollY
-      const scrollingDown = currentScrollY > lastScrollY.current
 
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          if (!scrolled && scrollingDown && currentScrollY > collapseThreshold) {
-            setScrolled(true)
-          } else if (scrolled && !scrollingDown && currentScrollY < expandThreshold) {
-            setScrolled(false)
-          }
-
-          lastScrollY.current = currentScrollY
-          ticking = false
-        })
-
-        ticking = true
+      if (!scrolled && currentScrollY > collapseThreshold) {
+        setScrolled(true)
+      } else if (scrolled && currentScrollY < expandThreshold) {
+        setScrolled(false)
       }
+
+      lastScrollY.current = currentScrollY
     }
 
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -105,7 +96,9 @@ export default function Navbar() {
             gap: scrolled ? 12 : 24,
           }}
           transition={springConfig}
-          className="relative flex items-center backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.3)] rounded-full overflow-hidden"
+          layout
+          layoutId="navbar"
+          className="relative flex items-center backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.3)] rounded-full"
           style={{
             background: 'rgba(255, 255, 255, 0.08)',
           }}
@@ -154,8 +147,8 @@ export default function Navbar() {
             initial={false}
             animate={{
               opacity: scrolled ? 0 : 1,
-              scaleX: scrolled ? 0.88 : 1,
-              x: scrolled ? -6 : 0,
+              width: scrolled ? 0 : 'auto',
+              x: scrolled ? -8 : 0,
             }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             className="hidden md:flex items-center gap-1 overflow-hidden"
@@ -179,11 +172,11 @@ export default function Navbar() {
             initial={false}
             animate={{
               opacity: scrolled ? 0 : 1,
-              scale: scrolled ? 0.92 : 1,
+              scale: scrolled ? 0.95 : 1,
               x: scrolled ? -6 : 0,
             }}
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            style={{ transformOrigin: '0 50%', pointerEvents: scrolled ? 'none' : 'auto' }}
+            style={{ pointerEvents: scrolled ? 'none' : 'auto' }}
           >
             <Link
               href="/#contact"
