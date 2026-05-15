@@ -13,12 +13,18 @@ const DOT_COUNT = 5
 const DOT_SIZES = [10, 8, 6, 4, 3]
 const DOT_DELAYS = [0, 0.02, 0.04, 0.06, 0.08]
 
-const isTouchDevice = () =>
-  typeof window !== 'undefined' &&
-  (window.matchMedia('(any-hover: none)').matches ||
-    window.matchMedia('(pointer: coarse)').matches ||
-    'ontouchstart' in window ||
-    (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0))
+const isTouchDevice = () => {
+  if (typeof window === 'undefined') return false
+  
+  // Only disable on actual touch-primary devices
+  // Check if hover is disabled (primary indication of touch device)
+  const isHoverDisabled = window.matchMedia('(hover: none)').matches
+  
+  // Additional check: coarse pointer AND no hover = mobile/tablet
+  const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches
+  
+  return isHoverDisabled && isCoarsePointer
+}
 
 export default function CustomCursor() {
   const [mounted, setMounted] = useState(false)
