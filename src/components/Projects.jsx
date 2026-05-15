@@ -9,6 +9,7 @@ import { motion } from 'framer-motion'
 import { featuredProjects } from '../data/projects'
 import ProjectCard from './ProjectCard'
 import Link from 'next/link'
+import { triggerPageWipe } from './PageWipe'
 
 export default function Projects() {
   return (
@@ -63,6 +64,12 @@ export default function Projects() {
           <Link
             href="/projects"
             className="btn-ghost group"
+            onClick={(e) => {
+              e.preventDefault()
+              triggerPageWipe(() => {
+                window.location.href = '/projects'
+              })
+            }}
           >
             Show All Projects
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"

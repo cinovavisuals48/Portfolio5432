@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import './globals.css'
+import PageWipeWrapper from '../components/PageWipeWrapper'
 
 // ── SEO METADATA — edit these values ──────────────────────────
 export const metadata = {
@@ -48,7 +49,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth">
       <body className="bg-bg-primary text-ink-primary font-body antialiased overflow-x-hidden">
-        {children}
+        <PageWipeWrapper>
+          {children}
+        </PageWipeWrapper>
       </body>
     </html>
   )
