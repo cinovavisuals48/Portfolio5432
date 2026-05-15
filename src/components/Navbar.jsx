@@ -24,14 +24,14 @@ function TypingDots() {
           key={i}
           className="w-[5px] h-[5px] rounded-full bg-white/70"
           animate={{
-            y: [0, -5, 0],
-            opacity: [0.5, 1, 0.5],
+            y: [0, -6, 0],
+            opacity: [0.4, 1, 0.4],
           }}
           transition={{
-            duration: 1.2,
+            duration: 1.5,
             repeat: Infinity,
             repeatType: 'loop',
-            delay: i * 0.2,
+            delay: i * 0.25,
             ease: [0.4, 0, 0.2, 1],
           }}
         />
@@ -54,22 +54,33 @@ export default function Navbar() {
   const lastScrollY = useRef(0)
 
   useEffect(() => {
+    const collapseThreshold = 72
+    const expandThreshold = 64
+    let ticking = false
+
     const onScroll = () => {
       const currentScrollY = window.scrollY
-      
-      // Shrink when scrolling down past threshold
-      // Expand when scrolling up even 1 pixel
-      if (currentScrollY > 60 && currentScrollY > lastScrollY.current) {
-        setScrolled(true)
-      } else if (currentScrollY < lastScrollY.current) {
-        setScrolled(false)
+      const scrollingDown = currentScrollY > lastScrollY.current
+
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (!scrolled && scrollingDown && currentScrollY > collapseThreshold) {
+            setScrolled(true)
+          } else if (scrolled && !scrollingDown && currentScrollY < expandThreshold) {
+            setScrolled(false)
+          }
+
+          lastScrollY.current = currentScrollY
+          ticking = false
+        })
+
+        ticking = true
       }
-      
-      lastScrollY.current = currentScrollY
     }
+
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  }, [scrolled])
 
   const handleNavClick = (e, href) => {
     if (href.startsWith('/#')) {
@@ -87,23 +98,14 @@ export default function Navbar() {
       <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 px-4">
         <motion.nav
           initial={{ y: -20, opacity: 0 }}
-          animate={{ 
-            y: 0, 
+          animate={{
+            y: 0,
             opacity: 1,
+            padding: scrolled ? '0.55rem 0.75rem' : '0.75rem 1rem',
+            gap: scrolled ? 12 : 24,
           }}
           transition={springConfig}
-          layout
-          layoutId="navbar"
-          className={`
-            relative flex items-center
-            backdrop-blur-xl
-            border border-white/20
-            shadow-[0_8px_32px_rgba(0,0,0,0.3)]
-            ${scrolled 
-              ? 'px-3 py-2 rounded-full gap-3' 
-              : 'px-4 py-2.5 rounded-full gap-6'
-            }
-          `}
+          className="relative flex items-center backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.3)] rounded-full overflow-hidden"
           style={{
             background: 'rgba(255, 255, 255, 0.08)',
           }}
@@ -131,75 +133,75 @@ export default function Navbar() {
             <span className="font-display font-semibold text-[0.95rem] tracking-tight text-white">
               Cinova Visuals
             </span>
-            {/* Typing dots - only show when scrolled/collapsed */}
-            {scrolled && <TypingDots />}
-          </Link>
-
-          {/* Desktop Links - Hidden when scrolled */}
-          <AnimatePresence mode="popLayout">
-            {!scrolled && (
-              <motion.div
-                key="nav-links"
-                initial={{ opacity: 0, scale: 0.9, width: 0 }}
-                animate={{ opacity: 1, scale: 1, width: 'auto' }}
-                exit={{ opacity: 0, scale: 0.9, width: 0 }}
-                transition={springConfig}
-                className="hidden md:flex items-center gap-1 overflow-hidden"
-              >
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={(e) => handleNavClick(e, link.href)}
-                    className="text-white/70 hover:text-white transition-colors duration-200 text-sm font-medium px-4 py-2 rounded-full hover:bg-white/10"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Desktop CTA / Three dots when scrolled */}
-          <div className="hidden md:flex items-center">
-            <AnimatePresence mode="popLayout">
-              {scrolled ? (
-                <motion.div 
-                  key="spacer" 
+            {/* Typing dots - only show after collapse */}
+            <AnimatePresence>
+              {scrolled && (
+                <motion.span
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                  className="w-2" 
-                />
-              ) : (
-                <motion.div
-                  key="contact"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={springConfig}
+                  transition={{ duration: 0.25, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                  className="flex items-center ml-2"
                 >
-                  <Link
-                    href="/#contact"
-                    onClick={(e) => handleNavClick(e, '/#contact')}
-                    className="
-                      inline-flex items-center gap-2
-                      px-5 py-2
-                      bg-white/10 hover:bg-white/20
-                      border border-white/20
-                      rounded-full
-                      text-sm font-medium text-white
-                      transition-all duration-200
-                      backdrop-blur-sm
-                    "
-                  >
-                    Contact
-                  </Link>
-                </motion.div>
+                  <TypingDots />
+                </motion.span>
               )}
             </AnimatePresence>
-          </div>
+          </Link>
+
+          {/* Desktop Links - fade and collapse inside navbar */}
+          <motion.div
+            initial={false}
+            animate={{
+              opacity: scrolled ? 0 : 1,
+              scaleX: scrolled ? 0.88 : 1,
+              x: scrolled ? -6 : 0,
+            }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="hidden md:flex items-center gap-1 overflow-hidden"
+            style={{ transformOrigin: '0 50%', pointerEvents: scrolled ? 'none' : 'auto' }}
+          >
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
+                className="text-white/70 hover:text-white transition-colors duration-200 text-sm font-medium px-4 py-2 rounded-full hover:bg-white/10"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </motion.div>
+
+          {/* Desktop CTA - fade smoothly while collapsing */}
+          <motion.div
+            className="hidden md:flex items-center"
+            initial={false}
+            animate={{
+              opacity: scrolled ? 0 : 1,
+              scale: scrolled ? 0.92 : 1,
+              x: scrolled ? -6 : 0,
+            }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            style={{ transformOrigin: '0 50%', pointerEvents: scrolled ? 'none' : 'auto' }}
+          >
+            <Link
+              href="/#contact"
+              onClick={(e) => handleNavClick(e, '/#contact')}
+              className="
+                inline-flex items-center gap-2
+                px-5 py-2
+                bg-white/10 hover:bg-white/20
+                border border-white/20
+                rounded-full
+                text-sm font-medium text-white
+                transition-all duration-200
+                backdrop-blur-sm
+              "
+            >
+              Contact
+            </Link>
+          </motion.div>
 
           {/* Mobile Hamburger */}
           <button
