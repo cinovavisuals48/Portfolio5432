@@ -14,7 +14,6 @@ import CustomCursor from '../../../components/CustomCursor'
 import CursorGlow from '../../../components/CursorGlow'
 import SmoothScroll from '../../../components/SmoothScroll'
 
-
 export default function VideoDetailPage() {
   const { id } = useParams()
   const project = projects.find(p => p.id === id)
@@ -75,9 +74,6 @@ export default function VideoDetailPage() {
     const timer = setTimeout(postMessageToVimeo, 100)
     return () => clearTimeout(timer)
   }, [isMuted])
-
-  // Trigger page wipe animation on page load
-  
 
   if (!project) {
     return (

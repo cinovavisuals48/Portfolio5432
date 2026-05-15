@@ -7,9 +7,8 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { triggerPageWipe } from './PageWipe'
 
 export default function ProjectCard({ project, index, forcePreview = false }) {
   const [hovered, setHovered] = useState(false)
@@ -79,13 +78,8 @@ export default function ProjectCard({ project, index, forcePreview = false }) {
     return () => observer.disconnect()
   }, [forcePreview, hasVideoPreview])
 
-  const router = useRouter()
-
-  const navigateToProject = () => {
-    triggerPageWipe(() => router.push(`/projects/${project.id}`))
-  }
-
   return (
+    <Link href={`/projects/${project.id}`}>
       <motion.article
         ref={cardRef}
         initial={{ opacity: 0, y: 30 }}
@@ -96,14 +90,6 @@ export default function ProjectCard({ project, index, forcePreview = false }) {
         onHoverEnd={() => setHovered(false)}
         className="relative rounded-xl overflow-hidden border border-thin
                    bg-bg-card group cursor-pointer h-full"
-        onClick={(e) => {
-          e.preventDefault()
-          navigateToProject()
-        }}
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') navigateToProject()
-        }}
         style={{
           boxShadow: hovered
             ? '0 20px 60px rgba(0,0,0,0.4)'
@@ -263,5 +249,6 @@ export default function ProjectCard({ project, index, forcePreview = false }) {
           </div>
         </div>
       </motion.article>
+    </Link>
   )
 }

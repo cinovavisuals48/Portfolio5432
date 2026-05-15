@@ -9,8 +9,6 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { triggerPageWipe } from './PageWipe'
 
 const navLinks = [
   { label: 'Work',     href: '/#projects' },
@@ -51,7 +49,6 @@ const springConfig = {
 }
 
 export default function Navbar() {
-  const router = useRouter()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const lastScrollY = useRef(0)
@@ -80,17 +77,7 @@ export default function Navbar() {
       setMobileOpen(false)
       const target = href.replace('/#', '#')
       const el = document.querySelector(target)
-
-      // If element exists on current page, scroll to it
-      if (el) {
-        triggerPageWipe(() => {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-          return Promise.resolve()
-        })
-      } else {
-        // If element doesn't exist (e.g., on /projects page), navigate to home with hash
-        triggerPageWipe(() => router.push(href))
-      }
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
   }
 
@@ -281,11 +268,7 @@ export default function Navbar() {
               >
                 <Link
                   href="/projects"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    setMobileOpen(false)
-                    triggerPageWipe(() => router.push('/projects'))
-                  }}
+                  onClick={() => setMobileOpen(false)}
                   className="text-lg font-display font-semibold text-white py-3 px-4
                              rounded-xl hover:bg-white/10
                              flex items-center justify-between transition-colors"
