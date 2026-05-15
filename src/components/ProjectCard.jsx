@@ -263,6 +263,5 @@ export default function ProjectCard({ project, index, forcePreview = false }) {
           </div>
         </div>
       </motion.article>
-    </Link>
   )
 }
