@@ -9,9 +9,11 @@ import { motion } from 'framer-motion'
 import { featuredProjects } from '../data/projects'
 import ProjectCard from './ProjectCard'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { triggerPageWipe } from './PageWipe'
 
 export default function Projects() {
+  const router = useRouter()
   return (
     <section id="projects" className="section-py relative overflow-hidden projects-gradient">
 
@@ -66,9 +68,7 @@ export default function Projects() {
             className="btn-ghost group"
             onClick={(e) => {
               e.preventDefault()
-              triggerPageWipe(() => {
-                window.location.href = '/projects'
-              })
+              triggerPageWipe(() => router.push('/projects'))
             }}
           >
             Show All Projects

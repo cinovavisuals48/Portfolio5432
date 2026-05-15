@@ -13,7 +13,7 @@ import { useParams } from 'next/navigation'
 import CustomCursor from '../../../components/CustomCursor'
 import CursorGlow from '../../../components/CursorGlow'
 import SmoothScroll from '../../../components/SmoothScroll'
-import { triggerPageWipe } from '../../../components/PageWipe'
+
 
 export default function VideoDetailPage() {
   const { id } = useParams()
@@ -77,11 +77,7 @@ export default function VideoDetailPage() {
   }, [isMuted])
 
   // Trigger page wipe animation on page load
-  useEffect(() => {
-    triggerPageWipe(() => {
-      // Animation completes, video appears
-    })
-  }, [])
+  
 
   if (!project) {
     return (
