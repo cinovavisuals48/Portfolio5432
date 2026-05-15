@@ -9,6 +9,7 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
+import { triggerPageWipe } from './PageWipe'
 
 const navLinks = [
   { label: 'Work',     href: '/#projects' },
@@ -76,8 +77,10 @@ export default function Navbar() {
       e.preventDefault()
       setMobileOpen(false)
       const target = href.replace('/#', '#')
-      const el = document.querySelector(target)
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      triggerPageWipe(() => {
+        const el = document.querySelector(target)
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
     }
   }
 
