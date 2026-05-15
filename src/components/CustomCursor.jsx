@@ -13,6 +13,13 @@ const DOT_COUNT = 5
 const DOT_SIZES = [10, 8, 6, 4, 3]
 const DOT_DELAYS = [0, 0.02, 0.04, 0.06, 0.08]
 
+const isTouchDevice = () =>
+  typeof window !== 'undefined' &&
+  (window.matchMedia('(any-hover: none)').matches ||
+    window.matchMedia('(pointer: coarse)').matches ||
+    'ontouchstart' in window ||
+    (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0))
+
 export default function CustomCursor() {
   const [mounted, setMounted] = useState(false)
   const [isTouch, setIsTouch] = useState(false)
@@ -27,7 +34,7 @@ export default function CustomCursor() {
   }))
 
   useEffect(() => {
-    setIsTouch(window.matchMedia('(hover: none)').matches)
+    setIsTouch(isTouchDevice())
     setMounted(true)
 
     const move = (e) => {
@@ -64,11 +71,16 @@ export default function CustomCursor() {
       setIsClicking(false)
     }
 
+    const handleTouchStart = () => {
+      setIsTouch(true)
+    }
+
     window.addEventListener('mousemove', move, { passive: true })
     document.addEventListener('mouseover', handleMouseOver, { passive: true })
     document.addEventListener('mouseout', handleMouseOut, { passive: true })
     document.addEventListener('mousedown', handleMouseDown, { passive: true })
     document.addEventListener('mouseup', handleMouseUp, { passive: true })
+    window.addEventListener('touchstart', handleTouchStart, { passive: true })
 
     return () => {
       window.removeEventListener('mousemove', move)
@@ -76,6 +88,7 @@ export default function CustomCursor() {
       document.removeEventListener('mouseout', handleMouseOut)
       document.removeEventListener('mousedown', handleMouseDown)
       document.removeEventListener('mouseup', handleMouseUp)
+      window.removeEventListener('touchstart', handleTouchStart)
     }
   }, [dots])
 
