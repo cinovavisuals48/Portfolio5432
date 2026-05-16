@@ -246,17 +246,17 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
                 setIsMuted((value) => !value)
               }}
               aria-label={isMuted ? 'Unmute preview' : 'Mute preview'}
-              className="absolute top-0 left-0 z-30 pointer-events-auto rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[0.75rem] uppercase tracking-[0.2em] text-white shadow-[0_18px_50px_rgba(0,0,0,0.18)] backdrop-blur-xl transition duration-300"
+              className="absolute z-30 pointer-events-auto rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[0.75rem] uppercase tracking-[0.2em] text-white shadow-[0_18px_50px_rgba(0,0,0,0.18)] backdrop-blur-xl transition duration-300"
               initial={{ opacity: 0, scale: 0.88 }}
               animate={{
                 opacity: pillVisible ? 1 : 0,
                 scale: pillVisible ? 1 : 0.88,
-                x: cursorPosition.x + 8,
-                y: cursorPosition.y + 10,
+                left: cursorPosition.x,
+                top: cursorPosition.y,
               }}
-              transition={{ type: 'spring', stiffness: 320, damping: 28, mass: 0.15 }}
+              transition={{ type: 'spring', stiffness: 360, damping: 24, mass: 0.18 }}
               whileTap={{ scale: 0.92 }}
-              style={{ transformOrigin: 'top left' }}
+              style={{ transform: 'translate(-50%, 18px)' }}
             >
               <span className="inline-flex items-center gap-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-sky-400 shadow-[0_0_16px_rgba(56,189,248,0.4)]" />
