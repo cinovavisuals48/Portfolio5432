@@ -252,11 +252,11 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
                 opacity: pillVisible ? 1 : 0,
                 scale: pillVisible ? 1 : 0.88,
                 left: cursorPosition.x,
-                top: cursorPosition.y,
+                top: cursorPosition.y + 4,
               }}
               transition={{ type: 'spring', stiffness: 360, damping: 24, mass: 0.18 }}
               whileTap={{ scale: 0.92 }}
-              style={{ transform: 'translate(-50%, -50%)', cursor: 'pointer' }}
+              style={{ transform: 'translate(-50%, 0)', cursor: 'pointer' }}
             >
               <span className="inline-flex items-center gap-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-sky-400 shadow-[0_0_16px_rgba(56,189,248,0.4)]" />
