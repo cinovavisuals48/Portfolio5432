@@ -136,7 +136,7 @@ export default function ProjectsPage() {
                     Micro UI motion previews
                   </h2>
                   <p className="text-ink-muted text-[0.95rem] max-w-2xl leading-relaxed">
-                    Fun personal projects that showcase refined UI motion skills through polished, short interaction videos.
+                    These are short, self-playing UI animation cards with muted previews and a slick unmute toggle in the lower right.
                   </p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

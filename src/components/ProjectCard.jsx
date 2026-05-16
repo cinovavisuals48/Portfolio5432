@@ -16,12 +16,24 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
   const [showVideoPreview, setShowVideoPreview] = useState(forcePreview)
   const [previewLoaded, setPreviewLoaded] = useState(false)
   const [isMuted, setIsMuted] = useState(true)
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 })
   const cardRef = useRef(null)
 
   const hasThumbnail = project.thumbnailUrl && !imageError
   const hasVideoPreview = !!project.videoEmbedUrl
   const hasActivePreview = showVideoPreview && hasVideoPreview
+  const pillVisible = previewOnly && hovered && hasVideoPreview
+  const pillLabel = isMuted ? 'Unmute' : 'Mute'
   const videoAspectRatio = project.aspectRatio ?? '16 / 9'
+
+  const handleMouseMove = (event) => {
+    if (!cardRef.current) return
+    const rect = cardRef.current.getBoundingClientRect()
+    setCursorPosition({
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+    })
+  }
 
   const getVideoAspectStyles = (ratio) => {
     const normalized = String(ratio).replace(/\s+/g, '').replace(':', '/')
@@ -103,6 +115,7 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: index * 0.08 }}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
+      onMouseMove={handleMouseMove}
       className={`relative rounded-xl overflow-hidden border border-thin
                    bg-bg-card group ${forcePreview || previewOnly ? 'cursor-default' : 'cursor-pointer'} h-full`}
       style={{
@@ -225,33 +238,31 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
           </div>
 
           {previewOnly && hasVideoPreview && (
-            <div className="absolute bottom-3 right-3 z-20">
-              <button
-                type="button"
-                onClick={(event) => {
-                  event.preventDefault()
-                  event.stopPropagation()
-                  setIsMuted((value) => !value)
-                }}
-                className="inline-flex items-center rounded-full border border-white/15 bg-black/70 p-2 text-white shadow-2xl backdrop-blur-sm transition duration-200 hover:border-white/30 hover:bg-sky-500/95"
-                aria-label={isMuted ? 'Unmute preview' : 'Mute preview'}
-              >
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 border border-white/10">
-                  {isMuted ? (
-                    <svg viewBox="0 0 24 24" className="h-4 w-4 text-white">
-                      <path d="M5 8v8h5l5 5V3L10 8H5z" fill="currentColor" />
-                      <path d="M16 8l4 4M20 8l-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                  ) : (
-                    <svg viewBox="0 0 24 24" className="h-4 w-4 text-white">
-                      <path d="M5 8v8h5l5 5V3L10 8H5z" fill="currentColor" />
-                      <path d="M16.5 7.5c1.5 1.5 1.5 4 0 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                      <path d="M18.5 5.5c2.5 2.5 2.5 6.5 0 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                  )}
-                </span>
-              </button>
-            </div>
+            <motion.button
+              type="button"
+              onClick={(event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                setIsMuted((value) => !value)
+              }}
+              aria-label={isMuted ? 'Unmute preview' : 'Mute preview'}
+              className="absolute top-0 left-0 z-30 pointer-events-auto rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[0.75rem] uppercase tracking-[0.2em] text-white shadow-[0_18px_50px_rgba(0,0,0,0.18)] backdrop-blur-xl transition duration-300"
+              initial={{ opacity: 0, scale: 0.88 }}
+              animate={{
+                opacity: pillVisible ? 1 : 0,
+                scale: pillVisible ? 1 : 0.88,
+                x: cursorPosition.x + 20,
+                y: cursorPosition.y + 20,
+              }}
+              transition={{ type: 'spring', stiffness: 320, damping: 28, mass: 0.15 }}
+              whileTap={{ scale: 0.92 }}
+              style={{ transformOrigin: 'top left' }}
+            >
+              <span className="inline-flex items-center gap-2">
+                <span className="h-2.5 w-2.5 rounded-full bg-sky-400 shadow-[0_0_16px_rgba(56,189,248,0.4)]" />
+                {pillLabel}
+              </span>
+            </motion.button>
           )}
         </div>
 
