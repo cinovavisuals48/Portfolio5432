@@ -77,7 +77,7 @@ export const projects = [
     category: 'UI Animation',
     shortUiAnimation: true,
     description: 'A fun personal project to showcase my skills about apple music.',
-    videoEmbedUrl: 'https://player.vimeo.com/video/1192225465',
+    videoEmbedUrl: 'https://player.vimeo.com/video/1191975722',
     thumbnailUrl: '/thumbnails/onboarding-motion.jpg',
     aspectRatio: '1 / 1',
     tags: ['UI Animation'],
