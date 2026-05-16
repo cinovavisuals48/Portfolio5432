@@ -18,6 +18,7 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
   const [isMuted, setIsMuted] = useState(true)
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 })
   const cardRef = useRef(null)
+  const iframeRef = useRef(null)
 
   const hasThumbnail = project.thumbnailUrl && !imageError
   const hasVideoPreview = !!project.videoEmbedUrl
@@ -106,6 +107,23 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
     return () => observer.disconnect()
   }, [forcePreview, hasVideoPreview])
 
+  // Handle mute state changes via Vimeo API for previewOnly cards
+  useEffect(() => {
+    if (!previewOnly || !iframeRef.current) return
+
+    const postMessageToVimeo = () => {
+      const data = {
+        method: 'setMuted',
+        value: isMuted,
+      }
+      iframeRef.current?.contentWindow?.postMessage(data, '*')
+    }
+
+    // Wait a bit for iframe to be ready
+    const timer = setTimeout(postMessageToVimeo, 100)
+    return () => clearTimeout(timer)
+  }, [isMuted, previewOnly])
+
   const cardContent = (
     <motion.article
       ref={cardRef}
@@ -154,8 +172,9 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
           {hasActivePreview && (
             <>
               <iframe
+                ref={iframeRef}
                 className="absolute inset-0 w-full h-full pointer-events-none"
-                src={getPreviewUrl(project.videoEmbedUrl, isMuted)}
+                src={getPreviewUrl(project.videoEmbedUrl, previewOnly ? true : isMuted)}
                 title={`${project.title} preview`}
                 allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
                 allowFullScreen
