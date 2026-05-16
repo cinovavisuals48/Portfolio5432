@@ -75,30 +75,14 @@ export const projects = [
     id: 'apple-music',
     title: 'Apple music',
     category: 'UI Animation',
+    shortUiAnimation: true,
     description: 'A fun personal project to showcase my skills about apple music.',
-    videoEmbedUrl: 'https://player.vimeo.com/1192225465',
+    videoEmbedUrl: 'https://player.vimeo.com/video/1192225465',
     thumbnailUrl: '/thumbnails/onboarding-motion.jpg',
     aspectRatio: '1 / 1',
     tags: ['UI Animation'],
   },
-  {
-    id: 'product-launch',
-    title: 'Product Launch Video',
-    category: 'Product Launch',
-    description: 'A cinematic product launch video designed to create excitement and showcase key features with dynamic motion graphics and storytelling.',
-    videoEmbedUrl: '',
-    thumbnailUrl: '/thumbnails/product-launch.jpg',
-    tags: ['Product Launch', 'Cinematic', 'SaaS'],
-  },
-  {
-    id: 'micro-interactions',
-    title: 'UI Micro-interactions',
-    category: 'UI Animation',
-    description: 'A collection of polished micro-interactions that bring interfaces to life. From button states to loading animations, every detail matters.',
-    videoEmbedUrl: '',
-    thumbnailUrl: '/thumbnails/micro-interactions.jpg',
-    tags: ['Micro-interactions', 'UI/UX', 'Details'],
-  },
+
 
   // ─────────────────────────────────────────────────────────────
   // ADD YOUR NEW PROJECTS BELOW (copy the template):

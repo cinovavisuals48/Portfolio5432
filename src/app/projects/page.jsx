@@ -19,9 +19,11 @@ import Link from 'next/link'
 export default function ProjectsPage() {
   const [activeCategory, setActiveCategory] = useState('All')
 
+  const shortUiAnimations = projects.filter((project) => project.shortUiAnimation)
+
   const filteredProjects = activeCategory === 'All'
-    ? projects
-    : projects.filter(p => p.category === activeCategory)
+    ? projects.filter((project) => !project.shortUiAnimation)
+    : projects.filter((project) => project.category === activeCategory && !project.shortUiAnimation)
 
   return (
     <SmoothScroll>
@@ -118,6 +120,37 @@ export default function ProjectsPage() {
                 ))}
               </motion.div>
             </AnimatePresence>
+
+            {shortUiAnimations.length > 0 && (
+              <motion.section
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: 0.05 }}
+                className="mt-16"
+              >
+                <div className="mb-8">
+                  <p className="text-accent-blue text-sm font-display font-600 tracking-[0.1em] uppercase mb-3">
+                    Short UI Animations
+                  </p>
+                  <h2 className="font-display font-800 text-[clamp(1.8rem,3.5vw,2.5rem)] leading-[1.05] tracking-tight text-ink-primary mb-3">
+                    Micro UI motion previews
+                  </h2>
+                  <p className="text-ink-muted text-[0.95rem] max-w-2xl leading-relaxed">
+                    These are short, self-playing UI animation cards with muted previews and a slick unmute toggle in the lower right.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {shortUiAnimations.map((project, index) => (
+                    <ProjectCard
+                      key={project.id}
+                      project={project}
+                      index={index}
+                      previewOnly
+                    />
+                  ))}
+                </div>
+              </motion.section>
+            )}
 
             {/* Empty State */}
             {filteredProjects.length === 0 && (
