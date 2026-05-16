@@ -251,8 +251,8 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
               animate={{
                 opacity: pillVisible ? 1 : 0,
                 scale: pillVisible ? 1 : 0.88,
-                left: cursorPosition.x,
-                top: cursorPosition.y - 44,
+                left: cursorPosition.x -50,
+                top: cursorPosition.y - 35,
               }}
               transition={{ type: 'spring', stiffness: 360, damping: 24, mass: 0.18 }}
               whileTap={{ scale: 0.92 }}
