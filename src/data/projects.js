@@ -40,7 +40,7 @@ export const projects = [
     category: 'SaaS Explainer',
     
     // DESCRIPTION - 1-2 sentences about the project
-    description: 'A motion concept for Gemini exploring how AI can make learning feel more interactive and intuitive. Showcasing smooth transitions and micro-interactions that guide users through complex information.',
+    description: 'A motion concept for Gemini Guided learning exploring how AI can make learning feel more interactive and intuitive. Showcasing smooth transitions and micro-interactions that guide users through complex information.',
     
     // VIDEO URL - Your Vimeo embed URL (get this from Vimeo share > embed)
     videoEmbedUrl: 'https://player.vimeo.com/video/1190775920',
@@ -57,7 +57,7 @@ export const projects = [
     id: 'feedbask',
     title: 'Feedbask',
     category: 'Concept Spec',
-    description: 'A spec explainer made for Feedbask A platform that helps businesses collect and manage customer feedback in one place. Focused on explaining the product features in a simple and visually clear way through motion designUsed UI animations and smooth transitions to make the workflow easy to understandThe goal was to keep the visuals modern engaging and easy to follow while showing how users can collect feedback track ideas and improve products more efficiently',
+    description: 'A spec explainer made for Feedbask A platform that helps businesses collect and manage customer feedback in one place. Focused on explaining the product features in a simple and visually clear way through motion design. Used UI animations and smooth transitions to make the workflow easy to understand. The goal was to keep the visuals modern engaging and easy to follow while showing how users can collect feedback track ideas and improve products more efficiently',
     videoEmbedUrl: 'https://player.vimeo.com/video/1191850183',
     thumbnailUrl: '/thumbnails/feedbask.jpg',
     tags: ['Product Explainer', 'SaaS', 'UI Animation'],
@@ -76,14 +76,23 @@ export const projects = [
     title: 'Apple music',
     category: 'UI Animation',
     shortUiAnimation: true,
-    description: 'A fun personal project to showcase my skills about apple music.',
+    description: 'A short ui animation made for apple music. Focussed on showcasing the smooth transitions.',
     videoEmbedUrl: 'https://player.vimeo.com/video/1191975722',
-    thumbnailUrl: '/thumbnails/onboarding-motion.jpg',
+    thumbnailUrl: '/thumbnails/apple.jpg',
     aspectRatio: '1 / 1',
     tags: ['UI Animation'],
   },
-
-
+{
+    id: 'dropbox',
+    title: 'Drop-Box',
+    category: 'UI Animation',
+    shortUiAnimation: true,
+    description: 'A short ui animation made for dropbox. Focussed on showcasing smooth transitions.',
+    videoEmbedUrl: 'https://player.vimeo.com/video/1192225465',
+    thumbnailUrl: '/thumbnails/dropbox.jpg',
+    aspectRatio: '1 / 1',
+    tags: ['UI Animation'],
+  },
   // ─────────────────────────────────────────────────────────────
   // ADD YOUR NEW PROJECTS BELOW (copy the template):
   // ─────────────────────────────────────────────────────────────
