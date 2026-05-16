@@ -233,10 +233,10 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
                   event.stopPropagation()
                   setIsMuted((value) => !value)
                 }}
-                className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/70 px-3 py-2 text-[0.72rem] uppercase tracking-[0.24em] text-white shadow-2xl backdrop-blur-sm transition duration-200 hover:border-white/30 hover:bg-sky-500/95"
+                className="inline-flex items-center rounded-full border border-white/15 bg-black/70 p-2 text-white shadow-2xl backdrop-blur-sm transition duration-200 hover:border-white/30 hover:bg-sky-500/95"
                 aria-label={isMuted ? 'Unmute preview' : 'Mute preview'}
               >
-                <span className="flex items-center justify-center w-7 h-7 rounded-full bg-white/10 border border-white/10">
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 border border-white/10">
                   {isMuted ? (
                     <svg viewBox="0 0 24 24" className="h-4 w-4 text-white">
                       <path d="M5 8v8h5l5 5V3L10 8H5z" fill="currentColor" />
@@ -250,7 +250,6 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
                     </svg>
                   )}
                 </span>
-                <span>{isMuted ? 'Muted' : 'Unmuted'}</span>
               </button>
             </div>
           )}
