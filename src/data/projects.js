@@ -40,7 +40,7 @@ export const projects = [
     category: 'SaaS Explainer',
     
     // DESCRIPTION - 1-2 sentences about the project
-    description: 'A motion concept for Gemini Guided learning exploring how AI can make learning feel more interactive and intuitive. Showcasing smooth transitions and micro-interactions that guide users through complex information.',
+    description: 'A motion concept for Gemini guided learning exploring how AI can make learning feel more interactive and intuitive. Showcasing smooth transitions and micro-interactions that guide users through complex information.',
     
     // VIDEO URL - Your Vimeo embed URL (get this from Vimeo share > embed)
     videoEmbedUrl: 'https://player.vimeo.com/video/1190775920',
@@ -66,7 +66,7 @@ export const projects = [
     id: 'uber',
     title: 'Uber',
     category: 'SaaS Explainer',
-    description: '',
+    description: 'A motion conceept for Uber that takes users through the process of booking a ride. The animation focussed on smooth tranisitions and app ui interations to make the experience feel intuitive and engageing. The goal was to show how the app simplifies the process of getting from poing A to point B while highlighting key features.',
     videoEmbedUrl: 'https://player.vimeo.com/video/1191852242',
     thumbnailUrl: '/thumbnails/uber.jpg',
     tags: ['UI Animation'],
@@ -90,6 +90,17 @@ export const projects = [
     description: 'A short ui animation made for dropbox. Focussed on showcasing smooth transitions.',
     videoEmbedUrl: 'https://player.vimeo.com/video/1192225465',
     thumbnailUrl: '/thumbnails/dropbox.jpg',
+    aspectRatio: '1 / 1',
+    tags: ['UI Animation'],
+  },
+  {
+    id: 'instagram',
+    title: 'Instagram',
+    category: 'UI Animation',
+    shortUiAnimation: true,
+    description: 'A short ui animation made for instagram. Focussed on showcasing smooth tranisitions.',
+    videoEmbedUrl: 'https://player.vimeo.com/video/1192225464',
+    thumbnailUrl: '/thumbnails/instagram.jpg',
     aspectRatio: '1 / 1',
     tags: ['UI Animation'],
   },
