@@ -80,6 +80,15 @@ export default function VideoDetailPage() {
     return () => clearTimeout(timer)
   }, [isMuted])
 
+  // Autoplay audio after page loads (user already interacted by clicking project)
+  useEffect(() => {
+    // Wait a bit longer for iframe to fully initialize
+    const timer = setTimeout(() => {
+      setIsMuted(false)
+    }, 1200)
+    return () => clearTimeout(timer)
+  }, [])
+
   if (!project) {
     return (
       <main className="relative min-h-screen bg-[#0a0a0a] flex items-center justify-center">
