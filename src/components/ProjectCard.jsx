@@ -112,15 +112,19 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
     if (!previewOnly || !iframeRef.current) return
 
     const postMessageToVimeo = () => {
-      const data = {
-        method: 'setMuted',
-        value: isMuted,
+      try {
+        const data = {
+          method: 'setMuted',
+          value: isMuted,
+        }
+        iframeRef.current?.contentWindow?.postMessage(data, '*')
+      } catch (error) {
+        console.warn('Could not post message to Vimeo iframe in ProjectCard:', error)
       }
-      iframeRef.current?.contentWindow?.postMessage(data, '*')
     }
 
-    // Wait a bit for iframe to be ready
-    const timer = setTimeout(postMessageToVimeo, 100)
+    // Wait for iframe to load with longer timeout for mobile/restricted browsers
+    const timer = setTimeout(postMessageToVimeo, 500)
     return () => clearTimeout(timer)
   }, [isMuted, previewOnly])
 

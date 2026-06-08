@@ -17,7 +17,7 @@ import SmoothScroll from '../../../components/SmoothScroll'
 export default function VideoDetailPage() {
   const { id } = useParams()
   const project = projects.find(p => p.id === id)
-  const [isMuted, setIsMuted] = useState(false)
+  const [isMuted, setIsMuted] = useState(true)
   const iframeRef = useRef(null)
   const videoAspectRatio = project?.aspectRatio ?? '16 / 9'
 
@@ -42,8 +42,9 @@ export default function VideoDetailPage() {
 
     try {
       const url = new URL(project.videoEmbedUrl)
+      // Start muted for autoplay to work in restrictive browsers like Instagram in-app
       url.searchParams.set('autoplay', '1')
-      url.searchParams.set('muted', '0')
+      url.searchParams.set('muted', '1')
       url.searchParams.set('loop', '1')
       url.searchParams.set('controls', '0')
       url.searchParams.set('playsinline', '1')
@@ -63,15 +64,19 @@ export default function VideoDetailPage() {
     if (!iframeRef.current) return
 
     const postMessageToVimeo = () => {
-      const data = {
-        method: 'setMuted',
-        value: isMuted,
+      try {
+        const data = {
+          method: 'setMuted',
+          value: isMuted,
+        }
+        iframeRef.current?.contentWindow?.postMessage(data, '*')
+      } catch (error) {
+        console.warn('Could not post message to Vimeo iframe:', error)
       }
-      iframeRef.current.contentWindow.postMessage(data, '*')
     }
 
-    // Wait a bit for iframe to load
-    const timer = setTimeout(postMessageToVimeo, 100)
+    // Wait for iframe to load before posting message
+    const timer = setTimeout(postMessageToVimeo, 500)
     return () => clearTimeout(timer)
   }, [isMuted])
 
@@ -134,7 +139,7 @@ export default function VideoDetailPage() {
                 ref={iframeRef}
                 src={videoUrl}
                 className="absolute inset-0 w-full h-full pointer-events-none"
-                allow="autoplay; fullscreen; picture-in-picture"
+                allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
                 allowFullScreen
                 title={project.title}
                 style={{ cursor: 'none' }}

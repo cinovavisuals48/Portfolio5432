@@ -22,13 +22,15 @@ const isTouchDevice = () => {
 }
 
 export default function CursorGlow() {
+  // Initialize with touch check to prevent flash on mobile
   const [mounted, setMounted] = useState(false)
-  const [isTouch, setIsTouch] = useState(false)
+  const [isTouch, setIsTouch] = useState(isTouchDevice())
 
   const mouseX = useSpring(0, { stiffness: 80, damping: 30, mass: 0.5 })
   const mouseY = useSpring(0, { stiffness: 80, damping: 30, mass: 0.5 })
 
   useEffect(() => {
+    // Re-check on mount in case initial detection failed
     setIsTouch(isTouchDevice())
     setMounted(true)
 

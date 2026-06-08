@@ -27,8 +27,9 @@ const isTouchDevice = () => {
 }
 
 export default function CustomCursor() {
+  // Initialize with touch check to prevent flash on mobile
   const [mounted, setMounted] = useState(false)
-  const [isTouch, setIsTouch] = useState(false)
+  const [isTouch, setIsTouch] = useState(isTouchDevice())
   const [isHovering, setIsHovering] = useState(false)
   const [isClicking, setIsClicking] = useState(false)
   const mousePos = useRef({ x: 0, y: 0 })
@@ -40,6 +41,7 @@ export default function CustomCursor() {
   }))
 
   useEffect(() => {
+    // Re-check on mount in case initial detection failed
     setIsTouch(isTouchDevice())
     setMounted(true)
 
@@ -102,7 +104,7 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Hide default cursor globally */}
+      {/* Hide default cursor globally - only applied on desktop */}
       <style jsx global>{`
         * {
           cursor: none !important;
