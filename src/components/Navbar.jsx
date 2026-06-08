@@ -9,6 +9,7 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter, usePathname } from 'next/navigation'
 
 const navLinks = [
   { label: 'Work',     href: '/#projects' },
@@ -49,6 +50,8 @@ const springConfig = {
 }
 
 export default function Navbar() {
+  const router = useRouter()
+  const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const lastScrollY = useRef(0)
@@ -75,9 +78,21 @@ export default function Navbar() {
     if (href.startsWith('/#')) {
       e.preventDefault()
       setMobileOpen(false)
-      const target = href.replace('/#', '#')
-      const el = document.querySelector(target)
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      const sectionId = href.replace('/#', '')
+      
+      // If we're not on the home page, navigate to home with the hash
+      if (pathname !== '/') {
+        router.push(`/?section=${sectionId}`)
+        // After navigation, scroll to the section
+        setTimeout(() => {
+          const el = document.querySelector(`#${sectionId}`)
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }, 100)
+      } else {
+        // We're already on home page, just scroll to the section
+        const el = document.querySelector(`#${sectionId}`)
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
     }
   }
 
@@ -109,7 +124,7 @@ export default function Navbar() {
           }}
         >
           {/* Logo - Circular */}
-          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+          <Link href="/" className="flex items-center gap-2.5 group shrink-0" onClick={() => setMobileOpen(false)}>
             <motion.div 
               layout
               layoutId="logo"
