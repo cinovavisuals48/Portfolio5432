@@ -29,10 +29,10 @@ function TypingDots() {
             opacity: [0.5, 1, 0.5],
           }}
           transition={{
-            duration: 1.2,
+            duration: 2,
             repeat: Infinity,
             repeatType: 'loop',
-            delay: i * 0.2,
+            delay: i * 0.25,
             ease: [0.4, 0, 0.2, 1],
           }}
         />
@@ -54,25 +54,38 @@ export default function Navbar() {
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const lastScrollY = useRef(0)
+  const lastScrollYRef = useRef(0)
 
   useEffect(() => {
-    const onScroll = () => {
+    const handleScroll = () => {
       const currentScrollY = window.scrollY
-      
+
+      // Close mobile menu on scroll for seamless experience
+      if (mobileOpen) {
+        setMobileOpen(false)
+      }
+
+      // Determine scroll direction
+      const isScrollingDown = currentScrollY > lastScrollYRef.current
+      const scrollThreshold = 100
+
       // Shrink when scrolling down past threshold
-      // Expand when scrolling up even 1 pixel
-      if (currentScrollY > 60 && currentScrollY > lastScrollY.current) {
+      if (isScrollingDown && currentScrollY > scrollThreshold) {
         setScrolled(true)
-      } else if (currentScrollY < lastScrollY.current) {
+      } 
+      // Expand immediately when scrolling up (no threshold delay)
+      else if (!isScrollingDown) {
         setScrolled(false)
       }
-      
-      lastScrollY.current = currentScrollY
+
+      lastScrollYRef.current = currentScrollY
     }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [mobileOpen])
 
   const handleNavClick = (e, href) => {
     if (href.startsWith('/#')) {
@@ -99,7 +112,7 @@ export default function Navbar() {
   return (
     <>
       {/* Navbar Container - Fixed positioning with centering */}
-      <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 px-4">
+      <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 px-4 pointer-events-none">
         <motion.nav
           initial={{ y: -20, opacity: 0 }}
           animate={{ 
@@ -109,16 +122,15 @@ export default function Navbar() {
           transition={springConfig}
           layout
           layoutId="navbar"
-          className={`
-            relative flex items-center
-            backdrop-blur-xl
-            border border-white/20
-            shadow-[0_8px_32px_rgba(0,0,0,0.3)]
-            ${scrolled 
-              ? 'px-3 py-2 rounded-full gap-3' 
-              : 'px-4 py-2.5 rounded-full gap-6'
-            }
-          `}
+          className="pointer-events-auto relative flex items-center backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.3)] rounded-full"
+          animate={{
+            paddingLeft: scrolled ? 12 : 16,
+            paddingRight: scrolled ? 12 : 16,
+            paddingTop: scrolled ? 8 : 10,
+            paddingBottom: scrolled ? 8 : 10,
+            gap: scrolled ? 12 : 24,
+          }}
+          transition={springConfig}
           style={{
             background: 'rgba(255, 255, 255, 0.08)',
           }}
@@ -128,7 +140,7 @@ export default function Navbar() {
             <motion.div 
               layout
               layoutId="logo"
-              className="relative overflow-hidden rounded-full bg-neutral-900 flex items-center justify-center"
+              className="relative overflow-hidden rounded-full bg-neutral-900 flex items-center justify-center shrink-0"
               animate={{
                 width: scrolled ? 32 : 36,
                 height: scrolled ? 32 : 36,
@@ -143,78 +155,85 @@ export default function Navbar() {
                 className="object-cover"
               />
             </motion.div>
-            <span className="font-display font-semibold text-[0.95rem] tracking-tight text-white">
-              Cinova Visuals
-            </span>
-            {/* Typing dots - only show when scrolled/collapsed */}
-            {scrolled && <TypingDots />}
+            
+            {/* Text and typing dots container */}
+            <motion.div 
+              className="flex items-center gap-2"
+              animate={{
+                opacity: scrolled ? 1 : 1,
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              <span className="font-display font-semibold text-[0.95rem] tracking-tight text-white whitespace-nowrap">
+                Cinova Visuals
+              </span>
+              
+              {/* Typing dots - fade in/out smoothly */}
+              <motion.div
+                animate={{ opacity: scrolled ? 1 : 0 }}
+                transition={{ duration: 0.3 }}
+                style={{ pointerEvents: scrolled ? 'auto' : 'none' }}
+              >
+                <TypingDots />
+              </motion.div>
+            </motion.div>
           </Link>
 
           {/* Desktop Links - Hidden when scrolled */}
-          <AnimatePresence mode="popLayout">
-            {!scrolled && (
-              <motion.div
-                key="nav-links"
-                initial={{ opacity: 0, scale: 0.9, width: 0 }}
-                animate={{ opacity: 1, scale: 1, width: 'auto' }}
-                exit={{ opacity: 0, scale: 0.9, width: 0 }}
-                transition={springConfig}
-                className="hidden md:flex items-center gap-1 overflow-hidden"
+          <motion.div
+            className="hidden md:flex items-center gap-1 overflow-hidden"
+            animate={{
+              opacity: scrolled ? 0 : 1,
+              width: scrolled ? 0 : 'auto',
+            }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            style={{
+              pointerEvents: scrolled ? 'none' : 'auto',
+            }}
+          >
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
+                className="text-white/70 hover:text-white transition-colors duration-200 text-sm font-medium px-4 py-2 rounded-full hover:bg-white/10"
               >
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={(e) => handleNavClick(e, link.href)}
-                    className="text-white/70 hover:text-white transition-colors duration-200 text-sm font-medium px-4 py-2 rounded-full hover:bg-white/10"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
+                {link.label}
+              </Link>
+            ))}
+          </motion.div>
 
-          {/* Desktop CTA / Three dots when scrolled */}
-          <div className="hidden md:flex items-center">
-            <AnimatePresence mode="popLayout">
-              {scrolled ? (
-                <motion.div 
-                  key="spacer" 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                  className="w-2" 
-                />
-              ) : (
-                <motion.div
-                  key="contact"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={springConfig}
-                >
-                  <Link
-                    href="/#contact"
-                    onClick={(e) => handleNavClick(e, '/#contact')}
-                    className="
-                      inline-flex items-center gap-2
-                      px-5 py-2
-                      bg-white/10 hover:bg-white/20
-                      border border-white/20
-                      rounded-full
-                      text-sm font-medium text-white
-                      transition-all duration-200
-                      backdrop-blur-sm
-                    "
-                  >
-                    Contact
-                  </Link>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+          {/* Desktop CTA - Hidden when scrolled */}
+          <motion.div 
+            className="hidden md:flex items-center"
+            animate={{
+              opacity: scrolled ? 0 : 1,
+              width: scrolled ? 0 : 'auto',
+            }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            style={{
+              pointerEvents: scrolled ? 'none' : 'auto',
+              overflow: 'hidden',
+            }}
+          >
+            <Link
+              href="/#contact"
+              onClick={(e) => handleNavClick(e, '/#contact')}
+              className="
+                inline-flex items-center gap-2
+                px-5 py-2
+                bg-white/10 hover:bg-white/20
+                border border-white/20
+                rounded-full
+                text-sm font-medium text-white
+                transition-all duration-200
+                backdrop-blur-sm
+                whitespace-nowrap
+              "
+            >
+              Contact
+            </Link>
+          </motion.div>
 
           {/* Mobile Hamburger */}
           <button
