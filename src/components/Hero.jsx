@@ -114,12 +114,10 @@ export default function Hero() {
             </a>
 
             <a
-              href={links.bookCall}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/book-project"
               className="btn-ghost"
             >
-              Book a Call
+              Book a Project
             </a>
           </motion.div>
         </motion.div>
