@@ -94,7 +94,7 @@ Budget: ${formData.budget}
         deadline: formData.deadline,
         video_length: formData.videoLength,
         budget: formData.budget,
-        botcheck: true,
+        botcheck: '',
       }
 
       const response = await fetch('https://api.web3forms.com/submit', {
