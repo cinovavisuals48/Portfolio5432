@@ -3,23 +3,138 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 
-// Your Tally form - maintains dark theme colors
-const TALLY_FORM_URL = 'https://tally.so/r/eqzGOq'
-
 export default function ProjectForm() {
-  const [submitted, setSubmitted] = useState(false)
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    whatsappNumber: '',
+    preferredContact: 'Email',
+    projectDescription: '',
+    inspirationReferences: '',
+    deadline: 'Within 1–2 weeks',
+    videoLength: '20–40s',
+    budget: '$300–$600',
+  })
 
-  // Scroll to form after a brief delay to let animation complete
-  const handleFormOpen = () => {
-    setTimeout(() => {
-      const formElement = document.getElementById('tally-form')
-      if (formElement) {
-        formElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }
-    }, 300)
+  const [isLoading, setIsLoading] = useState(false)
+  const [submitState, setSubmitState] = useState('idle') // 'idle', 'loading', 'success', 'error'
+  const [errorMessage, setErrorMessage] = useState('')
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
   }
 
-  if (submitted) {
+  const validateForm = () => {
+    if (!formData.fullName.trim()) {
+      setErrorMessage('Full name is required')
+      return false
+    }
+    if (!formData.email.trim()) {
+      setErrorMessage('Email is required')
+      return false
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(formData.email)) {
+      setErrorMessage('Please enter a valid email')
+      return false
+    }
+    if (!formData.projectDescription.trim()) {
+      setErrorMessage('Project description is required')
+      return false
+    }
+    return true
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setErrorMessage('')
+
+    if (!validateForm()) {
+      setSubmitState('error')
+      return
+    }
+
+    setIsLoading(true)
+    setSubmitState('loading')
+
+    try {
+      const web3formsKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY
+      
+      if (!web3formsKey) {
+        throw new Error('Web3Forms key is not configured')
+      }
+
+      const formDataObj = {
+        access_key: web3formsKey,
+        subject: `New Project Booking from ${formData.fullName}`,
+        from_name: formData.fullName,
+        email: formData.email,
+        message: `
+Full Name: ${formData.fullName}
+Email: ${formData.email}
+WhatsApp Number: ${formData.whatsappNumber || 'Not provided'}
+Preferred Contact Method: ${formData.preferredContact}
+
+Project Description:
+${formData.projectDescription}
+
+Inspiration & References:
+${formData.inspirationReferences || 'Not provided'}
+
+Deadline: ${formData.deadline}
+Video Length: ${formData.videoLength}
+Budget: ${formData.budget}
+        `,
+        phone: formData.whatsappNumber || '',
+        contact_method: formData.preferredContact,
+        deadline: formData.deadline,
+        video_length: formData.videoLength,
+        budget: formData.budget,
+        botcheck: true,
+      }
+
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(formDataObj),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setSubmitState('success')
+        setFormData({
+          fullName: '',
+          email: '',
+          whatsappNumber: '',
+          preferredContact: 'Email',
+          projectDescription: '',
+          inspirationReferences: '',
+          deadline: 'Within 1–2 weeks',
+          videoLength: '20–40s',
+          budget: '$300–$600',
+        })
+      } else {
+        setErrorMessage(data.message || 'Something went wrong. Please try again.')
+        setSubmitState('error')
+      }
+    } catch (error) {
+      console.error('Form submission error:', error)
+      setErrorMessage('Something went wrong. Please try again.')
+      setSubmitState('error')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  if (submitState === 'success') {
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -38,10 +153,10 @@ export default function ProjectForm() {
             </svg>
           </motion.div>
           <h2 className="font-display font-800 text-3xl text-ink-primary mb-3">
-            Message Received!
+            Thanks for reaching out.
           </h2>
           <p className="text-ink-muted text-base leading-relaxed mb-8">
-            Thanks for reaching out. I'll review your project details and get back to you within 24 hours.
+            I'll get back to you within 24 hours.
           </p>
           <a
             href="/"
@@ -93,29 +208,243 @@ export default function ProjectForm() {
         </motion.p>
       </div>
 
-      {/* Tally Form Embed Container */}
-      <motion.div
-        id="tally-form"
+      {/* Form */}
+      <motion.form
+        onSubmit={handleSubmit}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.6 }}
-        className="w-full cursor-none"
+        className="space-y-6 cursor-none"
       >
-        <iframe
-          src={TALLY_FORM_URL}
-          loading="lazy"
-          style={{
-            colorScheme: 'dark',
-            width: '100%',
-            height: 'auto',
-            border: 'none',
-            borderRadius: '1rem',
-            cursor: 'none',
-          }}
-          title="Book a Project – Cinova Visuals"
-          className="min-h-[600px] md:min-h-[700px]"
-        />
-      </motion.div>
+        {/* Full Name */}
+        <div>
+          <label className="block text-ink-primary text-sm font-medium mb-2">
+            Full name <span className="text-accent-blue">*</span>
+          </label>
+          <input
+            type="text"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleChange}
+            placeholder="Jane Doe"
+            className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-accent-blue transition-colors"
+          />
+        </div>
+
+        {/* Email */}
+        <div>
+          <label className="block text-ink-primary text-sm font-medium mb-2">
+            Email <span className="text-accent-blue">*</span>
+          </label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="you@company.com"
+            className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-accent-blue transition-colors"
+          />
+        </div>
+
+        {/* WhatsApp Number */}
+        <div>
+          <label className="block text-ink-primary text-sm font-medium mb-2">
+            WhatsApp number (optional)
+          </label>
+          <input
+            type="tel"
+            name="whatsappNumber"
+            value={formData.whatsappNumber}
+            onChange={handleChange}
+            placeholder="+1 555 123 4567"
+            className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-accent-blue transition-colors"
+          />
+        </div>
+
+        {/* Preferred Contact Method */}
+        <div>
+          <label className="block text-ink-primary text-sm font-medium mb-3">
+            Preferred contact method <span className="text-accent-blue">*</span>
+          </label>
+          <div className="flex gap-3 flex-wrap">
+            {['Email', 'WhatsApp', 'Instagram DM'].map((method) => (
+              <button
+                key={method}
+                type="button"
+                onClick={() =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    preferredContact: method,
+                  }))
+                }
+                className={`px-4 py-2 rounded-lg border transition-colors font-medium text-sm flex items-center gap-2 ${
+                  formData.preferredContact === method
+                    ? 'bg-accent-blue border-accent-blue text-white'
+                    : 'border-[rgba(255,255,255,0.1)] text-ink-muted hover:text-ink-primary'
+                }`}
+              >
+                <div
+                  className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                    formData.preferredContact === method
+                      ? 'border-white'
+                      : 'border-[rgba(255,255,255,0.3)]'
+                  }`}
+                >
+                  {formData.preferredContact === method && (
+                    <div className="w-2 h-2 bg-white rounded-full" />
+                  )}
+                </div>
+                {method}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Project Description */}
+        <div>
+          <label className="block text-ink-primary text-sm font-medium mb-2">
+            Project description <span className="text-accent-blue">*</span>
+          </label>
+          <textarea
+            name="projectDescription"
+            value={formData.projectDescription}
+            onChange={handleChange}
+            placeholder="Tell me what you're building and what you need."
+            rows="4"
+            className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-accent-blue transition-colors resize-none"
+          />
+        </div>
+
+        {/* Inspiration & References */}
+        <div>
+          <label className="block text-ink-primary text-sm font-medium mb-2">
+            Inspiration & references (optional)
+          </label>
+          <textarea
+            name="inspirationReferences"
+            value={formData.inspirationReferences}
+            onChange={handleChange}
+            placeholder="Paste links to videos or styles you like."
+            rows="4"
+            className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-accent-blue transition-colors resize-none"
+          />
+        </div>
+
+        {/* Deadline */}
+        <div>
+          <label className="block text-ink-primary text-sm font-medium mb-3">
+            Deadline <span className="text-accent-blue">*</span>
+          </label>
+          <div className="space-y-2">
+            {['ASAP (rush fee may apply)', 'Within 1–2 weeks', 'No rush, flexible'].map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    deadline: option,
+                  }))
+                }
+                className={`w-full px-4 py-3 rounded-lg border text-left transition-colors font-medium text-sm ${
+                  formData.deadline === option
+                    ? 'bg-accent-blue border-accent-blue text-white'
+                    : 'border-[rgba(255,255,255,0.1)] text-ink-primary hover:border-[rgba(255,255,255,0.2)]'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                      formData.deadline === option
+                        ? 'border-white'
+                        : 'border-[rgba(255,255,255,0.3)]'
+                    }`}
+                  >
+                    {formData.deadline === option && (
+                      <div className="w-2.5 h-2.5 bg-white rounded-full" />
+                    )}
+                  </div>
+                  {option}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Video Length */}
+        <div>
+          <label className="block text-ink-primary text-sm font-medium mb-3">
+            Video length <span className="text-accent-blue">*</span>
+          </label>
+          <div className="flex gap-3 flex-wrap">
+            {['5–10s', '10–20s', '20–40s', '40–60s', '60+s'].map((length) => (
+              <button
+                key={length}
+                type="button"
+                onClick={() =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    videoLength: length,
+                  }))
+                }
+                className={`px-4 py-2 rounded-lg border transition-colors font-medium text-sm ${
+                  formData.videoLength === length
+                    ? 'bg-accent-blue border-accent-blue text-white'
+                    : 'border-[rgba(255,255,255,0.1)] text-ink-muted hover:text-ink-primary'
+                }`}
+              >
+                {length}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Budget */}
+        <div>
+          <label className="block text-ink-primary text-sm font-medium mb-2">
+            Budget <span className="text-accent-blue">*</span>
+          </label>
+          <select
+            name="budget"
+            value={formData.budget}
+            onChange={handleChange}
+            className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary focus:outline-none focus:border-accent-blue transition-colors appearance-none cursor-pointer"
+          >
+            <option>$300–$600</option>
+            <option>$600–$1,000</option>
+            <option>$1,000–$2,000</option>
+            <option>$2,000–$5,000</option>
+            <option>$5,000+</option>
+          </select>
+        </div>
+
+        {/* Error Message */}
+        {submitState === 'error' && errorMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg"
+          >
+            <p className="text-red-400 text-sm">{errorMessage}</p>
+          </motion.div>
+        )}
+
+        {/* Required Fields Note */}
+        <p className="text-ink-muted text-xs">
+          Fields marked with <span className="text-accent-blue">*</span> are required
+        </p>
+
+        {/* Submit Button */}
+        <motion.button
+          type="submit"
+          disabled={isLoading}
+          whileHover={!isLoading ? { scale: 1.02 } : {}}
+          whileTap={!isLoading ? { scale: 0.98 } : {}}
+          className="w-full py-3.5 bg-accent-blue text-white font-medium rounded-lg hover:bg-blue-600 disabled:opacity-70 disabled:cursor-not-allowed transition-colors"
+        >
+          {isLoading ? 'Sending...' : 'Send it over'}
+        </motion.button>
+      </motion.form>
     </motion.div>
   )
 }
