@@ -1,9 +1,9 @@
-import ProjectForm from '../components/ProjectForm'
-import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
-import CursorGlow from '../components/CursorGlow'
-import CustomCursor from '../components/CustomCursor'
-import SmoothScroll from '../components/SmoothScroll'
+import ProjectForm from '../../components/ProjectForm'
+import Navbar from '../../components/Navbar'
+import Footer from '../../components/Footer'
+import CursorGlow from '../../components/CursorGlow'
+import CustomCursor from '../../components/CustomCursor'
+import SmoothScroll from '../../components/SmoothScroll'
 
 export const metadata = {
   title: 'Book a Project – Cinova Visuals',
