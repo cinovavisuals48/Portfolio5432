@@ -3,6 +3,7 @@ import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import CursorGlow from '../../components/CursorGlow'
 import CustomCursor from '../../components/CustomCursor'
+import SmoothScroll from '../../components/SmoothScroll'
 
 export const metadata = {
   title: 'Book a Project – Cinova Visuals',
@@ -11,18 +12,20 @@ export const metadata = {
 
 export default function BookProject() {
   return (
-    <main className="relative">
-      <CursorGlow />
-      <CustomCursor />
-      <Navbar />
+    <SmoothScroll>
+      <main className="relative">
+        <CursorGlow />
+        <CustomCursor />
+        <Navbar />
 
-      <section className="section-py relative overflow-hidden">
-        <div className="max-w-2xl mx-auto px-6 relative z-10">
-          <ProjectForm />
-        </div>
-      </section>
+        <section className="section-py relative overflow-hidden">
+          <div className="max-w-2xl mx-auto px-6 relative z-10">
+            <ProjectForm />
+          </div>
+        </section>
 
-      <Footer />
-    </main>
+        <Footer />
+      </main>
+    </SmoothScroll>
   )
 }

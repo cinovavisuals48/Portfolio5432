@@ -18,6 +18,7 @@ export default function ProjectForm() {
 
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -30,9 +31,9 @@ export default function ProjectForm() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
+    setError('')
 
     try {
-      // Send form data to your email or API
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -40,6 +41,8 @@ export default function ProjectForm() {
         },
         body: JSON.stringify(formData),
       })
+
+      const result = await response.json()
 
       if (response.ok) {
         setSubmitted(true)
@@ -54,9 +57,14 @@ export default function ProjectForm() {
           videoLength: '20-40s',
           budget: '$300-$600',
         })
+        // Scroll to top to show success message
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } else {
+        setError(result.error || 'Failed to submit form. Please try again.')
       }
     } catch (error) {
       console.error('Error submitting form:', error)
+      setError('An error occurred. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -137,6 +145,16 @@ export default function ProjectForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Error Message */}
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm"
+          >
+            {error}
+          </motion.div>
+        )}
         {/* Full Name */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
