@@ -10,9 +10,6 @@ export const links = {
   instagram: 'https://www.instagram.com/cinova.visuals/',
   twitter:   'https://x.com/Cinova_visuals',
 
-  // ── CTA ───────────────────────────────────────────────────
-  bookCall:  'https://cal.com/cinova-visuals/30-minute-meeting',
-
   // ── Brand ─────────────────────────────────────────────────
   brandName: 'Cinova Visuals',
   tagline:   'SaaS Motion Design',

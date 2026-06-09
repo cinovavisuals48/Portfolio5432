@@ -166,7 +166,7 @@ export default function ProjectsPage() {
                   onClick={() => setActiveCategory('All')}
                   className="text-accent-blue hover:underline"
                 >
-                  View all projects
+                  See all work
                 </button>
               </motion.div>
             )}

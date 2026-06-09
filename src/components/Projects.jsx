@@ -64,7 +64,7 @@ export default function Projects() {
             href="/projects"
             className="btn-ghost group"
           >
-            Show All Projects
+            See All Work
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
                  className="transition-transform group-hover:translate-x-1">
               <path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor"

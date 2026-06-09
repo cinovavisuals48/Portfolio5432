@@ -99,14 +99,10 @@ export default function Hero() {
           {/* CTA Buttons */}
           <motion.div variants={itemVariants} className="flex flex-wrap gap-4 items-center">
             <a
-              href="#projects"
-              onClick={(e) => {
-                e.preventDefault()
-                document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })
-              }}
-              className="btn-primary"
+              href="/book-project"
+              className="btn-book-project"
             >
-              View Projects
+              Book a Project
               <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                 <path d="M3 7.5h9M7.5 3l4.5 4.5L7.5 12" stroke="currentColor"
                   strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -114,10 +110,14 @@ export default function Hero() {
             </a>
 
             <a
-              href="/book-project"
-              className="btn-ghost"
+              href="#projects"
+              onClick={(e) => {
+                e.preventDefault()
+                document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })
+              }}
+              className="btn-work"
             >
-              Book a Project
+              See Work
             </a>
           </motion.div>
         </motion.div>
