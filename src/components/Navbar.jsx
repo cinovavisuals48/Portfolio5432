@@ -19,13 +19,7 @@ const navLinks = [
 // Typing dots animation component (realistic typing indicator)
 function TypingDots() {
   return (
-    <motion.span 
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.8 }}
-      transition={{ duration: 0.2 }}
-      className="flex items-center gap-[4px] ml-2"
-    >
+    <span className="flex items-center gap-[4px] ml-2">
       {[0, 1, 2].map((i) => (
         <motion.span
           key={i}
@@ -43,7 +37,7 @@ function TypingDots() {
           }}
         />
       ))}
-    </motion.span>
+    </span>
   )
 }
 
@@ -61,38 +55,23 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const lastScrollY = useRef(0)
-  const scrollDebounceTimer = useRef(null)
 
   useEffect(() => {
     const onScroll = () => {
       const currentScrollY = window.scrollY
       
-      // Clear any pending debounce
-      if (scrollDebounceTimer.current) {
-        clearTimeout(scrollDebounceTimer.current)
+      // Shrink when scrolling down past threshold
+      // Expand when scrolling up even 1 pixel
+      if (currentScrollY > 60 && currentScrollY > lastScrollY.current) {
+        setScrolled(true)
+      } else if (currentScrollY < lastScrollY.current) {
+        setScrolled(false)
       }
       
-      // Debounce the state update to prevent rapid re-renders
-      scrollDebounceTimer.current = setTimeout(() => {
-        // Shrink when scrolling down past threshold (80px)
-        // Expand when scrolling up past 50px
-        if (currentScrollY > 80 && currentScrollY > lastScrollY.current) {
-          setScrolled(true)
-        } else if (currentScrollY < 50) {
-          setScrolled(false)
-        }
-        
-        lastScrollY.current = currentScrollY
-      }, 50) // 50ms debounce for smooth feel
+      lastScrollY.current = currentScrollY
     }
-    
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      if (scrollDebounceTimer.current) {
-        clearTimeout(scrollDebounceTimer.current)
-      }
-    }
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   const handleNavClick = (e, href) => {
@@ -168,9 +147,7 @@ export default function Navbar() {
               Cinova Visuals
             </span>
             {/* Typing dots - only show when scrolled/collapsed */}
-            <AnimatePresence mode="wait">
-              {scrolled && <TypingDots key="typing-dots" />}
-            </AnimatePresence>
+            {scrolled && <TypingDots />}
           </Link>
 
           {/* Desktop Links - Hidden when scrolled */}
