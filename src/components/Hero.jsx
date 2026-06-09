@@ -7,6 +7,7 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useRef } from 'react'
+import { links } from '../data/links'
 
 const containerVariants = {
   hidden: {},
@@ -113,10 +114,12 @@ export default function Hero() {
             </a>
 
             <a
-              href="/book-project"
+              href={links.bookCall}
+              target="_blank"
+              rel="noopener noreferrer"
               className="btn-ghost"
             >
-              Book a Project
+              Book a Call
             </a>
           </motion.div>
         </motion.div>

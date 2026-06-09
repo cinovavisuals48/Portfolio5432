@@ -70,7 +70,7 @@ export default function Contact() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="text-ink-muted text-[0.92rem] max-w-md leading-relaxed mb-10"
         >
-          Tell me about your project or reach out on social. Let&apos;s turn your vision into reality.
+          Book a free call or reach out on social. Let&apos;s turn your product into a motion story.
         </motion.p>
 
         {/* Primary CTA */}
@@ -82,10 +82,12 @@ export default function Contact() {
           className="mb-10"
         >
           <a
-            href="/book-project"
+            href={links.bookCall}
+            target="_blank"
+            rel="noopener noreferrer"
             className="btn-primary"
           >
-            Book a Project
+            Book a Free 30-min Call
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5"
                 strokeLinecap="round" strokeLinejoin="round"/>

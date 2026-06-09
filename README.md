@@ -103,7 +103,7 @@ Edit `src/data/links.js` and replace placeholder URLs with your own:
 export const links = {
   instagram: 'https://www.instagram.com/YOUR_HANDLE/',
   twitter: 'https://x.com/YOUR_HANDLE',
-  bookProject: '/book-project',
+  bookCall: 'https://cal.com/YOUR_LINK',
 }
 ```
 

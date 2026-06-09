@@ -11,7 +11,7 @@ export const links = {
   twitter:   'https://x.com/Cinova_visuals',
 
   // ── CTA ───────────────────────────────────────────────────
-  bookProject: '/book-project',
+  bookCall:  'https://cal.com/cinova-visuals/30-minute-meeting',
 
   // ── Brand ─────────────────────────────────────────────────
   brandName: 'Cinova Visuals',

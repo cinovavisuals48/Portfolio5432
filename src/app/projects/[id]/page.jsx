@@ -220,10 +220,12 @@ export default function VideoDetailPage() {
                 Like this style? Let&apos;s talk.
               </p>
               <a
-                href="/book-project"
+                href="https://cal.com/cinova-visuals/30-minute-meeting"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="btn-primary text-sm py-2.5 px-5"
               >
-                Book a Project
+                Book a Call
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                   <path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor"
                     strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
