@@ -99,7 +99,7 @@ export default function ProjectForm() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.6 }}
-        className="w-full"
+        className="w-full cursor-none"
       >
         <iframe
           src={TALLY_FORM_URL}
@@ -110,21 +110,12 @@ export default function ProjectForm() {
             height: 'auto',
             border: 'none',
             borderRadius: '1rem',
+            cursor: 'none',
           }}
           title="Book a Project – Cinova Visuals"
           className="min-h-[600px] md:min-h-[700px]"
         />
       </motion.div>
-
-      {/* Note about form filling */}
-      <motion.p
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="text-ink-subtle text-xs mt-8 text-center"
-      >
-        The form opens in dark mode to match your portfolio. All submissions are securely stored and emailed to you.
-      </motion.p>
     </motion.div>
   )
 }
