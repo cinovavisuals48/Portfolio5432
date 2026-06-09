@@ -3,6 +3,25 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.2,
+    },
+  },
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+  },
+}
+
 export default function ProjectForm() {
   const [formData, setFormData] = useState({
     fullName: '',
@@ -211,13 +230,13 @@ Budget: ${formData.budget}
       {/* Form */}
       <motion.form
         onSubmit={handleSubmit}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4, duration: 0.6 }}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
         className="space-y-6 cursor-none"
       >
         {/* Full Name */}
-        <div>
+        <motion.div variants={itemVariants}>
           <label className="block text-ink-primary text-sm font-medium mb-2">
             Full name <span className="text-accent-blue">*</span>
           </label>
@@ -229,10 +248,10 @@ Budget: ${formData.budget}
             placeholder="Jane Doe"
             className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-accent-blue transition-colors"
           />
-        </div>
+        </motion.div>
 
         {/* Email */}
-        <div>
+        <motion.div variants={itemVariants}>
           <label className="block text-ink-primary text-sm font-medium mb-2">
             Email <span className="text-accent-blue">*</span>
           </label>
@@ -244,10 +263,10 @@ Budget: ${formData.budget}
             placeholder="you@company.com"
             className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-accent-blue transition-colors"
           />
-        </div>
+        </motion.div>
 
         {/* WhatsApp Number */}
-        <div>
+        <motion.div variants={itemVariants}>
           <label className="block text-ink-primary text-sm font-medium mb-2">
             WhatsApp number (optional)
           </label>
@@ -259,10 +278,10 @@ Budget: ${formData.budget}
             placeholder="+1 555 123 4567"
             className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-accent-blue transition-colors"
           />
-        </div>
+        </motion.div>
 
         {/* Preferred Contact Method */}
-        <div>
+        <motion.div variants={itemVariants}>
           <label className="block text-ink-primary text-sm font-medium mb-3">
             Preferred contact method <span className="text-accent-blue">*</span>
           </label>
@@ -298,10 +317,10 @@ Budget: ${formData.budget}
               </button>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Project Description */}
-        <div>
+        <motion.div variants={itemVariants}>
           <label className="block text-ink-primary text-sm font-medium mb-2">
             Project description <span className="text-accent-blue">*</span>
           </label>
@@ -313,10 +332,10 @@ Budget: ${formData.budget}
             rows="4"
             className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-accent-blue transition-colors resize-none"
           />
-        </div>
+        </motion.div>
 
         {/* Inspiration & References */}
-        <div>
+        <motion.div variants={itemVariants}>
           <label className="block text-ink-primary text-sm font-medium mb-2">
             Inspiration & references (optional)
           </label>
@@ -328,10 +347,10 @@ Budget: ${formData.budget}
             rows="4"
             className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-accent-blue transition-colors resize-none"
           />
-        </div>
+        </motion.div>
 
         {/* Deadline */}
-        <div>
+        <motion.div variants={itemVariants}>
           <label className="block text-ink-primary text-sm font-medium mb-3">
             Deadline <span className="text-accent-blue">*</span>
           </label>
@@ -369,10 +388,10 @@ Budget: ${formData.budget}
               </button>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Video Length */}
-        <div>
+        <motion.div variants={itemVariants}>
           <label className="block text-ink-primary text-sm font-medium mb-3">
             Video length <span className="text-accent-blue">*</span>
           </label>
@@ -397,32 +416,40 @@ Budget: ${formData.budget}
               </button>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Budget */}
-        <div>
+        <motion.div variants={itemVariants}>
           <label className="block text-ink-primary text-sm font-medium mb-2">
             Budget <span className="text-accent-blue">*</span>
           </label>
-          <select
-            name="budget"
-            value={formData.budget}
-            onChange={handleChange}
-            className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary focus:outline-none focus:border-accent-blue transition-colors appearance-none cursor-pointer"
-          >
-            <option>$300–$600</option>
-            <option>$600–$1,000</option>
-            <option>$1,000–$2,000</option>
-            <option>$2,000–$5,000</option>
-            <option>$5,000+</option>
-          </select>
-        </div>
+          <div className="relative">
+            <select
+              name="budget"
+              value={formData.budget}
+              onChange={handleChange}
+              className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary focus:outline-none focus:border-accent-blue transition-colors appearance-none cursor-pointer pr-10"
+            >
+              <option>$300–$600</option>
+              <option>$600–$1,000</option>
+              <option>$1,000–$2,000</option>
+              <option>$2,000–$5,000</option>
+              <option>$5,000+</option>
+            </select>
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-ink-muted">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M3.5 5.5L8 10.5L12.5 5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+          </div>
+        </motion.div>
 
         {/* Error Message */}
         {submitState === 'error' && errorMessage && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
+            variants={itemVariants}
+            initial="hidden"
+            animate="visible"
             className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg"
           >
             <p className="text-red-400 text-sm">{errorMessage}</p>
@@ -430,12 +457,13 @@ Budget: ${formData.budget}
         )}
 
         {/* Required Fields Note */}
-        <p className="text-ink-muted text-xs">
+        <motion.p variants={itemVariants} className="text-ink-muted text-xs">
           Fields marked with <span className="text-accent-blue">*</span> are required
-        </p>
+        </motion.p>
 
         {/* Submit Button */}
         <motion.button
+          variants={itemVariants}
           type="submit"
           disabled={isLoading}
           whileHover={!isLoading ? { scale: 1.02 } : {}}
