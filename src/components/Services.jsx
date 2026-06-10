@@ -106,105 +106,99 @@ export default function Services() {
   return (
     <section id="what-i-make" className="section-py relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
-          
-          {/* Left Column — Headline + Tech Stack */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col"
-          >
-            {/* Section Label */}
-            <p className="text-accent-blue text-sm font-display font-600 tracking-[0.1em] uppercase mb-4">
-              What I Make
-            </p>
+        {/* Section Label */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-accent-blue text-sm font-display font-600 tracking-[0.1em] uppercase mb-6"
+        >
+          What I Make
+        </motion.p>
 
-            {/* Main Headline */}
-            <h2 className="font-display font-800 text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.05] tracking-tight mb-16">
-              <span className="text-ink-muted">Specialized in</span>
-              <br />
-              <span className="text-accent-blue">digital product</span>
-              <br />
-              <span className="text-accent-blue">motion</span>
-              <span className="text-ink-primary">.</span>
-            </h2>
+        {/* Main Headline */}
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="font-display font-800 text-[clamp(2rem,5vw,3.5rem)] leading-[1.05] tracking-tight text-ink-primary mb-16"
+        >
+          What I can <span className="text-accent-blue">build for you</span>
+        </motion.h2>
 
-            {/* Tech Stack */}
-            <div>
-              <p className="text-ink-primary font-display font-600 text-[0.95rem] mb-5">
-                My tech stack
-              </p>
-              <div className="flex flex-wrap gap-3">
-                {tools.map((tool, i) => (
-                  <motion.div
-                    key={tool.name}
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: i * 0.05 }}
-                    className="w-14 h-14 rounded-xl border border-white/10 bg-white/5
-                               flex items-center justify-center
-                               hover:border-white/20 transition-colors"
-                    title={tool.name}
-                  >
-                    {tool.abbr ? (
-                      <span 
-                        className="font-display font-700 text-[0.9rem] text-white px-2 py-1 rounded"
-                        style={{ backgroundColor: tool.bg }}
-                      >
-                        {tool.abbr}
-                      </span>
-                    ) : tool.isSvg ? (
-                      <ToolIcon type={tool.isSvg} />
-                    ) : (
-                      <span className="font-display font-600 text-[0.75rem] text-neutral-600">
-                        {tool.name.slice(0, 2)}
-                      </span>
-                    )}
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Right Column — Service Items */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-            className="flex flex-col gap-5 lg:pt-8"
-          >
-            {offerings.map((offering, i) => (
-              <motion.div
-                key={offering.label}
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="p-5 rounded-xl border border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-300"
-              >
-                {/* Icon + Title */}
-                <div className="flex items-start gap-4 mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-accent-blue/20 flex items-center justify-center flex-shrink-0 text-accent-blue">
-                    {offering.icon}
-                  </div>
-                  <h3 className="font-display font-700 text-[1.05rem] text-ink-primary">
-                    {offering.label}
-                  </h3>
+        {/* Service Items */}
+        <div className="grid grid-cols-1 gap-5 mb-12">
+          {offerings.map((offering, i) => (
+            <motion.div
+              key={offering.label}
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              className="p-6 rounded-xl border border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-300"
+            >
+              {/* Icon + Title */}
+              <div className="flex items-start gap-4 mb-4">
+                <div className="w-10 h-10 rounded-lg bg-accent-blue/20 flex items-center justify-center flex-shrink-0 text-accent-blue">
+                  {offering.icon}
                 </div>
-                
-                {/* Description */}
-                <p className="text-ink-muted text-[0.9rem] leading-relaxed">
-                  {offering.description}
-                </p>
+                <h3 className="font-display font-700 text-[1.1rem] text-ink-primary">
+                  {offering.label}
+                </h3>
+              </div>
+              
+              {/* Description */}
+              <p className="text-ink-muted text-[0.9rem] leading-relaxed">
+                {offering.description}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Tech Stack at Bottom */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="pt-8 border-t border-white/10"
+        >
+          <p className="text-ink-primary font-display font-600 text-[0.95rem] mb-6">
+            My tech stack
+          </p>
+          <div className="flex flex-wrap gap-3">
+            {tools.map((tool, i) => (
+              <motion.div
+                key={tool.name}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.25 + i * 0.05 }}
+                className="w-14 h-14 rounded-xl border border-white/10 bg-white/5
+                           flex items-center justify-center
+                           hover:border-white/20 transition-colors"
+                title={tool.name}
+              >
+                {tool.abbr ? (
+                  <span 
+                    className="font-display font-700 text-[0.9rem] text-white px-2 py-1 rounded"
+                    style={{ backgroundColor: tool.bg }}
+                  >
+                    {tool.abbr}
+                  </span>
+                ) : tool.isSvg ? (
+                  <ToolIcon type={tool.isSvg} />
+                ) : (
+                  <span className="font-display font-600 text-[0.75rem] text-neutral-600">
+                    {tool.name.slice(0, 2)}
+                  </span>
+                )}
               </motion.div>
             ))}
-          </motion.div>
+          </div>
+        </motion.div>
 
-        </div>
       </div>
     </section>
   )
