@@ -12,9 +12,9 @@ import Image from 'next/image'
 import { useRouter, usePathname } from 'next/navigation'
 
 const navLinks = [
-  { label: 'Work',     href: '/#projects' },
-  { label: 'About',    href: '/#about' },
-  { label: 'FAQ',      href: '/#faq' },
+  { label: 'Work',     href: '/projects', isExternal: true },
+  { label: 'About',    href: '/#about', isExternal: false },
+  { label: 'FAQ',      href: '/#faq', isExternal: false },
 ]
 
 // Typing dots animation component (realistic typing indicator)
@@ -75,27 +75,37 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const handleNavClick = (e, href) => {
+  const handleNavClick = (e, href, isExternal) => {
+    e.preventDefault()
+    setMobileOpen(false)
+    
+    // Handle section links (e.g., /#about, /#faq)
     if (href.startsWith('/#')) {
-      e.preventDefault()
-      setMobileOpen(false)
       const sectionId = href.replace('/#', '')
       
-      // Navigate to home page first if not already there
-      if (pathname !== '/' && pathname !== '') {
-        router.push('/')
-        // After navigation, wait and scroll to section
+      // Check if we're on the home page
+      if (pathname === '/' || pathname === '') {
+        // Already on home page, just scroll to the section
         setTimeout(() => {
           const el = document.querySelector(`#${sectionId}`)
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }, 300)
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }
+        }, 50)
       } else {
-        // Already on home page, just scroll to the section
-        const el = document.querySelector(`#${sectionId}`)
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }
+        // Not on home page, navigate to home first
+        router.push('/')
+        // After navigation, scroll to section
+        setTimeout(() => {
+          const el = document.querySelector(`#${sectionId}`)
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }
+        }, 600)
       }
+    } else if (isExternal || href === '/projects' || href === '/book-project') {
+      // Handle page navigation
+      router.push(href)
     }
   }
 
@@ -168,7 +178,9 @@ export default function Navbar() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    onClick={(e) => handleNavClick(e, link.href)}
+                    onClick={(e) => {
+                      handleNavClick(e, link.href, link.isExternal)
+                    }}
                     className="text-white/70 hover:text-white transition-colors duration-200 text-sm font-medium px-4 py-2 rounded-full hover:bg-white/10"
                   >
                     {link.label}
@@ -268,7 +280,9 @@ export default function Navbar() {
                 >
                   <Link
                     href={link.href}
-                    onClick={(e) => handleNavClick(e, link.href)}
+                    onClick={(e) => {
+                      handleNavClick(e, link.href, link.isExternal)
+                    }}
                     className="text-lg font-display font-semibold text-white py-3 px-4
                                rounded-xl hover:bg-white/10
                                flex items-center justify-between transition-colors"
@@ -291,7 +305,7 @@ export default function Navbar() {
                              flex items-center justify-between transition-colors"
                 >
                   All Projects
-                  <span className="text-white/40 text-sm font-body">04</span>
+                  <span className="text-white/40 text-sm font-body">0{navLinks.length + 1}</span>
                 </Link>
               </motion.div>
               <motion.div
