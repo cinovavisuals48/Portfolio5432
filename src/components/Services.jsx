@@ -1,15 +1,15 @@
 'use client'
 
 // ─────────────────────────────────────────────────────────────
-// SERVICES SECTION — src/components/Services.jsx
-// Two-column layout: headline + tech stack | service items
+// WHAT I MAKE SECTION — src/components/Services.jsx
+// Services/offerings with tech stack and visual items
 // ─────────────────────────────────────────────────────────────
 
 import { motion } from 'framer-motion'
 
-const services = [
+const offerings = [
   {
-    label: 'App & Web Explainers',
+    label: 'Smooth UI animations',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="3" width="20" height="14" rx="2" />
@@ -17,9 +17,20 @@ const services = [
         <path d="M12 17v4" />
       </svg>
     ),
+    description: 'Component-level motion that makes your interface feel intentional. Hover states, transitions, micro-interactions - the details that make a product feel finished.'
   },
   {
-    label: 'UI/UX Motion Design',
+    label: 'Product promo videos',
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M23 7l-7 5 7 5V7z" />
+        <rect x="1" y="5" width="15" height="14" rx="2" />
+      </svg>
+    ),
+    description: 'Videos that show what your product does in a way that actually converts. Built around your UI, not stock footage or generic templates.'
+  },
+  {
+    label: 'Explainer videos',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 2L2 7l10 5 10-5-10-5z" />
@@ -27,24 +38,19 @@ const services = [
         <path d="M2 12l10 5 10-5" />
       </svg>
     ),
+    description: 'Breaks down a complicated feature or product into something a first-time visitor instantly gets. Clear, clean, no fluff.'
   },
   {
-    label: 'Marketing Ads for SaaS',
+    label: 'Don\'t see your style here?',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 8v4M12 16h.01" />
+        <path d="M9 12l3-3 3 3" />
       </svg>
     ),
-  },
-  {
-    label: 'Onboarding & Tutorial Videos',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M23 7l-7 5 7 5V7z" />
-        <rect x="1" y="5" width="15" height="14" rx="2" />
-      </svg>
-    ),
-  },
+    description: 'If you have a reference or a general idea of what you\'re after, we can figure it out together. I\'ve got enough experience in After Effects to match most styles, just bring the inspiration.'
+  }
 ]
 
 const tools = [
@@ -98,7 +104,7 @@ const ToolIcon = ({ type }) => {
 
 export default function Services() {
   return (
-    <section id="services" className="section-py relative overflow-hidden">
+    <section id="what-i-make" className="section-py relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
           
@@ -110,13 +116,19 @@ export default function Services() {
             transition={{ duration: 0.6 }}
             className="flex flex-col"
           >
+            {/* Section Label */}
+            <p className="text-accent-blue text-sm font-display font-600 tracking-[0.1em] uppercase mb-4">
+              What I Make
+            </p>
+
             {/* Main Headline */}
             <h2 className="font-display font-800 text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.05] tracking-tight mb-16">
               <span className="text-ink-muted">Specialized in</span>
               <br />
-              <span className="text-ink-primary">digital product</span>
+              <span className="text-accent-blue">digital product</span>
               <br />
-              <span className="text-ink-primary">motion.</span>
+              <span className="text-accent-blue">motion</span>
+              <span className="text-ink-primary">.</span>
             </h2>
 
             {/* Tech Stack */}
@@ -163,25 +175,31 @@ export default function Services() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="flex flex-col gap-8 lg:pt-8"
+            className="flex flex-col gap-5 lg:pt-8"
           >
-            {services.map((service, i) => (
+            {offerings.map((offering, i) => (
               <motion.div
-                key={service.label}
+                key={offering.label}
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="flex items-center gap-5"
+                className="p-5 rounded-xl border border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-300"
               >
-                {/* Icon Circle */}
-                <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center flex-shrink-0 text-neutral-900">
-                  {service.icon}
+                {/* Icon + Title */}
+                <div className="flex items-start gap-4 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-accent-blue/20 flex items-center justify-center flex-shrink-0 text-accent-blue">
+                    {offering.icon}
+                  </div>
+                  <h3 className="font-display font-700 text-[1.05rem] text-ink-primary">
+                    {offering.label}
+                  </h3>
                 </div>
-                {/* Label */}
-                <span className="font-display font-700 text-[1.15rem] text-ink-primary">
-                  {service.label}
-                </span>
+                
+                {/* Description */}
+                <p className="text-ink-muted text-[0.9rem] leading-relaxed">
+                  {offering.description}
+                </p>
               </motion.div>
             ))}
           </motion.div>
