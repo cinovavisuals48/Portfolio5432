@@ -81,18 +81,20 @@ export default function Navbar() {
       setMobileOpen(false)
       const sectionId = href.replace('/#', '')
       
-      // If we're not on the home page, navigate to home with the hash
-      if (pathname !== '/') {
-        router.push(`/?section=${sectionId}`)
-        // After navigation, scroll to the section
+      // Navigate to home page first if not already there
+      if (pathname !== '/' && pathname !== '') {
+        router.push('/')
+        // After navigation, wait and scroll to section
         setTimeout(() => {
           const el = document.querySelector(`#${sectionId}`)
           if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }, 100)
+        }, 300)
       } else {
-        // We're already on home page, just scroll to the section
+        // Already on home page, just scroll to the section
         const el = document.querySelector(`#${sectionId}`)
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
       }
     }
   }

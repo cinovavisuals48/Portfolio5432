@@ -58,7 +58,7 @@ export default function About() {
             >
               <div className="space-y-4 text-ink-muted leading-relaxed text-[0.92rem]">
                 <p>
-                  Hey, I&apos;m the creator behind{' '}
+                  Hey, I&apos;m <span className="text-ink-primary font-medium">Mouli</span>, the creator behind{' '}
                   <span className="text-ink-primary font-medium">Cinova Visuals</span>
                   . I craft motion design for SaaS products, startups, and
                   anyone who wants their product to truly move.
