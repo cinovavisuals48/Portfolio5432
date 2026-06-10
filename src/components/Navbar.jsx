@@ -13,7 +13,8 @@ import { useRouter, usePathname } from 'next/navigation'
 
 const navLinks = [
   { label: 'Work',     href: '/#projects' },
-  { label: 'Services', href: '/#services' },
+  { label: 'About',    href: '/#about' },
+  { label: 'FAQ',      href: '/#faq' },
 ]
 
 // Typing dots animation component (realistic typing indicator)
@@ -189,15 +190,14 @@ export default function Navbar() {
                 />
               ) : (
                 <motion.div
-                  key="contact"
+                  key="book"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
                   transition={springConfig}
                 >
                   <Link
-                    href="/#contact"
-                    onClick={(e) => handleNavClick(e, '/#contact')}
+                    href="/book-project"
                     className="
                       inline-flex items-center gap-2
                       px-5 py-2
@@ -209,7 +209,7 @@ export default function Navbar() {
                       backdrop-blur-sm
                     "
                   >
-                    Contact
+                    Book a Project
                   </Link>
                 </motion.div>
               )}
@@ -299,8 +299,8 @@ export default function Navbar() {
                 className="mt-2"
               >
                 <Link
-                  href="/#contact"
-                  onClick={(e) => handleNavClick(e, '/#contact')}
+                  href="/book-project"
+                  onClick={() => setMobileOpen(false)}
                   className="
                     w-full inline-flex items-center justify-center gap-2
                     px-5 py-3
@@ -311,7 +311,7 @@ export default function Navbar() {
                     hover:bg-white/90
                   "
                 >
-                  Contact
+                  Book a Project
                 </Link>
               </motion.div>
             </div>
