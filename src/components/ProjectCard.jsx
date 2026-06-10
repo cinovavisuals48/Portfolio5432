@@ -197,12 +197,19 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
                 }}
               />
 
-              <div
+              {/* Skeleton Loader — continuous light sweep */}
+              <motion.div
                 className="absolute inset-0 pointer-events-none"
                 style={{
+                  background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%)',
                   opacity: previewLoaded ? 0 : 1,
-                  transition: 'opacity 0.35s ease',
-                  background: 'linear-gradient(90deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.95) 100%)',
+                }}
+                animate={{ x: ['-100%', '100%'] }}
+                transition={{ 
+                  duration: 2.5, 
+                  repeat: Infinity, 
+                  ease: 'easeInOut',
+                  repeatDelay: 0 
                 }}
               />
             </>
@@ -210,10 +217,16 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
 
           {!hasActivePreview && !hasThumbnail && (
             <div className="absolute inset-0 bg-gradient-to-br from-bg-elevated to-bg-card flex items-center justify-center overflow-hidden">
+              {/* Continuous skeleton light sweep */}
               <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-                animate={{ x: ['0%', '100%'] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent"
+                animate={{ x: ['-100%', '100%'] }}
+                transition={{ 
+                  duration: 2.5, 
+                  repeat: Infinity, 
+                  ease: 'easeInOut',
+                  repeatDelay: 0
+                }}
               />
 
               <div className="text-center relative z-10">
@@ -235,9 +248,14 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
           {/* Light sweep for thumbnail when video not showing */}
           {!showVideoPreview && hasThumbnail && (
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none"
-              animate={{ x: ['0%', '100%'] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/8 to-transparent pointer-events-none"
+              animate={{ x: ['-100%', '100%'] }}
+              transition={{ 
+                duration: 2.5, 
+                repeat: Infinity, 
+                ease: 'easeInOut',
+                repeatDelay: 0
+              }}
             />
           )}
           
