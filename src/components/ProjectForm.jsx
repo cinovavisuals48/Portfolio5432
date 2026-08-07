@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const containerVariants = {
   hidden: {},
@@ -22,18 +22,52 @@ const itemVariants = {
   },
 }
 
-const BUDGET_VIDEO_LIMITS = {
-  '$300–$600': ['5–10s', '10–20s'],
-  '$600–$1,000': ['5–10s', '10–20s', '20–40s'],
-  '$1,000–$2,000': ['5–10s', '10–20s', '20–40s', '40–60s'],
-  '$2,000–$5,000': ['5–10s', '10–20s', '20–40s', '40–60s', '60+s'],
+const PROJECT_FORM_CONFIG = {
+  budgets: {
+    '$300–$600': {
+      allowedLengths: ['5–10s', '10–20s'],
+      helperText: 'Best for short teasers. Supports videos up to 20s.',
+    },
+    '$600–$1,000': {
+      allowedLengths: ['5–10s', '10–20s', '20–40s'],
+      helperText: 'Best for product showcases. Supports videos up to 40s.',
+    },
+    '$1,000–$2,000': {
+      allowedLengths: ['5–10s', '10–20s', '20–40s', '40–60s'],
+      helperText: 'Best for full product explainers. Supports videos up to 60s.',
+    },
+    '$2,000–$5,000': {
+      allowedLengths: ['5–10s', '10–20s', '20–40s', '40–60s', '60+s'],
+      helperText: 'Best for premium launch campaigns. All video lengths supported.',
+    },
+  },
+  videoLengths: {
+    '5–10s': {
+      helperText: 'Projects of this length typically start from $300.',
+    },
+    '10–20s': {
+      helperText: 'Projects of this length typically start from $300.',
+    },
+    '20–40s': {
+      helperText: 'Projects of this length typically start from $600.',
+    },
+    '40–60s': {
+      helperText: 'Projects of this length typically start from $1,000.',
+    },
+    '60+s': {
+      helperText: 'Projects of this length typically start from $2,000.',
+    },
+  },
 }
 
-const BUDGET_HELPER_TEXTS = {
-  '$300–$600': 'Only 5–20 second videos are available for this budget.',
-  '$600–$1,000': 'This budget supports videos up to 40 seconds.',
-  '$1,000–$2,000': 'This budget supports videos up to 60 seconds.',
-  '$2,000–$5,000': 'All video lengths are available for this budget.',
+const isBudgetAllowed = (budget, videoLength) => {
+  if (!videoLength) return true
+  return PROJECT_FORM_CONFIG.budgets[budget]?.allowedLengths.includes(videoLength)
+}
+
+const isVideoLengthAllowed = (length, budget) => {
+  if (!budget) return true
+  return PROJECT_FORM_CONFIG.budgets[budget]?.allowedLengths.includes(length)
 }
 
 export default function ProjectForm() {
@@ -61,12 +95,27 @@ export default function ProjectForm() {
         [name]: value,
       }
       
-      // If budget changes, check if the currently selected video length is allowed
+      // If budget changes, clear video length if it is no longer allowed
       if (name === 'budget') {
-        const allowed = value ? BUDGET_VIDEO_LIMITS[value] : null
-        if (allowed && !allowed.includes(prev.videoLength)) {
+        if (prev.videoLength && !isVideoLengthAllowed(prev.videoLength, value)) {
           updated.videoLength = ''
         }
+      }
+      
+      return updated
+    })
+  }
+
+  const handleVideoLengthSelect = (length) => {
+    setFormData((prev) => {
+      const updated = {
+        ...prev,
+        videoLength: length,
+      }
+      
+      // If current budget is not compatible with the new video length, clear it
+      if (prev.budget && !isBudgetAllowed(prev.budget, length)) {
+        updated.budget = ''
       }
       
       return updated
@@ -432,7 +481,7 @@ Budget: ${formData.budget}
           <div className="flex gap-3 flex-wrap">
             {['5–10s', '10–20s', '20–40s', '40–60s', '60+s'].map((length) => {
               const isSelected = formData.videoLength === length
-              const isAllowed = !formData.budget || BUDGET_VIDEO_LIMITS[formData.budget]?.includes(length)
+              const isAllowed = isVideoLengthAllowed(length, formData.budget)
               const isDisabled = !isAllowed
 
               return (
@@ -440,12 +489,7 @@ Budget: ${formData.budget}
                   key={length}
                   type="button"
                   disabled={isDisabled}
-                  onClick={() =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      videoLength: length,
-                    }))
-                  }
+                  onClick={() => handleVideoLengthSelect(length)}
                   className={`px-4 py-2 rounded-lg border transition-colors font-medium text-sm ${
                     isDisabled
                       ? 'border-[rgba(255,255,255,0.1)] text-ink-muted opacity-40 cursor-not-allowed'
@@ -459,11 +503,22 @@ Budget: ${formData.budget}
               )
             })}
           </div>
-          {formData.budget && BUDGET_HELPER_TEXTS[formData.budget] && (
-            <p className="text-ink-muted text-xs mt-2.5">
-              {BUDGET_HELPER_TEXTS[formData.budget]}
-            </p>
-          )}
+          <div className="h-4 mt-2.5 overflow-hidden">
+            <AnimatePresence mode="wait">
+              {formData.budget && PROJECT_FORM_CONFIG.budgets[formData.budget]?.helperText ? (
+                <motion.p
+                  key={formData.budget}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="text-ink-muted text-xs text-left"
+                >
+                  {PROJECT_FORM_CONFIG.budgets[formData.budget].helperText}
+                </motion.p>
+              ) : null}
+            </AnimatePresence>
+          </div>
         </motion.div>
 
         {/* Budget */}
@@ -479,16 +534,41 @@ Budget: ${formData.budget}
               className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary focus:outline-none focus:border-accent-blue transition-colors appearance-none cursor-pointer pr-10"
             >
               <option value="">Select a budget</option>
-              <option>$300–$600</option>
-              <option>$600–$1,000</option>
-              <option>$1,000–$2,000</option>
-              <option>$2,000–$5,000</option>
+              {Object.keys(PROJECT_FORM_CONFIG.budgets).map((budgetOption) => {
+                const isAllowed = isBudgetAllowed(budgetOption, formData.videoLength)
+                return (
+                  <option
+                    key={budgetOption}
+                    value={budgetOption}
+                    disabled={!isAllowed}
+                    className={!isAllowed ? "opacity-40 cursor-not-allowed text-ink-muted" : ""}
+                  >
+                    {budgetOption}
+                  </option>
+                )
+              })}
             </select>
             <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-ink-muted">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M3.5 5.5L8 10.5L12.5 5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
+          </div>
+          <div className="h-4 mt-2.5 overflow-hidden">
+            <AnimatePresence mode="wait">
+              {!formData.budget && formData.videoLength && PROJECT_FORM_CONFIG.videoLengths[formData.videoLength]?.helperText ? (
+                <motion.p
+                  key={formData.videoLength}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="text-ink-muted text-xs text-left"
+                >
+                  {PROJECT_FORM_CONFIG.videoLengths[formData.videoLength].helperText}
+                </motion.p>
+              ) : null}
+            </AnimatePresence>
           </div>
         </motion.div>
 
