@@ -21,7 +21,7 @@ export const metadata = {
     title: 'Cinova Visuals — SaaS Motion Design',
     description:
       'Premium SaaS motion design and product explainer videos.',
-    url: 'https://cinova.framer.website',
+    url: 'https://cinova-visuals.vercel.app',
     siteName: 'Cinova Visuals',
     locale: 'en_US',
     type: 'website',
