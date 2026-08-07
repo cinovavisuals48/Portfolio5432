@@ -22,6 +22,20 @@ const itemVariants = {
   },
 }
 
+const BUDGET_VIDEO_LIMITS = {
+  '$300–$600': ['5–10s', '10–20s'],
+  '$600–$1,000': ['5–10s', '10–20s', '20–40s'],
+  '$1,000–$2,000': ['5–10s', '10–20s', '20–40s', '40–60s'],
+  '$2,000–$5,000': ['5–10s', '10–20s', '20–40s', '40–60s', '60+s'],
+}
+
+const BUDGET_HELPER_TEXTS = {
+  '$300–$600': 'Only 5–20 second videos are available for this budget.',
+  '$600–$1,000': 'This budget supports videos up to 40 seconds.',
+  '$1,000–$2,000': 'This budget supports videos up to 60 seconds.',
+  '$2,000–$5,000': 'All video lengths are available for this budget.',
+}
+
 export default function ProjectForm() {
   const [formData, setFormData] = useState({
     fullName: '',
@@ -31,8 +45,8 @@ export default function ProjectForm() {
     projectDescription: '',
     inspirationReferences: '',
     deadline: 'Within 1–2 weeks',
-    videoLength: '20–40s',
-    budget: '$300–$600',
+    videoLength: '',
+    budget: '',
   })
 
   const [isLoading, setIsLoading] = useState(false)
@@ -41,10 +55,22 @@ export default function ProjectForm() {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
+    setFormData((prev) => {
+      const updated = {
+        ...prev,
+        [name]: value,
+      }
+      
+      // If budget changes, check if the currently selected video length is allowed
+      if (name === 'budget') {
+        const allowed = value ? BUDGET_VIDEO_LIMITS[value] : null
+        if (allowed && !allowed.includes(prev.videoLength)) {
+          updated.videoLength = ''
+        }
+      }
+      
+      return updated
+    })
   }
 
   const validateForm = () => {
@@ -63,6 +89,14 @@ export default function ProjectForm() {
     }
     if (!formData.projectDescription.trim()) {
       setErrorMessage('Project description is required')
+      return false
+    }
+    if (!formData.videoLength) {
+      setErrorMessage('Please select a video length')
+      return false
+    }
+    if (!formData.budget) {
+      setErrorMessage('Please select a budget')
       return false
     }
     return true
@@ -137,8 +171,8 @@ Budget: ${formData.budget}
           projectDescription: '',
           inspirationReferences: '',
           deadline: 'Within 1–2 weeks',
-          videoLength: '20–40s',
-          budget: '$300–$600',
+          videoLength: '',
+          budget: '',
         })
       } else {
         setErrorMessage(data.message || 'Something went wrong. Please try again.')
@@ -396,26 +430,40 @@ Budget: ${formData.budget}
             Video length <span className="text-accent-blue">*</span>
           </label>
           <div className="flex gap-3 flex-wrap">
-            {['5–10s', '10–20s', '20–40s', '40–60s', '60+s'].map((length) => (
-              <button
-                key={length}
-                type="button"
-                onClick={() =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    videoLength: length,
-                  }))
-                }
-                className={`px-4 py-2 rounded-lg border transition-colors font-medium text-sm ${
-                  formData.videoLength === length
-                    ? 'bg-accent-blue border-accent-blue text-white'
-                    : 'border-[rgba(255,255,255,0.1)] text-ink-muted hover:text-ink-primary'
-                }`}
-              >
-                {length}
-              </button>
-            ))}
+            {['5–10s', '10–20s', '20–40s', '40–60s', '60+s'].map((length) => {
+              const isSelected = formData.videoLength === length
+              const isAllowed = !formData.budget || BUDGET_VIDEO_LIMITS[formData.budget]?.includes(length)
+              const isDisabled = !isAllowed
+
+              return (
+                <button
+                  key={length}
+                  type="button"
+                  disabled={isDisabled}
+                  onClick={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      videoLength: length,
+                    }))
+                  }
+                  className={`px-4 py-2 rounded-lg border transition-colors font-medium text-sm ${
+                    isDisabled
+                      ? 'border-[rgba(255,255,255,0.1)] text-ink-muted opacity-40 cursor-not-allowed'
+                      : isSelected
+                      ? 'bg-accent-blue border-accent-blue text-white'
+                      : 'border-[rgba(255,255,255,0.1)] text-ink-muted hover:text-ink-primary'
+                  }`}
+                >
+                  {length}
+                </button>
+              )
+            })}
           </div>
+          {formData.budget && BUDGET_HELPER_TEXTS[formData.budget] && (
+            <p className="text-ink-muted text-xs mt-2.5">
+              {BUDGET_HELPER_TEXTS[formData.budget]}
+            </p>
+          )}
         </motion.div>
 
         {/* Budget */}
@@ -430,11 +478,11 @@ Budget: ${formData.budget}
               onChange={handleChange}
               className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary focus:outline-none focus:border-accent-blue transition-colors appearance-none cursor-pointer pr-10"
             >
+              <option value="">Select a budget</option>
               <option>$300–$600</option>
               <option>$600–$1,000</option>
               <option>$1,000–$2,000</option>
               <option>$2,000–$5,000</option>
-              <option>$5,000+</option>
             </select>
             <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-ink-muted">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
