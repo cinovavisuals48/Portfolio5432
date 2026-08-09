@@ -105,7 +105,7 @@ const ToolIcon = ({ type }) => {
 export default function Services() {
   return (
     <section id="what-i-make" className="section-py relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="max-w-[clamp(1280px,82vw,1920px)] mx-auto px-6 relative z-10">
         {/* Section Label */}
         <motion.p
           initial={{ opacity: 0 }}

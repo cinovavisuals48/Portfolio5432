@@ -57,7 +57,7 @@ export default function Hero() {
       {/* Main Content */}
       <motion.div
         style={{ y }}
-        className="relative z-10 max-w-7xl mx-auto px-6 w-full"
+        className="relative z-10 max-w-[clamp(1280px,82vw,1920px)] mx-auto px-6 w-full"
       >
         <motion.div
           variants={containerVariants}
@@ -78,10 +78,10 @@ export default function Hero() {
             variants={itemVariants}
             className="font-display font-800 leading-[0.95] tracking-tight mb-8"
           >
-            <span className="block text-[clamp(3rem,8vw,7rem)] text-ink-primary">
+            <span className="block text-[clamp(3rem,7vw,9.5rem)] text-ink-primary">
               Motion Design
             </span>
-            <span className="block text-[clamp(3rem,8vw,7rem)] text-gradient-blue">
+            <span className="block text-[clamp(3rem,7vw,9.5rem)] text-gradient-blue">
               That Converts.
             </span>
           </motion.h1>
@@ -89,7 +89,7 @@ export default function Hero() {
           {/* Subtext */}
           <motion.p
             variants={itemVariants}
-            className="font-body text-ink-muted text-[clamp(1rem,1.5vw,1.15rem)]
+            className="font-body text-ink-muted text-[clamp(1rem,1.3vw,1.4rem)]
                        leading-relaxed max-w-xl mb-10"
           >
             I create SaaS explainers, product launch videos, and UI animations

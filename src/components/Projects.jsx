@@ -22,7 +22,7 @@ export default function Projects() {
         />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="max-w-[clamp(1280px,82vw,1920px)] mx-auto px-6 relative z-10">
 
         {/* Section Header */}
         <motion.div
@@ -41,7 +41,7 @@ export default function Projects() {
         </motion.div>
 
         {/* Project Grid - 3 featured */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5">
           {featuredProjects.map((project, index) => (
             <ProjectCard
               key={project.id}
