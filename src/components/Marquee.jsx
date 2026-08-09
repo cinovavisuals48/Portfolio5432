@@ -17,7 +17,7 @@ const items = [
   'Cinematic Quality',
 ]
 
-const doubled = [...items, ...items]
+const repeated = [...items, ...items, ...items, ...items]
 
 export default function Marquee() {
   return (
@@ -30,10 +30,10 @@ export default function Marquee() {
 
       <motion.div
         className="flex gap-8 whitespace-nowrap"
-        animate={{ x: ['0%', '-50%'] }}
+        animate={{ x: ['0%', '-25%'] }}
         transition={{ duration: 25, ease: 'linear', repeat: Infinity }}
       >
-        {doubled.map((item, i) => (
+        {repeated.map((item, i) => (
           <span
             key={i}
             className="inline-flex items-center gap-3 text-[0.72rem] font-display

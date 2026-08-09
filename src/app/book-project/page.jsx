@@ -1,5 +1,4 @@
 import ProjectForm from '../../components/ProjectForm'
-import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import CursorGlow from '../../components/CursorGlow'
 import CustomCursor from '../../components/CustomCursor'
@@ -16,7 +15,6 @@ export default function BookProject() {
       <main className="relative">
         <CursorGlow />
         <CustomCursor />
-        <Navbar />
 
         <section className="section-py relative overflow-hidden">
           <div className="max-w-2xl mx-auto px-6 relative z-10">

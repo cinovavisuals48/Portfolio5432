@@ -6,7 +6,6 @@
 // To add a new section: import it and add it here.
 // ─────────────────────────────────────────────────────────────
 
-import Navbar       from '../components/Navbar'
 import Hero         from '../components/Hero'
 import Marquee      from '../components/Marquee'
 import Projects     from '../components/Projects'
@@ -30,9 +29,6 @@ export default function Home() {
 
       {/* Custom dot cursor (desktop only) */}
       <CustomCursor />
-
-      {/* Navigation */}
-      <Navbar />
 
       {/* Hero */}
       <Hero />

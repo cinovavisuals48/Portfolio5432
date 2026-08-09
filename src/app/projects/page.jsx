@@ -9,7 +9,6 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { projects, categories } from '../../data/projects'
 import ProjectCard from '../../components/ProjectCard'
-import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import CustomCursor from '../../components/CustomCursor'
 import CursorGlow from '../../components/CursorGlow'
@@ -30,7 +29,6 @@ export default function ProjectsPage() {
       <main className="relative min-h-screen">
         <CursorGlow />
         <CustomCursor />
-        <Navbar />
 
         <section className="pt-32 pb-20 px-6">
           <div className="max-w-7xl mx-auto">
