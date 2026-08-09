@@ -17,30 +17,7 @@ const navLinks = [
   { label: 'FAQ',      href: '/#faq', isExternal: false },
 ]
 
-// Typing dots animation component (realistic typing indicator)
-function TypingDots() {
-  return (
-    <span className="flex items-center gap-[4px] ml-2">
-      {[0, 1, 2].map((i) => (
-        <motion.span
-          key={i}
-          className="w-[5px] h-[5px] rounded-full bg-white/70"
-          animate={{
-            y: [0, -5, 0],
-            opacity: [0.5, 1, 0.5],
-          }}
-          transition={{
-            duration: 1.2,
-            repeat: Infinity,
-            repeatType: 'loop',
-            delay: i * 0.2,
-            ease: [0.4, 0, 0.2, 1],
-          }}
-        />
-      ))}
-    </span>
-  )
-}
+
 
 // Smooth spring config for morphing
 const springConfig = {
@@ -169,8 +146,6 @@ export default function Navbar() {
             <span className="font-display font-semibold text-[0.95rem] tracking-tight text-white">
               Cinova Visuals
             </span>
-            {/* Typing dots - only show when scrolled/collapsed */}
-            {scrolled && <TypingDots />}
           </Link>
 
           {/* Desktop Links - Hidden when scrolled */}
