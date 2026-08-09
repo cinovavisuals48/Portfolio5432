@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import './globals.css'
+import Navbar from '../components/Navbar'
 
 // ── SEO METADATA — edit these values ──────────────────────────
 export const metadata = {
@@ -48,6 +49,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth">
       <body className="bg-bg-primary text-ink-primary font-body antialiased overflow-x-hidden">
+        <Navbar />
         {children}
       </body>
     </html>

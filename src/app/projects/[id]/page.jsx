@@ -14,12 +14,32 @@ import CustomCursor from '../../../components/CustomCursor'
 import CursorGlow from '../../../components/CursorGlow'
 import SmoothScroll from '../../../components/SmoothScroll'
 
+const isTouchDevice = () => {
+  if (typeof window === 'undefined') return false
+  const isHoverDisabled = window.matchMedia('(hover: none)').matches
+  const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches
+  return isHoverDisabled && isCoarsePointer
+}
+
 export default function VideoDetailPage() {
   const { id } = useParams()
   const project = projects.find(p => p.id === id)
   const [isMuted, setIsMuted] = useState(true)
+  const [hovered, setHovered] = useState(false)
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 })
+  const [isTouch, setIsTouch] = useState(isTouchDevice())
   const iframeRef = useRef(null)
+  const videoContainerRef = useRef(null)
   const videoAspectRatio = project?.aspectRatio ?? '16 / 9'
+
+  const handleMouseMove = (event) => {
+    if (!videoContainerRef.current) return
+    const rect = videoContainerRef.current.getBoundingClientRect()
+    setCursorPosition({
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+    })
+  }
 
   const getVideoAspectStyles = (ratio) => {
     const normalized = String(ratio).replace(/\s+/g, '').replace(':', '/')
@@ -82,11 +102,41 @@ export default function VideoDetailPage() {
 
   // Autoplay audio after page loads (user already interacted by clicking project)
   useEffect(() => {
+    setIsTouch(isTouchDevice())
     // Wait a bit longer for iframe to fully initialize
     const timer = setTimeout(() => {
       setIsMuted(false)
     }, 1200)
     return () => clearTimeout(timer)
+  }, [])
+
+  // Check initial cursor position on first mouse movement to handle page loads with cursor already over the video
+  useEffect(() => {
+    if (!videoContainerRef.current) return
+
+    const checkInitialCursorPosition = (event) => {
+      const rect = videoContainerRef.current.getBoundingClientRect()
+      const isInside =
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom
+
+      if (isInside) {
+        setHovered(true)
+        setCursorPosition({
+          x: event.clientX - rect.left,
+          y: event.clientY - rect.top,
+        })
+      }
+
+      // Only need this once — normal onMouseEnter/Move/Leave on the
+      // container take over from here
+      document.removeEventListener('mousemove', checkInitialCursorPosition)
+    }
+
+    document.addEventListener('mousemove', checkInitialCursorPosition, { once: true })
+    return () => document.removeEventListener('mousemove', checkInitialCursorPosition)
   }, [])
 
   if (!project) {
@@ -108,29 +158,6 @@ export default function VideoDetailPage() {
         <CursorGlow />
         <CustomCursor />
 
-        {/* Fixed Header */}
-      <motion.header
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-[rgba(10,10,10,0.9)] backdrop-blur-xl border-b border-[rgba(255,255,255,0.06)]"
-      >
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link 
-            href="/projects" 
-            className="btn-back"
-          >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M11.5 7H2.5M6.5 3L2.5 7l4 4" stroke="currentColor" 
-                strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            All Projects
-          </Link>
-
-          <span className="tag-pill">{project.category}</span>
-        </div>
-      </motion.header>
-
       {/* Main Content */}
       <div className="pt-24 pb-16 px-6">
         <div className="max-w-6xl mx-auto">
@@ -142,8 +169,14 @@ export default function VideoDetailPage() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="mb-10"
           >
-            <div className="relative w-full rounded-xl overflow-hidden border border-[rgba(255,255,255,0.08)] bg-bg-card"
-                 style={videoAspectStyles}>
+            <div
+              ref={videoContainerRef}
+              onMouseEnter={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+              onMouseMove={handleMouseMove}
+              className="relative w-full rounded-xl overflow-hidden border border-[rgba(255,255,255,0.08)] bg-bg-card cursor-pointer"
+              style={videoAspectStyles}
+            >
               <iframe
                 ref={iframeRef}
                 src={videoUrl}
@@ -154,31 +187,59 @@ export default function VideoDetailPage() {
                 style={{ cursor: 'none' }}
               />
 
-              <button
-                type="button"
-                onClick={(event) => {
-                  event.preventDefault()
-                  event.stopPropagation()
-                  setIsMuted((value) => !value)
-                }}
-                className="absolute bottom-3 right-3 z-20 rounded-full bg-black/50 border border-white/15 p-2 shadow-lg backdrop-blur-sm transition hover:bg-black/70 hover:border-white/25"
-                aria-label={isMuted ? 'Unmute video' : 'Mute video'}
-              >
-                <svg viewBox="0 0 24 24" className="h-4 w-4 text-white">
-                  <path
-                    d="M5 8v8h5l5 5V3L10 8H5z"
-                    fill="currentColor"
-                  />
-                  {isMuted ? (
+              {isTouch ? (
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    setIsMuted((value) => !value)
+                  }}
+                  aria-label={isMuted ? 'Unmute video' : 'Mute video'}
+                  className="absolute bottom-3 right-3 z-30 rounded-full border border-white/20 bg-white/10 p-2.5 shadow-[0_18px_50px_rgba(0,0,0,0.18)] backdrop-blur-xl transition duration-300"
+                >
+                  <svg viewBox="0 0 24 24" className="h-4 w-4 text-white">
                     <path
-                      d="M16 8l4 4M20 8l-4 4"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
+                      d="M5 8v8h5l5 5V3L10 8H5z"
+                      fill="currentColor"
                     />
-                  ) : null}
-                </svg>
-              </button>
+                    {isMuted ? (
+                      <path
+                        d="M16 8l4 4M20 8l-4 4"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                    ) : null}
+                  </svg>
+                </button>
+              ) : (
+                <motion.button
+                  type="button"
+                  onClick={(event) => {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    setIsMuted((value) => !value)
+                  }}
+                  aria-label={isMuted ? 'Unmute video' : 'Mute video'}
+                  className="absolute z-30 pointer-events-auto rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[0.75rem] uppercase tracking-[0.2em] text-white shadow-[0_18px_50px_rgba(0,0,0,0.18)] backdrop-blur-xl transition duration-300"
+                  initial={{ opacity: 0, scale: 0.88 }}
+                  animate={{
+                    opacity: hovered ? 1 : 0,
+                    scale: hovered ? 1 : 0.88,
+                    left: cursorPosition.x - 50,
+                    top: cursorPosition.y - 35,
+                  }}
+                  transition={{ type: 'spring', stiffness: 360, damping: 24, mass: 0.18 }}
+                  whileTap={{ scale: 0.92 }}
+                  style={{ transform: 'translate(-50%, 0)', cursor: 'pointer' }}
+                >
+                  <span className="inline-flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full bg-sky-400 shadow-[0_0_16px_rgba(56,189,248,0.4)]" />
+                    {isMuted ? 'Unmute' : 'Mute'}
+                  </span>
+                </motion.button>
+              )}
             </div>
           </motion.div>
 
@@ -189,6 +250,11 @@ export default function VideoDetailPage() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="max-w-3xl"
           >
+            {/* Category Pill */}
+            <div className="mb-4">
+              <span className="tag-pill">{project.category}</span>
+            </div>
+
             {/* Title */}
             <h1 className="font-display font-800 text-[clamp(1.8rem,4vw,2.5rem)]
                            leading-[1.1] tracking-tight text-ink-primary mb-4">

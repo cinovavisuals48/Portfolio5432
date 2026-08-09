@@ -50,6 +50,12 @@ const springConfig = {
   mass: 0.8,
 }
 
+const layoutTransition = {
+  type: 'tween',
+  duration: 0.35,
+  ease: [0.4, 0, 0.2, 1],
+}
+
 export default function Navbar() {
   const router = useRouter()
   const pathname = usePathname()
@@ -58,17 +64,20 @@ export default function Navbar() {
   const lastScrollY = useRef(0)
 
   useEffect(() => {
+    const DELTA_THRESHOLD = 8 // ignore tiny jitter from momentum/rubber-band scroll
+
     const onScroll = () => {
       const currentScrollY = window.scrollY
-      
-      // Shrink when scrolling down past threshold
-      // Expand when scrolling up even 1 pixel
-      if (currentScrollY > 60 && currentScrollY > lastScrollY.current) {
+      const delta = currentScrollY - lastScrollY.current
+
+      if (Math.abs(delta) < DELTA_THRESHOLD) return
+
+      if (currentScrollY > 60 && delta > 0) {
         setScrolled(true)
-      } else if (currentScrollY < lastScrollY.current) {
+      } else if (delta < 0) {
         setScrolled(false)
       }
-      
+
       lastScrollY.current = currentScrollY
     }
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -115,38 +124,39 @@ export default function Navbar() {
       <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 px-4">
         <motion.nav
           initial={{ y: -20, opacity: 0 }}
-          animate={{ 
-            y: 0, 
+          animate={{
+            y: 0,
             opacity: 1,
+            paddingLeft: scrolled ? 12 : 16,
+            paddingRight: scrolled ? 12 : 16,
+            paddingTop: scrolled ? 8 : 10,
+            paddingBottom: scrolled ? 8 : 10,
+            gap: scrolled ? 12 : 24,
           }}
-          transition={springConfig}
-          layout
-          layoutId="navbar"
-          className={`
-            relative flex items-center
-            backdrop-blur-xl
-            border border-white/20
-            shadow-[0_8px_32px_rgba(0,0,0,0.3)]
-            ${scrolled 
-              ? 'px-3 py-2 rounded-full gap-3' 
-              : 'px-4 py-2.5 rounded-full gap-6'
-            }
-          `}
+          transition={{
+            y: springConfig,
+            opacity: springConfig,
+            paddingLeft: layoutTransition,
+            paddingRight: layoutTransition,
+            paddingTop: layoutTransition,
+            paddingBottom: layoutTransition,
+            gap: layoutTransition,
+          }}
+          className="relative flex items-center backdrop-blur-xl border border-white/20 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
           style={{
             background: 'rgba(255, 255, 255, 0.08)',
+            willChange: 'padding, gap',
           }}
         >
           {/* Logo - Circular */}
           <Link href="/" className="flex items-center gap-2.5 group shrink-0" onClick={() => setMobileOpen(false)}>
             <motion.div 
-              layout
-              layoutId="logo"
               className="relative overflow-hidden rounded-full bg-neutral-900 flex items-center justify-center"
               animate={{
                 width: scrolled ? 32 : 36,
                 height: scrolled ? 32 : 36,
               }}
-              transition={springConfig}
+              transition={layoutTransition}
             >
               <Image
                 src="/images/cinova-logo.png"
@@ -164,14 +174,14 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Links - Hidden when scrolled */}
-          <AnimatePresence mode="popLayout">
+          <AnimatePresence>
             {!scrolled && (
               <motion.div
                 key="nav-links"
                 initial={{ opacity: 0, scale: 0.9, width: 0 }}
                 animate={{ opacity: 1, scale: 1, width: 'auto' }}
                 exit={{ opacity: 0, scale: 0.9, width: 0 }}
-                transition={springConfig}
+                transition={layoutTransition}
                 className="hidden md:flex items-center gap-1 overflow-hidden"
               >
                 {navLinks.map((link) => (
