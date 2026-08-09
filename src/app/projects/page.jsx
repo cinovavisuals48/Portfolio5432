@@ -31,7 +31,7 @@ export default function ProjectsPage() {
         <CustomCursor />
 
         <section className="pt-32 pb-20 px-6">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-[clamp(1280px,82vw,1920px)] mx-auto">
 
             {/* Header */}
             <motion.div
@@ -111,7 +111,7 @@ export default function ProjectsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6"
               >
                 {filteredProjects.map((project, index) => (
                   <ProjectCard key={project.id} project={project} index={index} />
@@ -137,7 +137,7 @@ export default function ProjectsPage() {
                     A few short UI animation pieces I built to practice and push my motion work.
                   </p>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
                   {shortUiAnimations.map((project, index) => (
                     <ProjectCard
                       key={project.id}

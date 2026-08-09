@@ -24,7 +24,7 @@ export default function Footer() {
 
   return (
     <footer className="relative border-t border-[rgba(255,255,255,0.05)] py-8">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-[clamp(1280px,82vw,1920px)] mx-auto px-6">
 
         {/* Top row */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center
