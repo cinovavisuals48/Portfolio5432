@@ -31,8 +31,6 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
   const hasThumbnail = project.thumbnailUrl && !imageError
   const hasVideoPreview = !!project.videoEmbedUrl
   const hasActivePreview = showVideoPreview && hasVideoPreview
-  const pillVisible = previewOnly && hovered && hasVideoPreview
-  const pillLabel = isMuted ? 'Unmute' : 'Mute'
   const videoAspectRatio = project.aspectRatio ?? '16 / 9'
 
   const handleMouseMove = (event) => {
@@ -290,61 +288,6 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
             <span className="tag-pill text-[0.68rem]">{project.category}</span>
           </div>
 
-          {previewOnly && hasActivePreview && isTouch && (
-            <button
-              type="button"
-              onClick={(event) => {
-                event.preventDefault()
-                event.stopPropagation()
-                setIsMuted((value) => !value)
-              }}
-              aria-label={isMuted ? 'Unmute preview' : 'Mute preview'}
-              className="absolute bottom-3 right-3 z-30 rounded-full border border-white/20 bg-white/10 p-2.5 shadow-[0_18px_50px_rgba(0,0,0,0.18)] backdrop-blur-xl transition duration-300"
-            >
-              <svg viewBox="0 0 24 24" className="h-4 w-4 text-white">
-                <path
-                  d="M5 8v8h5l5 5V3L10 8H5z"
-                  fill="currentColor"
-                />
-                {isMuted ? (
-                  <path
-                    d="M16 8l4 4M20 8l-4 4"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                ) : null}
-              </svg>
-            </button>
-          )}
-
-          {previewOnly && hasVideoPreview && !isTouch && (
-            <motion.button
-              type="button"
-              onClick={(event) => {
-                event.preventDefault()
-                event.stopPropagation()
-                setIsMuted((value) => !value)
-              }}
-              aria-label={isMuted ? 'Unmute preview' : 'Mute preview'}
-              className="absolute z-30 pointer-events-auto rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[0.75rem] uppercase tracking-[0.2em] text-white shadow-[0_18px_50px_rgba(0,0,0,0.18)] backdrop-blur-xl transition duration-300"
-              initial={{ opacity: 0, scale: 0.88 }}
-              animate={{
-                opacity: pillVisible ? 1 : 0,
-                scale: pillVisible ? 1 : 0.88,
-                left: cursorPosition.x - 50,
-                top: cursorPosition.y - 35,
-              }}
-              transition={{ type: 'spring', stiffness: 360, damping: 24, mass: 0.18 }}
-              whileTap={{ scale: 0.92 }}
-              style={{ transform: 'translate(-50%, 0)', cursor: 'pointer' }}
-            >
-              <span className="inline-flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-full bg-sky-400 shadow-[0_0_16px_rgba(56,189,248,0.4)]" />
-                {isMuted ? 'Unmute' : 'Mute'}
-              </span>
-            </motion.button>
-          )}
         </div>
 
         {/* Content Section */}
