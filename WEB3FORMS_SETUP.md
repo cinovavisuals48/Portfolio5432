@@ -110,33 +110,21 @@ Red error box displays with message:
 
 ## 📧 Email Configuration
 
-### Important: Update Recipient Email
+### Web3Forms Recipient Routing
 
-The form currently sends to a placeholder email. You **MUST** update this before deployment:
-
-**File:** `src/components/ProjectForm.jsx`
-
-**Find this line (approximately line 95):**
-```javascript
-email_address: 'your-email@example.com', // The recipient email
-```
-
-**Replace with your actual email:**
-```javascript
-email_address: 'your-actual-email@gmail.com',
-```
+Web3Forms routes all submissions directly to the email address registered with your access key in the Web3Forms dashboard. 
+- You do **not** need to hardcode a recipient email in `ProjectForm.jsx`.
+- To change where submissions are delivered, update the email connected to your Access Key at [web3forms.com](https://web3forms.com).
 
 ---
 
 ## 🚀 Deployment Checklist
 
-- [ ] Update recipient email in `ProjectForm.jsx` (line 95)
-- [ ] Test form locally (npm run dev)
-- [ ] Verify `.env.local` is in `.gitignore`
-- [ ] Test form submission
-- [ ] Check email delivery
-- [ ] Deploy to Vercel
-- [ ] Test form on live site
+- [ ] Ensure `NEXT_PUBLIC_WEB3FORMS_KEY` is added to **Vercel Project Settings > Environment Variables** (Production, Preview, Development).
+- [ ] **Redeploy** the project in Vercel after adding/updating the environment variable (Next.js inlines `NEXT_PUBLIC_*` at build time).
+- [ ] Test form submission locally (`npm run dev`).
+- [ ] Test form submission on the live production site.
+- [ ] Verify `.env.local` is in `.gitignore`.
 
 ---
 

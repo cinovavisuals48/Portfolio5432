@@ -167,12 +167,13 @@ export default function ProjectForm() {
       const web3formsKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY
       
       if (!web3formsKey) {
-        throw new Error('Web3Forms key is not configured')
+        throw new Error('Web3Forms access key is not configured. Please check your environment variables.')
       }
 
       const formDataObj = {
         access_key: web3formsKey,
         subject: `New Project Booking from ${formData.fullName}`,
+        name: formData.fullName,
         from_name: formData.fullName,
         email: formData.email,
         message: `
@@ -190,9 +191,12 @@ ${formData.inspirationReferences || 'Not provided'}
 Deadline: ${formData.deadline}
 Video Length: ${formData.videoLength}
 Budget: ${formData.budget}
-        `,
+        `.trim(),
         phone: formData.whatsappNumber || '',
+        whatsapp_number: formData.whatsappNumber || '',
         contact_method: formData.preferredContact,
+        project_description: formData.projectDescription,
+        inspiration_references: formData.inspirationReferences || 'Not provided',
         deadline: formData.deadline,
         video_length: formData.videoLength,
         budget: formData.budget,
@@ -208,9 +212,14 @@ Budget: ${formData.budget}
         body: JSON.stringify(formDataObj),
       })
 
-      const data = await response.json()
+      let data
+      try {
+        data = await response.json()
+      } catch {
+        throw new Error(`Web3Forms returned status ${response.status}. Please check your connection or try again.`)
+      }
 
-      if (data.success) {
+      if (response.ok && data.success) {
         setSubmitState('success')
         setFormData({
           fullName: '',
@@ -224,12 +233,13 @@ Budget: ${formData.budget}
           budget: '',
         })
       } else {
-        setErrorMessage(data.message || 'Something went wrong. Please try again.')
+        const failureMessage = data?.message || `Submission failed with status ${response.status}. Please try again.`
+        setErrorMessage(failureMessage)
         setSubmitState('error')
       }
     } catch (error) {
       console.error('Form submission error:', error)
-      setErrorMessage('Something went wrong. Please try again.')
+      setErrorMessage(error.message || 'Something went wrong. Please try again.')
       setSubmitState('error')
     } finally {
       setIsLoading(false)
