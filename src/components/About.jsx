@@ -37,9 +37,10 @@ export default function About() {
               className="flex-shrink-0"
             >
               <div className="w-32 h-32 lg:w-40 lg:h-40 rounded-3xl overflow-hidden border border-white/20 bg-white/5 shadow-lg">
+                {/* TODO: Replace with new Moulidoesmotion logo file at /images/logo.png */}
                 <Image
-                  src="/images/cinova-logo.png"
-                  alt="Cinova Visuals Logo"
+                  src="/images/logo.png"
+                  alt="Moulidoesmotion Logo"
                   width={160}
                   height={160}
                   className="w-full h-full object-cover"
@@ -59,7 +60,7 @@ export default function About() {
               <div className="space-y-4 text-ink-muted leading-relaxed text-[0.92rem]">
                 <p>
                   Hey, I&apos;m <span className="text-ink-primary font-medium">Mouli</span>, the creator behind{' '}
-                  <span className="text-ink-primary font-medium">Cinova Visuals</span>
+                  <span className="text-ink-primary font-medium">Moulidoesmotion</span>
                   . I craft motion design for SaaS products, startups, and
                   anyone who wants their product to truly move.
                 </p>

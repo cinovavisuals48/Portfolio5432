@@ -5,7 +5,7 @@
 1. Go to [tally.so](https://tally.so)
 2. Sign up / Log in
 3. Click **+ New Form**
-4. Name it: "Book a Project – Cinova Visuals"
+4. Name it: "Book a Project – Moulidoesmotion"
 
 ## Step 2: Add Form Fields
 
@@ -91,7 +91,7 @@ Create these fields **in this exact order**:
 1. In your Tally form, click **Settings** (gear icon)
 2. Go to **Notifications**
 3. Enable "Email me on every new submission"
-4. Enter your Gmail: **cinovavisuals48@gmail.com**
+4. Enter your Gmail: **moulidoesmotion@gmail.com**
 
 ### Get Your Form Embed Code
 1. Click **Embed & Share** button
@@ -100,7 +100,7 @@ Create these fields **in this exact order**:
 
 ### Optional: Customize Branding
 1. In **Settings → Branding**
-   - **Logo:** Add your Cinova Visuals logo
+   - **Logo:** Add your Moulidoesmotion logo
    - **Colors:** Set to match your blue accent (#3b82f6)
    - **Font:** Keep system default or choose "Plus Jakarta Sans"
 
@@ -126,4 +126,4 @@ Your form is now live and:
 
 ### After Setup
 - Check your Tally dashboard at [tally.so](https://tally.so) for all submissions
-- All emails will go to cinovavisuals48@gmail.com
+- All emails will go to moulidoesmotion@gmail.com

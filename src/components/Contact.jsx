@@ -11,7 +11,7 @@ import { links } from '../data/links'
 const socials = [
   {
     name: 'Instagram',
-    handle: '@cinova.visuals',
+    handle: '@moulidoesmotion',
     href: links.instagram,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -23,7 +23,7 @@ const socials = [
   },
   {
     name: 'X / Twitter',
-    handle: '@Cinova_visuals',
+    handle: '@moulidoesmotion',
     href: links.twitter,
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">

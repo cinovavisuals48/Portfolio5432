@@ -5,7 +5,7 @@ import CustomCursor from '../../components/CustomCursor'
 import SmoothScroll from '../../components/SmoothScroll'
 
 export const metadata = {
-  title: 'Book a Project – Cinova Visuals',
+  title: 'Book a Project – Moulidoesmotion',
   description: 'Tell me about your project and let\'s create something amazing together.',
 }
 

@@ -25,7 +25,7 @@ Your custom contact form backend has been successfully migrated to **Tally.so**,
 ### Step 1: Create Your Tally Form
 Follow the instructions in **[TALLY_SETUP.md](./TALLY_SETUP.md)** to:
 1. Create a Tally form with all 9 fields
-2. Configure email notifications to cinovavisuals48@gmail.com
+2. Configure email notifications to moulidoesmotion@gmail.com
 3. Get your Tally form URL
 
 ### Step 2: Update Your Form URL
@@ -117,7 +117,7 @@ Your form includes all 9 original fields:
 
 Once your Tally form is created:
 
-1. **Every submission** automatically sends an email to: **cinovavisuals48@gmail.com**
+1. **Every submission** automatically sends an email to: **moulidoesmotion@gmail.com**
 2. You can view **all submissions** in your Tally dashboard
 3. Reply to submissions directly from Tally's interface
 4. Export data to CSV anytime

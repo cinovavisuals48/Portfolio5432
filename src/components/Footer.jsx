@@ -32,15 +32,16 @@ export default function Footer() {
 
           {/* Brand */}
           <Link href="/" className="flex items-center gap-2.5">
+            {/* TODO: Replace with new Moulidoesmotion logo file at /images/logo.png */}
             <Image
-              src="/images/cinova-logo.png"
-              alt="Cinova Visuals"
+              src="/images/logo.png"
+              alt="Moulidoesmotion"
               width={28}
               height={28}
               className="rounded-lg"
             />
             <span className="font-display font-700 text-ink-primary text-sm tracking-tight">
-              Cinova Visuals
+              Moulidoesmotion
             </span>
           </Link>
 
@@ -114,7 +115,7 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center
                         justify-between gap-2 pt-5 border-t border-[rgba(255,255,255,0.04)]">
           <p className="text-ink-subtle text-[0.72rem]">
-            &copy; {year} Cinova Visuals. All rights reserved.
+            &copy; {year} Moulidoesmotion. All rights reserved.
           </p>
           <p className="text-ink-subtle text-[0.72rem]">
             Motion Design for SaaS

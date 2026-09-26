@@ -101,8 +101,8 @@ export async function POST(request) {
   
   // Send via Resend
   const email = await resend.emails.send({
-    from: 'noreply@cinova-visuals.com',
-    to: 'cinovavisuals48@gmail.com',
+    from: 'noreply@moulidoesmotion.com',
+    to: 'moulidoesmotion@gmail.com',
     html: emailHTML,
   })
   

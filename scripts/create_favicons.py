@@ -2,7 +2,7 @@ from PIL import Image, ImageDraw
 import os
 
 os.makedirs('public', exist_ok=True)
-logo_path = os.path.join('public', 'images', 'cinova-logo.png')
+logo_path = os.path.join('public', 'images', 'logo.png')
 logo = Image.open(logo_path).convert('RGBA')
 
 # Crop whitespace from the logo so the visible mark fills more of the favicon.

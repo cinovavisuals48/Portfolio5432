@@ -8,7 +8,7 @@ import Navbar from '../components/Navbar'
 
 // ── SEO METADATA — edit these values ──────────────────────────
 export const metadata = {
-  title: 'Cinova Visuals — SaaS Motion Design',
+  title: 'Moulidoesmotion — SaaS Motion Design',
   description:
     'Premium SaaS motion design, UI animation, and product explainer videos for indie hackers and bootstrapped founders. Based in India, working globally.',
   keywords: [
@@ -16,32 +16,40 @@ export const metadata = {
     'SaaS explainer video',
     'UI animation',
     'product demo',
-    'Cinova Visuals',
+    'Moulidoesmotion',
   ],
+  metadataBase: new URL('https://moulidoesmotion.com'),
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
-    title: 'Cinova Visuals — SaaS Motion Design',
+    title: 'Moulidoesmotion — SaaS Motion Design',
     description:
       'Premium SaaS motion design and product explainer videos.',
-    url: 'https://cinova-visuals.vercel.app',
-    siteName: 'Cinova Visuals',
+    url: 'https://moulidoesmotion.com',
+    siteName: 'Moulidoesmotion',
     locale: 'en_US',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Cinova Visuals — SaaS Motion Design',
+    title: 'Moulidoesmotion — SaaS Motion Design',
     description: 'Premium SaaS motion design & product explainers.',
-    creator: '@Cinova_visuals',
+    creator: '@moulidoesmotion',
   },
   robots: { index: true, follow: true },
   icons: {
     icon: [
-      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon.ico', sizes: 'any' },
       { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/favicon-64x64.png', sizes: '64x64', type: 'image/png' },
-      { url: '/favicon.ico', type: 'image/x-icon' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
     ],
     apple: '/apple-touch-icon.png',
+  },
+  manifest: '/site.webmanifest',
+  other: {
+    'msapplication-TileImage': '/mstile-150x150.png',
+    'theme-color': '#000000',
   },
 }
 

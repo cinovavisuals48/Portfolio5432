@@ -135,16 +135,17 @@ export default function Navbar() {
               }}
               transition={layoutTransition}
             >
+              {/* TODO: Replace with new Moulidoesmotion logo file at /images/logo.png */}
               <Image
-                src="/images/cinova-logo.png"
-                alt="Cinova Visuals"
+                src="/images/logo.png"
+                alt="Moulidoesmotion"
                 width={36}
                 height={36}
                 className="object-cover"
               />
             </motion.div>
             <span className="font-display font-semibold text-[0.95rem] tracking-tight text-white">
-              Cinova Visuals
+              Moulidoesmotion
             </span>
           </Link>
 

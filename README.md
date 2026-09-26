@@ -1,4 +1,4 @@
-# Cinova Visuals Portfolio
+# Moulidoesmotion Portfolio
 
 A simple portfolio website for motion design work built with Next.js, Tailwind CSS, and Framer Motion.
 
@@ -113,7 +113,7 @@ export const links = {
 
 Replace the logo file here:
 
-- `public/images/cinova-logo.png`
+- `public/images/logo.png`
 
 Use a transparent PNG or optimized image with a similar name.
 
@@ -187,7 +187,7 @@ For Vercel deployment:
 - `src/data/links.js` — social and contact links
 - `public/thumbnails/` — project preview images
 - `src/app/globals.css` — colors and styles
-- `public/images/cinova-logo.png` — logo image
+- `public/images/logo.png` — logo image
 
 ---
 

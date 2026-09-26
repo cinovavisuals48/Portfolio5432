@@ -7,10 +7,10 @@
 
 export const links = {
   // ── Social ────────────────────────────────────────────────
-  instagram: 'https://www.instagram.com/cinova.visuals/',
-  twitter:   'https://x.com/Cinova_visuals',
+  instagram: 'https://www.instagram.com/moulidoesmotion/',
+  twitter:   'https://x.com/moulidoesmotion',
 
   // ── Brand ─────────────────────────────────────────────────
-  brandName: 'Cinova Visuals',
+  brandName: 'Moulidoesmotion',
   tagline:   'SaaS Motion Design',
 }

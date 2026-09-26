@@ -40,7 +40,7 @@ Responsive:     ✅ Automatic
 ## 📧 Email Configuration
 
 ```
-Recipient: cinovavisuals48@gmail.com
+Recipient: moulidoesmotion@gmail.com
 Trigger:   Every form submission
 Setup:     Tally Settings → Notifications
 ```
