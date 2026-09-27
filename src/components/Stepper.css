@@ -116,7 +116,6 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  cursor: pointer;
   background: transparent;
   border: 1px solid transparent;
 }
@@ -148,7 +147,6 @@
   letter-spacing: -0.01em;
   padding: 0.55rem 1.35rem;
   border: 1px solid #FFFFFF;
-  cursor: pointer;
   box-shadow: 0 4px 15px rgba(255, 255, 255, 0.12);
 }
 
@@ -166,14 +164,12 @@
 
 .stepper-next-button:disabled {
   opacity: 0.5;
-  cursor: not-allowed;
   transform: none;
 }
 
 /* Step indicators */
 .stepper-step-indicator {
   position: relative;
-  cursor: pointer;
   outline: none;
   display: flex;
   flex-direction: column;

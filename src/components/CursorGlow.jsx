@@ -8,55 +8,66 @@
 import { useEffect, useState } from 'react'
 import { motion, useSpring } from 'framer-motion'
 
-const isTouchDevice = () => {
-  if (typeof window === 'undefined') return false
-  const isHoverDisabled = window.matchMedia('(hover: none)').matches
-  const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches
-  return isHoverDisabled && isCoarsePointer
-}
-
 export default function CursorGlow() {
   const [mounted, setMounted] = useState(false)
-  const [isTouch, setIsTouch] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
 
   const mouseX = useSpring(-500, { stiffness: 80, damping: 30, mass: 0.5 })
   const mouseY = useSpring(-500, { stiffness: 80, damping: 30, mass: 0.5 })
 
   useEffect(() => {
-    setIsTouch(isTouchDevice())
     setMounted(true)
 
-    const move = (e) => {
-      setIsTouch(false)
+    const handleMove = (e) => {
+      if (e.pointerType === 'touch') return
+      setIsVisible(true)
       mouseX.set(e.clientX)
       mouseY.set(e.clientY)
     }
 
-    const handleTouchStart = () => {
-      if (isTouchDevice()) {
-        setIsTouch(true)
+    const handleMouseLeave = () => {
+      setIsVisible(false)
+    }
+
+    const handleMouseEnter = (e) => {
+      if (e.clientX && e.clientY) {
+        setIsVisible(true)
+        mouseX.set(e.clientX)
+        mouseY.set(e.clientY)
       }
     }
 
-    window.addEventListener('mousemove', move, { passive: true })
+    const handleTouchStart = () => {
+      setIsVisible(false)
+    }
+
+    window.addEventListener('pointermove', handleMove, { passive: true })
+    window.addEventListener('mousemove', handleMove, { passive: true })
     window.addEventListener('touchstart', handleTouchStart, { passive: true })
+    document.addEventListener('mouseleave', handleMouseLeave, { passive: true })
+    document.addEventListener('mouseenter', handleMouseEnter, { passive: true })
+
     return () => {
-      window.removeEventListener('mousemove', move)
+      window.removeEventListener('pointermove', handleMove)
+      window.removeEventListener('mousemove', handleMove)
       window.removeEventListener('touchstart', handleTouchStart)
+      document.removeEventListener('mouseleave', handleMouseLeave)
+      document.removeEventListener('mouseenter', handleMouseEnter)
     }
   }, [mouseX, mouseY])
 
-  if (!mounted || isTouch) return null
+  if (!mounted) return null
 
   return (
     <motion.div
       aria-hidden
-      className="pointer-events-none fixed top-0 left-0 z-[9990]"
+      className="pointer-events-none fixed top-0 left-0 z-[9990] transition-opacity duration-300"
       style={{
         x: mouseX,
         y: mouseY,
         translateX: '-50%',
         translateY: '-50%',
+        opacity: isVisible ? 1 : 0,
       }}
     >
       <div
