@@ -7,7 +7,6 @@
 // ─────────────────────────────────────────────────────────────
 
 import Hero         from '../components/Hero'
-import Marquee      from '../components/Marquee'
 import Projects     from '../components/Projects'
 import WhyMe        from '../components/WhyMe'
 import Process      from '../components/Process'
@@ -32,9 +31,6 @@ export default function Home() {
 
       {/* Hero */}
       <Hero />
-
-      {/* Marquee strip */}
-      <Marquee />
 
       {/* Projects — the main showcase */}
       <Projects />

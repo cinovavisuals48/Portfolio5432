@@ -59,14 +59,13 @@ export default function About() {
             >
               <div className="space-y-4 text-ink-muted leading-relaxed text-[0.92rem]">
                 <p>
-                  Hey, I&apos;m <span className="text-ink-primary font-medium">Mouli</span>, the creator behind{' '}
-                  <span className="text-ink-primary font-medium">Moulidoesmotion</span>
-                  . I craft motion design for SaaS products, startups, and
-                  anyone who wants their product to truly move.
+                  Hey, I&apos;m <span className="text-ink-primary font-medium">Mouli</span>. 22 years old, and I&apos;ve been obsessed with motion for a while now.
                 </p>
                 <p>
-                  I turn complex ideas into compelling visual stories through
-                  explainer videos, product launches, and smooth UI animations.
+                  Right now most of my work is product launch videos and SaaS explainers. It&apos;s where I&apos;ve been sharpening my craft, helping founders show off their product in a way people actually stop and pay attention to.
+                </p>
+                <p>
+                  But where I really want to go is 2D, 3D, and story driven animation. Not just explaining what a product does, but telling stories that actually stick with people. I&apos;m not there yet, but every project gets me a little closer.
                 </p>
               </div>
 
