@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter, usePathname } from 'next/navigation'
+import { useBooking } from '../context/BookingContext'
 
 const navLinks = [
   { label: 'Work',     href: '/projects', isExternal: true },
@@ -36,6 +37,7 @@ const layoutTransition = {
 export default function Navbar() {
   const router = useRouter()
   const pathname = usePathname()
+  const { openBooking } = useBooking()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const lastScrollY = useRef(0)
@@ -197,8 +199,9 @@ export default function Navbar() {
                   exit={{ opacity: 0, scale: 0.8 }}
                   transition={springConfig}
                 >
-                  <Link
-                    href="/book-project"
+                  <button
+                    type="button"
+                    onClick={() => openBooking()}
                     className="
                       inline-flex items-center gap-2
                       px-5 py-2
@@ -209,10 +212,11 @@ export default function Navbar() {
                       text-sm font-semibold
                       transition-all duration-200
                       shadow-[0_2px_10px_rgba(255,255,255,0.12)]
+                      cursor-pointer
                     "
                   >
                     Book a Project
-                  </Link>
+                  </button>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -302,9 +306,12 @@ export default function Navbar() {
                 transition={{ delay: (navLinks.length + 1) * 0.05 }}
                 className="mt-2"
               >
-                <Link
-                  href="/book-project"
-                  onClick={() => setMobileOpen(false)}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileOpen(false)
+                    openBooking()
+                  }}
                   className="
                     w-full inline-flex items-center justify-center gap-2
                     px-5 py-3
@@ -314,10 +321,11 @@ export default function Navbar() {
                     rounded-full
                     text-sm font-semibold
                     transition-all duration-200
+                    cursor-pointer
                   "
                 >
                   Book a Project
-                </Link>
+                </button>
               </motion.div>
             </div>
           </motion.div>

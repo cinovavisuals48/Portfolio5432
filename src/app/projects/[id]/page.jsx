@@ -10,9 +10,8 @@ import { motion } from 'framer-motion'
 import { projects } from '../../../data/projects'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import CustomCursor from '../../../components/CustomCursor'
-import CursorGlow from '../../../components/CursorGlow'
 import SmoothScroll from '../../../components/SmoothScroll'
+import { useBooking } from '../../../context/BookingContext'
 
 const isTouchDevice = () => {
   if (typeof window === 'undefined') return false
@@ -22,6 +21,7 @@ const isTouchDevice = () => {
 }
 
 export default function VideoDetailPage() {
+  const { openBooking, isBookingOpen } = useBooking()
   const { id } = useParams()
   const project = projects.find(p => p.id === id)
   const [isMuted, setIsMuted] = useState(true)
@@ -30,16 +30,9 @@ export default function VideoDetailPage() {
   const [isTouch, setIsTouch] = useState(isTouchDevice())
   const iframeRef = useRef(null)
   const videoContainerRef = useRef(null)
+  const globalMousePosRef = useRef({ x: -1000, y: -1000 })
+  const wasUnmutedBeforeModalRef = useRef(false)
   const videoAspectRatio = project?.aspectRatio ?? '16 / 9'
-
-  const handleMouseMove = (event) => {
-    if (!videoContainerRef.current) return
-    const rect = videoContainerRef.current.getBoundingClientRect()
-    setCursorPosition({
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
-    })
-  }
 
   const getVideoAspectStyles = (ratio) => {
     const normalized = String(ratio).replace(/\s+/g, '').replace(':', '/')
@@ -62,7 +55,7 @@ export default function VideoDetailPage() {
 
     try {
       const url = new URL(project.videoEmbedUrl)
-      // Start muted for autoplay to work in restrictive browsers like Instagram in-app
+      // Start muted for autoplay to work in restrictive browsers
       url.searchParams.set('autoplay', '1')
       url.searchParams.set('muted', '1')
       url.searchParams.set('loop', '1')
@@ -73,71 +66,151 @@ export default function VideoDetailPage() {
       url.searchParams.set('portrait', '0')
       url.searchParams.set('background', '0')
       url.searchParams.set('autopause', '0')
+      url.searchParams.set('api', '1') // Ensure Vimeo Player listens for postMessage API
       return url.toString()
     } catch (error) {
       return project.videoEmbedUrl
     }
   }, [project])
 
+  // Helper to send Vimeo postMessage commands reliably
+  const sendVimeoCommand = (method, value) => {
+    if (!iframeRef.current?.contentWindow) return
+    try {
+      const dataObj = { method, value }
+      const dataStr = JSON.stringify(dataObj)
+      iframeRef.current.contentWindow.postMessage(dataObj, '*')
+      iframeRef.current.contentWindow.postMessage(dataStr, '*')
+    } catch (error) {
+      console.warn('Could not post message to Vimeo iframe:', error)
+    }
+  }
+
   // Use Vimeo Player API to control mute without reloading iframe
   useEffect(() => {
     if (!iframeRef.current) return
 
-    const postMessageToVimeo = () => {
-      try {
-        const data = {
-          method: 'setMuted',
-          value: isMuted,
-        }
-        iframeRef.current?.contentWindow?.postMessage(data, '*')
-      } catch (error) {
-        console.warn('Could not post message to Vimeo iframe:', error)
-      }
+    const applyMute = () => {
+      sendVimeoCommand('setMuted', isMuted)
+      sendVimeoCommand('setVolume', isMuted ? 0 : 1)
     }
 
-    // Wait for iframe to load before posting message
-    const timer = setTimeout(postMessageToVimeo, 500)
+    // Apply immediately and follow up with a short retry in case player was busy
+    applyMute()
+    const timer = setTimeout(applyMute, 150)
     return () => clearTimeout(timer)
   }, [isMuted])
 
-  // Autoplay audio after page loads (user already interacted by clicking project)
+  // Autoplay audio after page loads
   useEffect(() => {
     setIsTouch(isTouchDevice())
-    // Wait a bit longer for iframe to fully initialize
     const timer = setTimeout(() => {
-      setIsMuted(false)
+      if (isBookingOpen) {
+        wasUnmutedBeforeModalRef.current = true
+      } else {
+        setIsMuted(false)
+      }
     }, 1200)
     return () => clearTimeout(timer)
-  }, [])
+  }, [isBookingOpen])
 
-  // Check initial cursor position on first mouse movement to handle page loads with cursor already over the video
+  // 1. Mute when Booking Modal opens; unmute when Booking Modal closes
   useEffect(() => {
-    if (!videoContainerRef.current) return
-
-    const checkInitialCursorPosition = (event) => {
-      const rect = videoContainerRef.current.getBoundingClientRect()
-      const isInside =
-        event.clientX >= rect.left &&
-        event.clientX <= rect.right &&
-        event.clientY >= rect.top &&
-        event.clientY <= rect.bottom
-
-      if (isInside) {
-        setHovered(true)
-        setCursorPosition({
-          x: event.clientX - rect.left,
-          y: event.clientY - rect.top,
-        })
+    if (isBookingOpen) {
+      // Remember if audio was playing so we can restore it when modal closes
+      if (!isMuted) {
+        wasUnmutedBeforeModalRef.current = true
+        setIsMuted(true)
+      }
+      setHovered(false)
+    } else {
+      // Modal closed: restore unmuted state if it was playing before
+      if (wasUnmutedBeforeModalRef.current) {
+        setIsMuted(false)
+        wasUnmutedBeforeModalRef.current = false
       }
 
-      // Only need this once — normal onMouseEnter/Move/Leave on the
-      // container take over from here
-      document.removeEventListener('mousemove', checkInitialCursorPosition)
+      // 2. Check if cursor is already inside the video bounds when modal closes
+      const checkCursorInside = () => {
+        if (!videoContainerRef.current || isTouch) return
+        const rect = videoContainerRef.current.getBoundingClientRect()
+        const { x, y } = globalMousePosRef.current
+        const isInside =
+          x >= rect.left &&
+          x <= rect.right &&
+          y >= rect.top &&
+          y <= rect.bottom
+
+        if (isInside) {
+          setCursorPosition({
+            x: x - rect.left,
+            y: y - rect.top,
+          })
+          setHovered(true)
+        } else {
+          setHovered(false)
+        }
+      }
+
+      const rafId = requestAnimationFrame(checkCursorInside)
+      const timer1 = setTimeout(checkCursorInside, 60)
+      const timer2 = setTimeout(checkCursorInside, 200)
+
+      return () => {
+        cancelAnimationFrame(rafId)
+        clearTimeout(timer1)
+        clearTimeout(timer2)
+      }
+    }
+  }, [isBookingOpen, isTouch, isMuted])
+
+  // Global mousemove and scroll listener to track cursor inside video radius at all times
+  useEffect(() => {
+    const handleGlobalPosition = (e) => {
+      const clientX = e.clientX !== undefined ? e.clientX : globalMousePosRef.current.x
+      const clientY = e.clientY !== undefined ? e.clientY : globalMousePosRef.current.y
+
+      if (e.clientX !== undefined && e.clientY !== undefined) {
+        globalMousePosRef.current = { x: clientX, y: clientY }
+      }
+
+      if (isBookingOpen || isTouch || !videoContainerRef.current) return
+
+      const rect = videoContainerRef.current.getBoundingClientRect()
+      const isInside =
+        clientX >= rect.left &&
+        clientX <= rect.right &&
+        clientY >= rect.top &&
+        clientY <= rect.bottom
+
+      if (isInside) {
+        setCursorPosition({
+          x: clientX - rect.left,
+          y: clientY - rect.top,
+        })
+        setHovered(true)
+      } else {
+        setHovered(false)
+      }
     }
 
-    document.addEventListener('mousemove', checkInitialCursorPosition, { once: true })
-    return () => document.removeEventListener('mousemove', checkInitialCursorPosition)
-  }, [])
+    window.addEventListener('mousemove', handleGlobalPosition, { passive: true })
+    window.addEventListener('scroll', handleGlobalPosition, { passive: true })
+    return () => {
+      window.removeEventListener('mousemove', handleGlobalPosition)
+      window.removeEventListener('scroll', handleGlobalPosition)
+    }
+  }, [isBookingOpen, isTouch])
+
+  const handleMouseMove = (event) => {
+    if (!videoContainerRef.current || isBookingOpen) return
+    const rect = videoContainerRef.current.getBoundingClientRect()
+    setCursorPosition({
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+    })
+    setHovered(true)
+  }
 
   if (!project) {
     return (
@@ -155,8 +228,6 @@ export default function VideoDetailPage() {
   return (
     <SmoothScroll>
       <main className="relative min-h-screen bg-[#0a0a0a]">
-        <CursorGlow />
-        <CustomCursor />
 
       {/* Main Content */}
       <div className="pt-24 pb-16 px-6">
@@ -171,9 +242,23 @@ export default function VideoDetailPage() {
           >
             <div
               ref={videoContainerRef}
-              onMouseEnter={() => setHovered(true)}
+              onMouseEnter={(e) => {
+                if (isBookingOpen) return
+                const rect = videoContainerRef.current?.getBoundingClientRect()
+                if (rect) {
+                  setCursorPosition({
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top,
+                  })
+                }
+                setHovered(true)
+              }}
               onMouseLeave={() => setHovered(false)}
               onMouseMove={handleMouseMove}
+              onClick={() => {
+                if (isBookingOpen) return
+                setIsMuted((prev) => !prev)
+              }}
               className="relative w-full rounded-xl overflow-hidden border border-[rgba(255,255,255,0.08)] bg-bg-card cursor-pointer"
               style={videoAspectStyles}
             >
@@ -222,17 +307,21 @@ export default function VideoDetailPage() {
                     setIsMuted((value) => !value)
                   }}
                   aria-label={isMuted ? 'Unmute video' : 'Mute video'}
-                  className="absolute z-30 pointer-events-auto rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[0.75rem] uppercase tracking-[0.2em] text-white shadow-[0_18px_50px_rgba(0,0,0,0.18)] backdrop-blur-xl transition duration-300"
+                  className="absolute z-30 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[0.75rem] uppercase tracking-[0.2em] text-white shadow-[0_18px_50px_rgba(0,0,0,0.18)] backdrop-blur-xl transition duration-300"
                   initial={{ opacity: 0, scale: 0.88 }}
                   animate={{
-                    opacity: hovered ? 1 : 0,
-                    scale: hovered ? 1 : 0.88,
+                    opacity: hovered && !isBookingOpen ? 1 : 0,
+                    scale: hovered && !isBookingOpen ? 1 : 0.88,
                     left: cursorPosition.x - 50,
                     top: cursorPosition.y - 35,
                   }}
                   transition={{ type: 'spring', stiffness: 360, damping: 24, mass: 0.18 }}
                   whileTap={{ scale: 0.92 }}
-                  style={{ transform: 'translate(-50%, 0)', cursor: 'pointer' }}
+                  style={{
+                    transform: 'translate(-50%, 0)',
+                    cursor: 'pointer',
+                    pointerEvents: hovered && !isBookingOpen ? 'auto' : 'none',
+                  }}
                 >
                   <span className="inline-flex items-center gap-2">
                     <span className="h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_16px_rgba(255,255,255,0.6)]" />
@@ -285,16 +374,17 @@ export default function VideoDetailPage() {
               <p className="text-ink-muted text-[0.9rem] mr-4">
                 Like this style? Let&apos;s talk.
               </p>
-              <a
-                href="/book-project"
-                className="btn-primary text-sm py-2.5 px-5"
+              <button
+                type="button"
+                onClick={() => openBooking()}
+                className="btn-primary text-sm py-2.5 px-5 cursor-pointer"
               >
                 Book a Project
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                   <path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor"
                     strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-              </a>
+              </button>
               <Link href="/projects" className="btn-ghost text-sm py-2.5 px-5">
                 View More Projects
               </Link>

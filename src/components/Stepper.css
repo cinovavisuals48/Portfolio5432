@@ -1,0 +1,257 @@
+/* ─────────────────────────────────────────────────────────────
+   REACT BITS STEPPER — MONOCHROME CUSTOM STYLES
+   Adapted for Moulidoesmotion (Pure Monochrome & Glassmorphism)
+   ───────────────────────────────────────────────────────────── */
+
+.stepper-outer-container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.stepper-circle-container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 44rem;
+  border-radius: 1.5rem;
+  background: rgba(13, 13, 13, 0.92);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 24px 60px -15px rgba(0, 0, 0, 0.85),
+    0 0 35px rgba(255, 255, 255, 0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glassmorphism ambient highlight inside the card */
+.stepper-circle-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  pointer-events: none;
+}
+
+/* Step indicator row */
+.stepper-indicator-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 2rem 0.75rem 2rem;
+  position: relative;
+}
+
+@media (max-width: 640px) {
+  .stepper-indicator-row {
+    padding: 1rem 1.25rem 0.5rem 1.25rem;
+  }
+}
+
+.stepper-content-default {
+  position: relative;
+  overflow: hidden;
+  min-height: 240px;
+}
+
+.stepper-step-default {
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-bottom: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .stepper-step-default {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+.stepper-footer-container {
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-bottom: 1.75rem;
+  padding-top: 1rem;
+}
+
+@media (max-width: 640px) {
+  .stepper-footer-container {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    padding-bottom: 1.25rem;
+  }
+}
+
+.stepper-footer-nav {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.stepper-footer-nav.spread {
+  justify-content: space-between;
+}
+
+.stepper-footer-nav.end {
+  justify-content: flex-end;
+}
+
+/* Navigation buttons */
+.stepper-back-button {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  color: #A3A3A3;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.stepper-back-button:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.stepper-back-button.inactive {
+  pointer-events: none;
+  opacity: 0.35;
+  color: #525252;
+}
+
+.stepper-next-button {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  background-color: #FFFFFF;
+  color: #000000;
+  font-family: var(--font-display, sans-serif);
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: -0.01em;
+  padding: 0.55rem 1.35rem;
+  border: 1px solid #FFFFFF;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.12);
+}
+
+.stepper-next-button:hover:not(:disabled) {
+  background-color: #000000;
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.18);
+}
+
+.stepper-next-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.stepper-next-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Step indicators */
+.stepper-step-indicator {
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+
+.stepper-step-indicator-inner {
+  display: flex;
+  height: 2rem;
+  width: 2rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  font-family: var(--font-display, sans-serif);
+  border: 1.5px solid transparent;
+  transition: box-shadow 0.25s ease;
+}
+
+@media (max-width: 640px) {
+  .stepper-step-indicator-inner {
+    height: 1.75rem;
+    width: 1.75rem;
+    font-size: 0.75rem;
+  }
+}
+
+.stepper-active-dot {
+  height: 0.5rem;
+  width: 0.5rem;
+  border-radius: 9999px;
+  background-color: #000000;
+}
+
+.stepper-step-number {
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.stepper-step-connector {
+  position: relative;
+  margin-left: 0.35rem;
+  margin-right: 0.35rem;
+  height: 0.125rem;
+  flex: 1;
+  min-width: 10px;
+  overflow: hidden;
+  border-radius: 0.25rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  z-index: 1;
+}
+
+@media (max-width: 640px) {
+  .stepper-step-connector {
+    margin-left: 0.15rem;
+    margin-right: 0.15rem;
+    min-width: 6px;
+  }
+}
+
+.stepper-step-connector-inner {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+}
+
+.stepper-check-icon {
+  height: 0.95rem;
+  width: 0.95rem;
+  color: #000000;
+}
+
+@media (max-width: 640px) {
+  .stepper-check-icon {
+    height: 0.8rem;
+    width: 0.8rem;
+  }
+}

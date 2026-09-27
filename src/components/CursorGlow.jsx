@@ -10,37 +10,32 @@ import { motion, useSpring } from 'framer-motion'
 
 const isTouchDevice = () => {
   if (typeof window === 'undefined') return false
-  
-  // Only disable on actual touch-primary devices
-  // Check if hover is disabled (primary indication of touch device)
   const isHoverDisabled = window.matchMedia('(hover: none)').matches
-  
-  // Additional check: coarse pointer AND no hover = mobile/tablet
   const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches
-  
   return isHoverDisabled && isCoarsePointer
 }
 
 export default function CursorGlow() {
-  // Initialize with touch check to prevent flash on mobile
   const [mounted, setMounted] = useState(false)
-  const [isTouch, setIsTouch] = useState(isTouchDevice())
+  const [isTouch, setIsTouch] = useState(false)
 
-  const mouseX = useSpring(0, { stiffness: 80, damping: 30, mass: 0.5 })
-  const mouseY = useSpring(0, { stiffness: 80, damping: 30, mass: 0.5 })
+  const mouseX = useSpring(-500, { stiffness: 80, damping: 30, mass: 0.5 })
+  const mouseY = useSpring(-500, { stiffness: 80, damping: 30, mass: 0.5 })
 
   useEffect(() => {
-    // Re-check on mount in case initial detection failed
     setIsTouch(isTouchDevice())
     setMounted(true)
 
     const move = (e) => {
+      setIsTouch(false)
       mouseX.set(e.clientX)
       mouseY.set(e.clientY)
     }
 
     const handleTouchStart = () => {
-      setIsTouch(true)
+      if (isTouchDevice()) {
+        setIsTouch(true)
+      }
     }
 
     window.addEventListener('mousemove', move, { passive: true })
@@ -56,7 +51,7 @@ export default function CursorGlow() {
   return (
     <motion.div
       aria-hidden
-      className="pointer-events-none fixed top-0 left-0 z-40"
+      className="pointer-events-none fixed top-0 left-0 z-[9990]"
       style={{
         x: mouseX,
         y: mouseY,
@@ -67,7 +62,7 @@ export default function CursorGlow() {
       <div
         className="w-[350px] h-[350px] rounded-full"
         style={{
-          background: 'radial-gradient(circle, rgba(255,255,255,0.035) 0%, transparent 60%)',
+          background: 'radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 65%)',
         }}
       />
     </motion.div>

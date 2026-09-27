@@ -84,9 +84,10 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
       parsed.searchParams.set('title', '0')
       parsed.searchParams.set('byline', '0')
       parsed.searchParams.set('portrait', '0')
+      parsed.searchParams.set('api', '1')
       return parsed.toString()
     } catch (error) {
-      return `${url}${url.includes('?') ? '&' : '?'}autoplay=1&muted=${muted ? '1' : '0'}&loop=1&playsinline=1&controls=0&background=1&title=0&byline=0&portrait=0`
+      return `${url}${url.includes('?') ? '&' : '?'}autoplay=1&muted=${muted ? '1' : '0'}&loop=1&playsinline=1&controls=0&background=1&title=0&byline=0&portrait=0&api=1`
     }
   }
 

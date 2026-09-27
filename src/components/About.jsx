@@ -8,8 +8,11 @@
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useBooking } from '../context/BookingContext'
 
 export default function About() {
+  const { openBooking } = useBooking()
+
   return (
     <section id="about" className="section-py relative overflow-hidden">
       <div className="max-w-[clamp(1280px,82vw,1920px)] mx-auto px-6 relative z-10">
@@ -76,16 +79,17 @@ export default function About() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <Link
-                  href="/book-project"
-                  className="btn-book-project"
+                <button
+                  type="button"
+                  onClick={() => openBooking()}
+                  className="btn-book-project cursor-pointer"
                 >
                   Book a Project
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                     <path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5"
                       strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                </Link>
+                </button>
               </motion.div>
             </motion.div>
 

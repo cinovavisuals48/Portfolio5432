@@ -3,7 +3,7 @@
 // ─────────────────────────────────────────────────────────────
 // CUSTOM CURSOR — src/components/CustomCursor.jsx
 // A series of trailing dots that follow the cursor
-// Disabled on mobile/touch devices automatically.
+// Persists on top of all modals, overlays, and pages.
 // ─────────────────────────────────────────────────────────────
 
 import { useEffect, useState, useRef } from 'react'
@@ -15,37 +15,31 @@ const DOT_DELAYS = [0, 0.02, 0.04, 0.06, 0.08]
 
 const isTouchDevice = () => {
   if (typeof window === 'undefined') return false
-  
-  // Only disable on actual touch-primary devices
-  // Check if hover is disabled (primary indication of touch device)
   const isHoverDisabled = window.matchMedia('(hover: none)').matches
-  
-  // Additional check: coarse pointer AND no hover = mobile/tablet
   const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches
-  
   return isHoverDisabled && isCoarsePointer
 }
 
 export default function CustomCursor() {
-  // Initialize with touch check to prevent flash on mobile
   const [mounted, setMounted] = useState(false)
-  const [isTouch, setIsTouch] = useState(isTouchDevice())
+  const [isTouch, setIsTouch] = useState(false)
   const [isHovering, setIsHovering] = useState(false)
   const [isClicking, setIsClicking] = useState(false)
-  const mousePos = useRef({ x: 0, y: 0 })
+  const mousePos = useRef({ x: -100, y: -100 })
 
-  // Create springs for each dot with different stiffness for trailing effect
+  // Springs for each dot
   const dots = Array.from({ length: DOT_COUNT }, (_, i) => ({
-    x: useSpring(0, { stiffness: 400 - i * 60, damping: 28 - i * 2, mass: 0.4 + i * 0.1 }),
-    y: useSpring(0, { stiffness: 400 - i * 60, damping: 28 - i * 2, mass: 0.4 + i * 0.1 }),
+    x: useSpring(-100, { stiffness: 450 - i * 60, damping: 28 - i * 2, mass: 0.4 + i * 0.1 }),
+    y: useSpring(-100, { stiffness: 450 - i * 60, damping: 28 - i * 2, mass: 0.4 + i * 0.1 }),
   }))
 
   useEffect(() => {
-    // Re-check on mount in case initial detection failed
     setIsTouch(isTouchDevice())
     setMounted(true)
 
     const move = (e) => {
+      // Re-enable if user moves mouse on hybrid/touchscreen laptops
+      setIsTouch(false)
       mousePos.current = { x: e.clientX, y: e.clientY }
       dots.forEach((dot) => {
         dot.x.set(e.clientX)
@@ -55,19 +49,45 @@ export default function CustomCursor() {
 
     const handleMouseOver = (e) => {
       const target = e.target
+      if (!target || !(target instanceof HTMLElement)) return
+
       if (
         target.tagName === 'A' ||
         target.tagName === 'BUTTON' ||
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.tagName === 'SELECT' ||
         target.closest('a') ||
         target.closest('button') ||
-        target.classList.contains('cursor-pointer') ||
-        window.getComputedStyle(target).cursor === 'pointer'
+        target.closest('input') ||
+        target.closest('textarea') ||
+        target.closest('select') ||
+        target.classList?.contains('cursor-pointer') ||
+        (typeof window !== 'undefined' && window.getComputedStyle(target).cursor === 'pointer')
       ) {
         setIsHovering(true)
       }
     }
 
-    const handleMouseOut = () => {
+    const handleMouseOut = (e) => {
+      const nextTarget = e.relatedTarget
+      if (
+        nextTarget &&
+        nextTarget instanceof HTMLElement &&
+        (nextTarget.tagName === 'A' ||
+          nextTarget.tagName === 'BUTTON' ||
+          nextTarget.tagName === 'INPUT' ||
+          nextTarget.tagName === 'TEXTAREA' ||
+          nextTarget.tagName === 'SELECT' ||
+          nextTarget.closest('a') ||
+          nextTarget.closest('button') ||
+          nextTarget.closest('input') ||
+          nextTarget.closest('textarea') ||
+          nextTarget.closest('select') ||
+          nextTarget.classList?.contains('cursor-pointer'))
+      ) {
+        return
+      }
       setIsHovering(false)
     }
 
@@ -80,7 +100,10 @@ export default function CustomCursor() {
     }
 
     const handleTouchStart = () => {
-      setIsTouch(true)
+      // Only set touch if hover is not supported
+      if (isTouchDevice()) {
+        setIsTouch(true)
+      }
     }
 
     window.addEventListener('mousemove', move, { passive: true })
@@ -104,19 +127,21 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Hide default cursor globally - only applied on desktop */}
+      {/* Hide default cursor globally on desktop */}
       <style jsx global>{`
-        * {
-          cursor: none !important;
+        @media (hover: hover) and (pointer: fine) {
+          *, *::before, *::after {
+            cursor: none !important;
+          }
         }
       `}</style>
 
-      {/* Trailing dots */}
+      {/* Trailing dots - z-index set to 9999999 to guarantee top placement */}
       {dots.map((dot, i) => (
         <motion.div
           key={i}
           aria-hidden
-          className="pointer-events-none fixed top-0 left-0 z-[100] mix-blend-difference"
+          className="pointer-events-none fixed top-0 left-0 z-[9999999] mix-blend-difference"
           style={{
             x: dot.x,
             y: dot.y,
@@ -127,15 +152,15 @@ export default function CustomCursor() {
           <motion.div
             className="rounded-full bg-white"
             animate={{
-              width: isClicking 
-                ? DOT_SIZES[i] * 0.6 
-                : isHovering 
-                  ? (i === 0 ? 24 : DOT_SIZES[i] * 1.2) 
+              width: isClicking
+                ? DOT_SIZES[i] * 0.6
+                : isHovering
+                  ? (i === 0 ? 22 : DOT_SIZES[i] * 1.15)
                   : DOT_SIZES[i],
-              height: isClicking 
-                ? DOT_SIZES[i] * 0.6 
-                : isHovering 
-                  ? (i === 0 ? 24 : DOT_SIZES[i] * 1.2) 
+              height: isClicking
+                ? DOT_SIZES[i] * 0.6
+                : isHovering
+                  ? (i === 0 ? 22 : DOT_SIZES[i] * 1.15)
                   : DOT_SIZES[i],
               opacity: isHovering ? 1 - i * 0.12 : 1 - i * 0.15,
             }}
@@ -152,7 +177,7 @@ export default function CustomCursor() {
       {/* Outer ring (appears on hover) */}
       <motion.div
         aria-hidden
-        className="pointer-events-none fixed top-0 left-0 z-[99] mix-blend-difference"
+        className="pointer-events-none fixed top-0 left-0 z-[9999998] mix-blend-difference"
         style={{
           x: dots[0].x,
           y: dots[0].y,
@@ -161,11 +186,11 @@ export default function CustomCursor() {
         }}
       >
         <motion.div
-          className="rounded-full border border-white/40"
+          className="rounded-full border border-white/50"
           animate={{
-            width: isHovering ? 40 : 0,
-            height: isHovering ? 40 : 0,
-            opacity: isHovering ? 0.6 : 0,
+            width: isHovering ? 38 : 0,
+            height: isHovering ? 38 : 0,
+            opacity: isHovering ? 0.7 : 0,
           }}
           transition={{
             type: 'spring',

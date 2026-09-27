@@ -7,6 +7,7 @@
 
 import { motion } from 'framer-motion'
 import { links } from '../data/links'
+import { useBooking } from '../context/BookingContext'
 
 const socials = [
   {
@@ -34,6 +35,8 @@ const socials = [
 ]
 
 export default function Contact() {
+  const { openBooking } = useBooking()
+
   return (
     <section id="contact" className="section-py relative overflow-hidden">
       <div className="max-w-[clamp(1280px,82vw,1920px)] mx-auto px-6 relative z-10">
@@ -81,16 +84,17 @@ export default function Contact() {
           transition={{ duration: 0.5, delay: 0.15 }}
           className="mb-10"
         >
-          <a
-            href="/book-project"
-            className="btn-primary"
+          <button
+            type="button"
+            onClick={() => openBooking()}
+            className="btn-primary cursor-pointer"
           >
             Book a Project
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5"
                 strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-          </a>
+          </button>
         </motion.div>
 
         {/* Social Links */}

@@ -9,6 +9,7 @@ import { motion, useScroll, useTransform, AnimatePresence, useReducedMotion } fr
 import { useRef, useState, useEffect } from 'react'
 import { links } from '../data/links'
 import Beams from './Beams'
+import { useBooking } from '../context/BookingContext'
 
 const ROTATING_WORDS = [
   'SaaS',
@@ -64,6 +65,7 @@ const reducedMotionVariants = {
 }
 
 export default function Hero() {
+  const { openBooking } = useBooking()
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '15%'])
@@ -194,16 +196,17 @@ export default function Hero() {
 
           {/* CTA Buttons */}
           <motion.div variants={itemVariants} className="flex flex-wrap gap-4 items-center">
-            <a
-              href="/book-project"
-              className="btn-book-project"
+            <button
+              type="button"
+              onClick={() => openBooking()}
+              className="btn-book-project cursor-pointer"
             >
               Book a Project
               <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                 <path d="M3 7.5h9M7.5 3l4.5 4.5L7.5 12" stroke="currentColor"
                   strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-            </a>
+            </button>
 
             <a
               href="#projects"

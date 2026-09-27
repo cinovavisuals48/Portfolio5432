@@ -15,20 +15,12 @@ import About        from '../components/About'
 import FAQ          from '../components/FAQ'
 import Contact      from '../components/Contact'
 import Footer       from '../components/Footer'
-import CursorGlow   from '../components/CursorGlow'
-import CustomCursor from '../components/CustomCursor'
 import SmoothScroll from '../components/SmoothScroll'
 
 export default function Home() {
   return (
     <SmoothScroll>
     <main className="relative">
-      {/* Ambient cursor glow (desktop only) */}
-      <CursorGlow />
-
-      {/* Custom dot cursor (desktop only) */}
-      <CustomCursor />
-
       {/* Hero */}
       <Hero />
 

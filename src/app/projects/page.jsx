@@ -10,12 +10,12 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { projects, categories } from '../../data/projects'
 import ProjectCard from '../../components/ProjectCard'
 import Footer from '../../components/Footer'
-import CustomCursor from '../../components/CustomCursor'
-import CursorGlow from '../../components/CursorGlow'
 import SmoothScroll from '../../components/SmoothScroll'
 import Link from 'next/link'
+import { useBooking } from '../../context/BookingContext'
 
 export default function ProjectsPage() {
+  const { openBooking } = useBooking()
   const [activeCategory, setActiveCategory] = useState('All')
 
   const shortUiAnimations = projects.filter((project) => project.shortUiAnimation)
@@ -27,8 +27,6 @@ export default function ProjectsPage() {
   return (
     <SmoothScroll>
       <main className="relative min-h-screen">
-        <CursorGlow />
-        <CustomCursor />
 
         <section className="pt-32 pb-20 px-6">
           <div className="max-w-[clamp(1280px,82vw,1920px)] mx-auto">
@@ -183,16 +181,17 @@ export default function ProjectsPage() {
                 <p className="text-ink-muted text-[0.92rem] mb-5">
                   Let&apos;s create something amazing together.
                 </p>
-                <a
-                  href="/book-project"
-                  className="btn-primary inline-flex"
+                <button
+                  type="button"
+                  onClick={() => openBooking()}
+                  className="btn-primary inline-flex cursor-pointer"
                 >
                   Book a Project
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                     <path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor"
                       strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                </a>
+                </button>
               </div>
             </motion.div>
           </div>

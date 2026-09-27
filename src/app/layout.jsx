@@ -5,6 +5,10 @@
 
 import './globals.css'
 import Navbar from '../components/Navbar'
+import { BookingProvider } from '../context/BookingContext'
+import BookingModal from '../components/BookingModal'
+import CursorGlow from '../components/CursorGlow'
+import CustomCursor from '../components/CustomCursor'
 
 export const viewport = {
   themeColor: '#000000',
@@ -61,8 +65,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth">
       <body className="bg-bg-primary text-ink-primary font-body antialiased overflow-x-hidden">
-        <Navbar />
-        {children}
+        <BookingProvider>
+          <CursorGlow />
+          <CustomCursor />
+          <Navbar />
+          {children}
+          <BookingModal />
+        </BookingProvider>
       </body>
     </html>
   )
