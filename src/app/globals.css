@@ -1,6 +1,6 @@
 /* ─────────────────────────────────────────────────────────────
    MOULIDOESMOTION — Global Styles
-   Clean minimal black & grey with blue accents
+   Clean minimal black, white & grey monochrome system
    ───────────────────────────────────────────────────────────── */
 
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
@@ -16,9 +16,9 @@
   --bg-card:      #141414;
   --bg-elevated:  #1a1a1a;
 
-  --accent-blue:   #3b82f6;
-  --accent-blue-soft: #60a5fa;
-  --accent-glow:   rgba(59, 130, 246, 0.15);
+  --accent-blue:   #ffffff;
+  --accent-blue-soft: #f5f5f5;
+  --accent-glow:   rgba(255, 255, 255, 0.15);
 
   --ink-primary:  #fafafa;
   --ink-secondary: #e5e5e5;
@@ -64,7 +64,7 @@ body {
 
 /* ─── Selection ─────────────────────────────────────────────── */
 ::selection {
-  background: rgba(59, 130, 246, 0.3);
+  background: rgba(255, 255, 255, 0.22);
   color: var(--ink-primary);
 }
 
@@ -75,7 +75,7 @@ body {
 
   /* Gradient text — clean blue */
   .text-gradient {
-    background: linear-gradient(135deg, #fafafa 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #737373 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -83,7 +83,7 @@ body {
 
   /* Gradient text — blue accent */
   .text-gradient-blue {
-    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #a3a3a3 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -103,8 +103,8 @@ body {
 
   /* Ambient glow */
   .glow-blue {
-    box-shadow: 0 0 60px rgba(59, 130, 246, 0.1),
-                0 0 120px rgba(59, 130, 246, 0.05);
+    box-shadow: 0 0 60px rgba(255, 255, 255, 0.1),
+                0 0 120px rgba(255, 255, 255, 0.05);
   }
 
   /* Section spacing */
@@ -138,8 +138,8 @@ body {
   display: inline-flex;
   align-items: center;
   padding: 0.25rem 0.75rem;
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 999px;
   font-size: 0.7rem;
   font-weight: 500;
@@ -154,8 +154,8 @@ body {
   align-items: center;
   gap: 0.5rem;
   padding: 0.875rem 1.75rem;
-  background: var(--accent-blue);
-  color: #fff;
+  background: #ffffff;
+  color: #000000;
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 0.9rem;
@@ -168,9 +168,9 @@ body {
 }
 
 .btn-primary:hover {
-  background: #2563eb;
+  background: #e5e5e5;
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.18);
 }
 
 .btn-primary:active {
@@ -246,18 +246,18 @@ body {
   font-size: 0.9rem;
   letter-spacing: 0.02em;
   border-radius: 999px;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   transition: all 0.2s ease;
   cursor: pointer;
   text-decoration: none;
 }
 
 .btn-book-project:hover {
-  background: rgba(59, 130, 246, 0.1);
-  border-color: var(--accent-blue);
-  color: var(--accent-blue);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.75);
+  color: #ffffff;
   transform: translateY(-1px);
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.16);
 }
 
 .btn-book-project:active {
@@ -299,9 +299,9 @@ body {
   background: linear-gradient(
     180deg,
     var(--bg-primary) 0%,
-    rgba(59, 130, 246, 0.03) 30%,
-    rgba(59, 130, 246, 0.05) 50%,
-    rgba(59, 130, 246, 0.03) 70%,
+    rgba(255, 255, 255, 0.018) 30%,
+    rgba(255, 255, 255, 0.035) 50%,
+    rgba(255, 255, 255, 0.018) 70%,
     var(--bg-primary) 100%
   );
 }
