@@ -51,7 +51,7 @@ export default function ProjectsPage() {
                 Back to Home
               </Link>
 
-              <p className="text-accent-blue text-sm font-display font-600 tracking-[0.1em] uppercase mb-3">
+              <p className="text-[#A3A3A3] text-sm font-display font-600 tracking-[0.1em] uppercase mb-3">
                 Portfolio
               </p>
               <h1 className="font-display font-800 text-[clamp(2.2rem,5vw,4rem)]
@@ -76,10 +76,10 @@ export default function ProjectsPage() {
                   <button
                     key={category}
                     onClick={() => setActiveCategory(category)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border
                       ${activeCategory === category
-                        ? 'bg-accent-blue text-white'
-                        : 'bg-[rgba(255,255,255,0.04)] text-ink-muted hover:bg-[rgba(255,255,255,0.08)] hover:text-ink-primary border border-[rgba(255,255,255,0.06)]'
+                        ? 'bg-white text-black border-white font-semibold shadow-[0_2px_10px_rgba(255,255,255,0.12)]'
+                        : 'bg-[rgba(255,255,255,0.04)] text-ink-muted hover:bg-[rgba(255,255,255,0.08)] hover:text-ink-primary border-[rgba(255,255,255,0.08)]'
                       }`}
                   >
                     {category}
@@ -127,7 +127,7 @@ export default function ProjectsPage() {
                 className="mt-16"
               >
                 <div className="mb-8">
-                  <p className="text-accent-blue text-sm font-display font-600 tracking-[0.1em] uppercase mb-3">
+                  <p className="text-[#A3A3A3] text-sm font-display font-600 tracking-[0.1em] uppercase mb-3">
                     Short UI Animations
                   </p>
                   <h2 className="font-display font-800 text-[clamp(1.8rem,3.5vw,2.5rem)] leading-[1.05] tracking-tight text-ink-primary mb-3">
@@ -162,7 +162,7 @@ export default function ProjectsPage() {
                 </p>
                 <button
                   onClick={() => setActiveCategory('All')}
-                  className="text-accent-blue hover:underline"
+                  className="text-white link-underline font-medium"
                 >
                   See all work
                 </button>
@@ -176,7 +176,7 @@ export default function ProjectsPage() {
               transition={{ duration: 0.5, delay: 0.3 }}
               className="mt-20 text-center"
             >
-              <div className="inline-block p-8 rounded-2xl bg-[rgba(59,130,246,0.05)] border border-[rgba(59,130,246,0.1)]">
+              <div className="inline-block p-8 rounded-2xl bg-white/[0.03] border border-white/10">
                 <h3 className="font-display font-700 text-xl text-ink-primary mb-2">
                   Like what you see?
                 </h3>

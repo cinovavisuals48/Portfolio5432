@@ -6,6 +6,10 @@
 import './globals.css'
 import Navbar from '../components/Navbar'
 
+export const viewport = {
+  themeColor: '#000000',
+}
+
 // ── SEO METADATA — edit these values ──────────────────────────
 export const metadata = {
   title: 'Moulidoesmotion — SaaS Motion Design',

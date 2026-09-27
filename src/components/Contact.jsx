@@ -43,7 +43,7 @@ export default function Contact() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-accent-blue text-sm font-display font-600 tracking-[0.1em] uppercase mb-3"
+          className="text-[#A3A3A3] text-sm font-display font-600 tracking-[0.1em] uppercase mb-3"
         >
           Get In Touch
         </motion.p>
@@ -58,7 +58,7 @@ export default function Contact() {
                      leading-[1] tracking-tight text-ink-primary mb-4"
         >
           Ready to move{' '}
-          <span className="text-gradient-blue">your product</span>
+          <span className="text-gradient-mono">your product</span>
           <br />
           forward?
         </motion.h2>

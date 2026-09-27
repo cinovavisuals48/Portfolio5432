@@ -235,7 +235,7 @@ export default function VideoDetailPage() {
                   style={{ transform: 'translate(-50%, 0)', cursor: 'pointer' }}
                 >
                   <span className="inline-flex items-center gap-2">
-                    <span className="h-2.5 w-2.5 rounded-full bg-sky-400 shadow-[0_0_16px_rgba(56,189,248,0.4)]" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_16px_rgba(255,255,255,0.6)]" />
                     {isMuted ? 'Unmute' : 'Mute'}
                   </span>
                 </motion.button>
@@ -311,10 +311,10 @@ export default function VideoDetailPage() {
         className="border-t border-[rgba(255,255,255,0.05)] py-6 px-6"
       >
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Link href="/projects" className="text-ink-muted hover:text-ink-primary transition-colors text-sm">
+          <Link href="/projects" className="link-underline text-ink-muted hover:text-white transition-colors text-sm">
             &larr; Back to All Projects
           </Link>
-          <Link href="/" className="text-ink-muted hover:text-ink-primary transition-colors text-sm">
+          <Link href="/" className="link-underline text-ink-muted hover:text-white transition-colors text-sm">
             Home
           </Link>
         </div>

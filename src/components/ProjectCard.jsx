@@ -164,7 +164,7 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
         animate={{ opacity: hovered ? 1 : 0 }}
         transition={{ duration: 0.3 }}
         style={{
-          background: 'radial-gradient(ellipse at top left, rgba(59, 130, 246, 0.08) 0%, transparent 60%)',
+          background: 'radial-gradient(ellipse at top left, rgba(255, 255, 255, 0.06) 0%, transparent 60%)',
         }}
       />
 
@@ -300,7 +300,7 @@ export default function ProjectCard({ project, index, forcePreview = false, prev
               <motion.div
                 animate={{ x: hovered ? 4 : 0 }}
                 transition={{ duration: 0.2 }}
-                className="text-ink-subtle"
+                className="text-ink-subtle group-hover:text-white transition-colors"
               >
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M4 12L12 4M12 4H6M12 4v6" stroke="currentColor" 

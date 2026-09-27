@@ -258,9 +258,9 @@ Budget: ${formData.budget}
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', stiffness: 200 }}
-            className="w-20 h-20 bg-accent-blue rounded-full flex items-center justify-center mx-auto mb-8"
+            className="w-20 h-20 bg-white text-black rounded-full flex items-center justify-center mx-auto mb-8 shadow-[0_4px_24px_rgba(255,255,255,0.2)]"
           >
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M20 6L9 17l-5-5" />
             </svg>
           </motion.div>
@@ -298,7 +298,7 @@ Budget: ${formData.budget}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="text-accent-blue text-sm font-display font-600 tracking-[0.1em] uppercase mb-2"
+          className="text-[#A3A3A3] text-sm font-display font-600 tracking-[0.1em] uppercase mb-2"
         >
           Book a Project
         </motion.p>
@@ -308,7 +308,7 @@ Budget: ${formData.budget}
           transition={{ delay: 0.2 }}
           className="font-display font-800 text-[clamp(2.5rem,5vw,4rem)] leading-[1] tracking-tight text-ink-primary mb-3"
         >
-          Let&apos;s work <span className="text-gradient-blue">together.</span>
+          Let&apos;s work <span className="text-gradient-mono">together.</span>
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: 10 }}
@@ -331,7 +331,7 @@ Budget: ${formData.budget}
         {/* Full Name */}
         <motion.div variants={itemVariants}>
           <label className="block text-ink-primary text-sm font-medium mb-2">
-            Full name <span className="text-accent-blue">*</span>
+            Full name <span className="text-[#A3A3A3]">*</span>
           </label>
           <input
             type="text"
@@ -339,14 +339,14 @@ Budget: ${formData.budget}
             value={formData.fullName}
             onChange={handleChange}
             placeholder="Jane Doe"
-            className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-accent-blue transition-colors"
+            className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-colors"
           />
         </motion.div>
 
         {/* Email */}
         <motion.div variants={itemVariants}>
           <label className="block text-ink-primary text-sm font-medium mb-2">
-            Email <span className="text-accent-blue">*</span>
+            Email <span className="text-[#A3A3A3]">*</span>
           </label>
           <input
             type="email"
@@ -354,7 +354,7 @@ Budget: ${formData.budget}
             value={formData.email}
             onChange={handleChange}
             placeholder="you@company.com"
-            className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-accent-blue transition-colors"
+            className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-colors"
           />
         </motion.div>
 
@@ -369,14 +369,14 @@ Budget: ${formData.budget}
             value={formData.whatsappNumber}
             onChange={handleChange}
             placeholder="+1 555 123 4567"
-            className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-accent-blue transition-colors"
+            className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-colors"
           />
         </motion.div>
 
         {/* Preferred Contact Method */}
         <motion.div variants={itemVariants}>
           <label className="block text-ink-primary text-sm font-medium mb-3">
-            Preferred contact method <span className="text-accent-blue">*</span>
+            Preferred contact method <span className="text-[#A3A3A3]">*</span>
           </label>
           <div className="flex gap-3 flex-wrap">
             {['Email', 'WhatsApp', 'Instagram DM'].map((method) => (
@@ -389,21 +389,21 @@ Budget: ${formData.budget}
                     preferredContact: method,
                   }))
                 }
-                className={`px-4 py-2 rounded-lg border transition-colors font-medium text-sm flex items-center gap-2 ${
+                className={`px-4 py-2 rounded-lg border transition-all duration-200 font-medium text-sm flex items-center gap-2 ${
                   formData.preferredContact === method
-                    ? 'bg-accent-blue border-accent-blue text-white'
-                    : 'border-[rgba(255,255,255,0.1)] text-ink-muted hover:text-ink-primary'
+                    ? 'bg-white border-white text-black font-semibold shadow-[0_2px_10px_rgba(255,255,255,0.12)]'
+                    : 'border-[rgba(255,255,255,0.1)] text-ink-muted hover:border-white/30 hover:text-white'
                 }`}
               >
                 <div
                   className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
                     formData.preferredContact === method
-                      ? 'border-white'
+                      ? 'border-black'
                       : 'border-[rgba(255,255,255,0.3)]'
                   }`}
                 >
                   {formData.preferredContact === method && (
-                    <div className="w-2 h-2 bg-white rounded-full" />
+                    <div className="w-2 h-2 bg-black rounded-full" />
                   )}
                 </div>
                 {method}
@@ -415,7 +415,7 @@ Budget: ${formData.budget}
         {/* Project Description */}
         <motion.div variants={itemVariants}>
           <label className="block text-ink-primary text-sm font-medium mb-2">
-            Project description <span className="text-accent-blue">*</span>
+            Project description <span className="text-[#A3A3A3]">*</span>
           </label>
           <textarea
             name="projectDescription"
@@ -423,7 +423,7 @@ Budget: ${formData.budget}
             onChange={handleChange}
             placeholder="Tell me what you're building and what you need."
             rows="4"
-            className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-accent-blue transition-colors resize-none"
+            className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-colors resize-none"
           />
         </motion.div>
 
@@ -438,14 +438,14 @@ Budget: ${formData.budget}
             onChange={handleChange}
             placeholder="Paste links to videos or styles you like."
             rows="4"
-            className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-accent-blue transition-colors resize-none"
+            className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary placeholder-ink-muted focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-colors resize-none"
           />
         </motion.div>
 
         {/* Deadline */}
         <motion.div variants={itemVariants}>
           <label className="block text-ink-primary text-sm font-medium mb-3">
-            Deadline <span className="text-accent-blue">*</span>
+            Deadline <span className="text-[#A3A3A3]">*</span>
           </label>
           <div className="space-y-2">
             {['ASAP (rush fee may apply)', 'Within 1–2 weeks', 'No rush, flexible'].map((option) => (
@@ -458,22 +458,22 @@ Budget: ${formData.budget}
                     deadline: option,
                   }))
                 }
-                className={`w-full px-4 py-3 rounded-lg border text-left transition-colors font-medium text-sm ${
+                className={`w-full px-4 py-3 rounded-lg border text-left transition-all duration-200 font-medium text-sm ${
                   formData.deadline === option
-                    ? 'bg-accent-blue border-accent-blue text-white'
-                    : 'border-[rgba(255,255,255,0.1)] text-ink-primary hover:border-[rgba(255,255,255,0.2)]'
+                    ? 'bg-white border-white text-black font-semibold shadow-[0_2px_10px_rgba(255,255,255,0.12)]'
+                    : 'border-[rgba(255,255,255,0.1)] text-ink-primary hover:border-white/30'
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <div
                     className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
                       formData.deadline === option
-                        ? 'border-white'
+                        ? 'border-black'
                         : 'border-[rgba(255,255,255,0.3)]'
                     }`}
                   >
                     {formData.deadline === option && (
-                      <div className="w-2.5 h-2.5 bg-white rounded-full" />
+                      <div className="w-2.5 h-2.5 bg-black rounded-full" />
                     )}
                   </div>
                   {option}
@@ -486,7 +486,7 @@ Budget: ${formData.budget}
         {/* Video Length */}
         <motion.div variants={itemVariants}>
           <label className="block text-ink-primary text-sm font-medium mb-3">
-            Video length <span className="text-accent-blue">*</span>
+            Video length <span className="text-[#A3A3A3]">*</span>
           </label>
           <div className="flex gap-3 flex-wrap">
             {['5–10s', '10–20s', '20–40s', '40–60s', '60+s'].map((length) => {
@@ -500,12 +500,12 @@ Budget: ${formData.budget}
                   type="button"
                   disabled={isDisabled}
                   onClick={() => handleVideoLengthSelect(length)}
-                  className={`px-4 py-2 rounded-lg border transition-colors font-medium text-sm ${
+                  className={`px-4 py-2 rounded-lg border transition-all duration-200 font-medium text-sm ${
                     isDisabled
-                      ? 'border-[rgba(255,255,255,0.1)] text-ink-muted opacity-40 cursor-not-allowed'
+                      ? 'border-[rgba(255,255,255,0.06)] text-ink-muted opacity-30 cursor-not-allowed'
                       : isSelected
-                      ? 'bg-accent-blue border-accent-blue text-white'
-                      : 'border-[rgba(255,255,255,0.1)] text-ink-muted hover:text-ink-primary'
+                      ? 'bg-white border-white text-black font-semibold shadow-[0_2px_10px_rgba(255,255,255,0.12)]'
+                      : 'border-[rgba(255,255,255,0.1)] text-ink-muted hover:border-white/30 hover:text-white'
                   }`}
                 >
                   {length}
@@ -534,14 +534,14 @@ Budget: ${formData.budget}
         {/* Budget */}
         <motion.div variants={itemVariants}>
           <label className="block text-ink-primary text-sm font-medium mb-2">
-            Budget <span className="text-accent-blue">*</span>
+            Budget <span className="text-[#A3A3A3]">*</span>
           </label>
           <div className="relative">
             <select
               name="budget"
               value={formData.budget}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary focus:outline-none focus:border-accent-blue transition-colors appearance-none cursor-pointer pr-10"
+              className="w-full px-4 py-3 bg-bg-secondary border border-[rgba(255,255,255,0.1)] rounded-lg text-ink-primary focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-colors appearance-none cursor-pointer pr-10"
             >
               <option value="">Select a budget</option>
               {Object.keys(PROJECT_FORM_CONFIG.budgets).map((budgetOption) => {
@@ -596,7 +596,7 @@ Budget: ${formData.budget}
 
         {/* Required Fields Note */}
         <motion.p variants={itemVariants} className="text-ink-muted text-xs">
-          Fields marked with <span className="text-accent-blue">*</span> are required
+          Fields marked with <span className="text-[#A3A3A3]">*</span> are required
         </motion.p>
 
         {/* Submit Button */}
@@ -604,9 +604,9 @@ Budget: ${formData.budget}
           variants={itemVariants}
           type="submit"
           disabled={isLoading}
-          whileHover={!isLoading ? { scale: 1.02 } : {}}
-          whileTap={!isLoading ? { scale: 0.98 } : {}}
-          className="w-full py-3.5 bg-accent-blue text-white font-medium rounded-lg hover:bg-blue-600 disabled:opacity-70 disabled:cursor-not-allowed transition-colors"
+          whileHover={!isLoading ? { scale: 1.01 } : {}}
+          whileTap={!isLoading ? { scale: 0.99 } : {}}
+          className="w-full py-3.5 bg-white text-black border border-white font-semibold rounded-lg hover:bg-black hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-[0_4px_20px_rgba(255,255,255,0.1)]"
         >
           {isLoading ? 'Sending...' : 'Send it over'}
         </motion.button>

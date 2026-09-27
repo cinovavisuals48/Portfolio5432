@@ -45,7 +45,7 @@ export default function Process() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-accent-blue text-sm font-display font-600 tracking-[0.1em] uppercase mb-3"
+          className="text-[#A3A3A3] text-sm font-display font-600 tracking-[0.1em] uppercase mb-3"
         >
           The Process
         </motion.p>
@@ -59,7 +59,7 @@ export default function Process() {
           className="font-display font-800 text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.1] tracking-tight text-ink-primary mb-12"
         >
           From brief to delivery in{' '}
-          <span className="text-accent-blue">five</span> steps
+          <span className="text-white">five</span> steps
         </motion.h2>
 
         {/* Steps Timeline */}

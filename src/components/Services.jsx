@@ -111,7 +111,7 @@ export default function Services() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-accent-blue text-sm font-display font-600 tracking-[0.1em] uppercase mb-6"
+          className="text-[#A3A3A3] text-sm font-display font-600 tracking-[0.1em] uppercase mb-6"
         >
           What I Make
         </motion.p>
@@ -124,7 +124,7 @@ export default function Services() {
           transition={{ duration: 0.6 }}
           className="font-display font-800 text-[clamp(2rem,5vw,3.5rem)] leading-[1.05] tracking-tight text-ink-primary mb-16"
         >
-          What I can <span className="text-accent-blue">build for you</span>
+          What I can <span className="text-white">build for you</span>
         </motion.h2>
 
         {/* Service Items */}
@@ -136,11 +136,11 @@ export default function Services() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="p-6 rounded-xl border border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-300"
+              className="group p-6 rounded-xl border border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-300"
             >
               {/* Icon + Title */}
               <div className="flex items-start gap-4 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-accent-blue/20 flex items-center justify-center flex-shrink-0 text-accent-blue">
+                <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-[#A3A3A3] group-hover:text-white group-hover:bg-white/10 group-hover:border-white/20 transition-all duration-300">
                   {offering.icon}
                 </div>
                 <h3 className="font-display font-700 text-[1.1rem] text-ink-primary">

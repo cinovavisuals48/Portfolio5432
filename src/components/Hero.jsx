@@ -42,7 +42,7 @@ export default function Hero() {
         {/* Subtle radial gradient */}
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2
                         w-[800px] h-[600px] rounded-full opacity-[0.03]"
-          style={{ background: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%)' }}
         />
         {/* Grid pattern */}
         <div className="absolute inset-0 opacity-[0.02]"
@@ -68,7 +68,7 @@ export default function Hero() {
           {/* Eyebrow */}
           <motion.div variants={itemVariants} className="mb-6">
             <span className="tag-pill">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent-blue mr-2 inline-block" />
+              <span className="w-1.5 h-1.5 rounded-full bg-white mr-2 inline-block" />
               Motion Designer
             </span>
           </motion.div>
@@ -81,7 +81,7 @@ export default function Hero() {
             <span className="block text-[clamp(3rem,7vw,9.5rem)] text-ink-primary">
               Motion Design
             </span>
-            <span className="block text-[clamp(3rem,7vw,9.5rem)] text-gradient-blue">
+            <span className="block text-[clamp(3rem,7vw,9.5rem)] text-gradient-mono">
               That Converts.
             </span>
           </motion.h1>

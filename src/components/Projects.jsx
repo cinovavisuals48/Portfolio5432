@@ -14,11 +14,11 @@ export default function Projects() {
   return (
     <section id="projects" className="section-py relative overflow-hidden projects-gradient">
 
-      {/* Background blue glow */}
+      {/* Background monochrome glow */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                         w-[1000px] h-[800px] rounded-full opacity-[0.04]"
-          style={{ background: 'radial-gradient(ellipse, #3b82f6 0%, transparent 60%)' }}
+          style={{ background: 'radial-gradient(ellipse, rgba(255, 255, 255, 0.08) 0%, transparent 60%)' }}
         />
       </div>
 
@@ -32,7 +32,7 @@ export default function Projects() {
           transition={{ duration: 0.5 }}
           className="mb-12"
         >
-          <p className="text-accent-blue text-sm font-display font-600 tracking-[0.1em] uppercase mb-3">
+          <p className="text-[#A3A3A3] text-sm font-display font-600 tracking-[0.1em] uppercase mb-3">
             Selected Work
           </p>
           <h2 className="font-display font-800 text-[clamp(2rem,4.5vw,3.5rem)] leading-[1] tracking-tight text-ink-primary">

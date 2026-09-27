@@ -167,9 +167,10 @@ export default function Navbar() {
                     onClick={(e) => {
                       handleNavClick(e, link.href, link.isExternal)
                     }}
-                    className="text-white/70 hover:text-white transition-colors duration-200 text-sm font-medium px-4 py-2 rounded-full hover:bg-white/10"
+                    className="relative text-white/80 hover:text-white text-sm font-medium px-4 py-2 group transition-colors"
                   >
-                    {link.label}
+                    <span>{link.label}</span>
+                    <span className="absolute bottom-1 left-4 right-4 h-[1.5px] bg-white scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
                   </Link>
                 ))}
               </motion.div>
@@ -201,12 +202,13 @@ export default function Navbar() {
                     className="
                       inline-flex items-center gap-2
                       px-5 py-2
-                      bg-white/10 hover:bg-white/20
-                      border border-white/20
+                      bg-white hover:bg-black
+                      text-black hover:text-white
+                      border border-white
                       rounded-full
-                      text-sm font-medium text-white
+                      text-sm font-semibold
                       transition-all duration-200
-                      backdrop-blur-sm
+                      shadow-[0_2px_10px_rgba(255,255,255,0.12)]
                     "
                   >
                     Book a Project
@@ -306,11 +308,12 @@ export default function Navbar() {
                   className="
                     w-full inline-flex items-center justify-center gap-2
                     px-5 py-3
-                    bg-white text-neutral-900
+                    bg-white text-black
+                    border border-white
+                    hover:bg-black hover:text-white
                     rounded-full
                     text-sm font-semibold
                     transition-all duration-200
-                    hover:bg-white/90
                   "
                 >
                   Book a Project

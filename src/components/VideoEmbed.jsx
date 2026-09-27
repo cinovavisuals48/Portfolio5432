@@ -8,7 +8,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-export default function VideoEmbed({ embedUrl, thumbnailUrl, title, accentColor = '#3b82f6' }) {
+export default function VideoEmbed({ embedUrl, thumbnailUrl, title, accentColor = '#ffffff' }) {
   const [playing, setPlaying] = useState(false)
 
   const autoplayUrl = embedUrl.includes('?')

@@ -19,7 +19,7 @@ export default function About() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-accent-blue text-sm font-display font-600 tracking-[0.1em] uppercase mb-12"
+          className="text-[#A3A3A3] text-sm font-display font-600 tracking-[0.1em] uppercase mb-12"
         >
           About
         </motion.p>
@@ -79,11 +79,7 @@ export default function About() {
               >
                 <Link
                   href="/book-project"
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-lg
-                             border border-white/20 bg-white/5
-                             hover:border-white/40 hover:bg-white/10
-                             transition-all duration-200
-                             text-sm font-medium text-ink-primary"
+                  className="btn-book-project"
                 >
                   Book a Project
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none">

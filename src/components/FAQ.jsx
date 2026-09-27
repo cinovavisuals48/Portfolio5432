@@ -57,7 +57,7 @@ export default function FAQ() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-accent-blue text-sm font-display font-600 tracking-[0.1em] uppercase mb-3"
+          className="text-[#A3A3A3] text-sm font-display font-600 tracking-[0.1em] uppercase mb-3"
         >
           FAQ
         </motion.p>
@@ -71,7 +71,7 @@ export default function FAQ() {
           className="font-display font-800 text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.1] tracking-tight text-ink-primary mb-3"
         >
           Things people usually{' '}
-          <span className="text-accent-blue">ask</span>
+          <span className="text-white">ask</span>
         </motion.h2>
 
         {/* Divider */}
@@ -89,9 +89,9 @@ export default function FAQ() {
             >
               <button
                 onClick={() => toggleFAQ(faq.id)}
-                className="w-full flex items-center justify-between py-5 lg:py-6 border-b border-white/10 hover:border-white/20 transition-colors text-left group"
+                className="w-full flex items-center justify-between py-5 lg:py-6 border-b border-white/10 hover:border-white/20 transition-colors text-left group focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white rounded-lg px-2 -mx-2"
               >
-                <span className="font-display font-600 text-[1.05rem] lg:text-[1.15rem] text-ink-primary group-hover:text-accent-blue transition-colors">
+                <span className="font-display font-600 text-[1.05rem] lg:text-[1.15rem] text-[#D4D4D4] group-hover:text-white transition-colors">
                   {faq.question}
                 </span>
                 <motion.div
@@ -108,7 +108,7 @@ export default function FAQ() {
                     strokeWidth="1.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="text-ink-muted"
+                    className="text-[#737373] group-hover:text-white transition-colors"
                   >
                     <polyline points="6 9 12 15 18 9" />
                   </svg>

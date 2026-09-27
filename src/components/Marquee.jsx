@@ -40,7 +40,7 @@ export default function Marquee() {
                        font-600 text-ink-subtle tracking-[0.1em] uppercase"
           >
             {item}
-            <span className="w-1 h-1 rounded-full bg-accent-blue/50 inline-block" />
+            <span className="w-1 h-1 rounded-full bg-white/40 inline-block" />
           </span>
         ))}
       </motion.div>

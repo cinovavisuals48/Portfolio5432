@@ -62,7 +62,7 @@ export default function WhyMe() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-accent-blue text-sm font-display font-600 tracking-[0.1em] uppercase mb-3"
+          className="text-[#A3A3A3] text-sm font-display font-600 tracking-[0.1em] uppercase mb-3"
         >
           Why Me
         </motion.p>
@@ -87,10 +87,10 @@ export default function WhyMe() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="p-6 rounded-xl border border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-300"
+              className="group p-6 rounded-xl border border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-300"
             >
               {/* Icon */}
-              <div className="w-12 h-12 rounded-lg bg-accent-blue/20 flex items-center justify-center mb-4 text-accent-blue">
+              <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-4 text-[#A3A3A3] group-hover:text-white group-hover:bg-white/10 group-hover:border-white/20 transition-all duration-300">
                 {feature.icon}
               </div>
 
