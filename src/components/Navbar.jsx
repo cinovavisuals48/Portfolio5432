@@ -100,7 +100,7 @@ export default function Navbar() {
       {/* Navbar Container - Fixed positioning with centering */}
       <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 px-4">
         <motion.nav
-          initial={{ y: -20, opacity: 0 }}
+          initial={{ y: -20, opacity: 1 }}
           animate={{
             y: 0,
             opacity: 1,

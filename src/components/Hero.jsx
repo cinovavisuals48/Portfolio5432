@@ -61,7 +61,7 @@ export default function Hero() {
       >
         <motion.div
           variants={containerVariants}
-          initial="hidden"
+          initial={false}
           animate="visible"
           className="max-w-4xl"
         >
