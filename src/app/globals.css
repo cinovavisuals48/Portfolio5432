@@ -1,9 +1,9 @@
 /* ─────────────────────────────────────────────────────────────
    MOULIDOESMOTION — Global Styles
-   Pure Black & White / Grayscale Monochrome Palette
+   Editorial charcoal, ivory, and cobalt-blue visual system
    ───────────────────────────────────────────────────────────── */
 
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -28,25 +28,24 @@
   --mono-800:  #F5F5F5;
   --mono-900:  #FFFFFF;
 
-  --bg-primary:   #000000;
-  --bg-secondary: #0D0D0D;
-  --bg-card:      #141414;
-  --bg-elevated:  #1A1A1A;
+  --bg-primary:   #141414;
+  --bg-secondary: #191919;
+  --bg-card:      #202020;
+  --bg-elevated:  #292929;
 
-  /* Accent & Monochromatic glow */
-  --accent:           #FFFFFF;
-  --accent-soft:      #D4D4D4;
-  --accent-muted:     #A3A3A3;
-  --accent-glow:      rgba(255, 255, 255, 0.12);
+  /* Editorial cobalt accent */
+  --accent:           #7897FF;
+  --accent-soft:      #A9BCFF;
+  --accent-muted:     #5D78D8;
+  --accent-glow:      rgba(120, 151, 255, 0.18);
 
-  /* Fallback aliases mapped to pure monochrome */
-  --accent-blue:      #FFFFFF;
-  --accent-blue-soft: #D4D4D4;
+  --accent-blue:      #7897FF;
+  --accent-blue-soft: #A9BCFF;
 
-  --ink-primary:   #FFFFFF;
-  --ink-secondary: #E8E8E8;
-  --ink-muted:     #A3A3A3;
-  --ink-subtle:    #737373;
+  --ink-primary:   #F4F0EB;
+  --ink-secondary: #E1DDD7;
+  --ink-muted:     #B4AEA7;
+  --ink-subtle:    #817B76;
 
   --border-thin:  rgba(255, 255, 255, 0.08);
   --border-soft:  rgba(255, 255, 255, 0.16);
@@ -54,8 +53,8 @@
   --radius-card:  1rem;
   --radius-btn:   0.5rem;
 
-  --font-display: 'Syne', sans-serif;
-  --font-body:    'Plus Jakarta Sans', sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'DM Sans', Arial, sans-serif;
 }
 
 /* ─── Base Reset ────────────────────────────────────────────── */
@@ -80,12 +79,12 @@ html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #000000;
-  color: #FFFFFF;
+  background-color: var(--bg-primary);
+  color: var(--ink-primary);
 }
 
 body {
-  background: linear-gradient(180deg, #000000 0%, #0D0D0D 50%, #000000 100%);
+  background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 52%, var(--bg-primary) 100%);
   color: var(--ink-primary);
   font-family: var(--font-body);
   overflow-x: hidden;
@@ -116,8 +115,8 @@ select:focus-visible {
 
 /* ─── Selection ─────────────────────────────────────────────── */
 ::selection {
-  background: rgba(255, 255, 255, 0.22);
-  color: #FFFFFF;
+  background: rgba(120, 151, 255, 0.28);
+  color: var(--ink-primary);
 }
 
 /* ─── Utility Classes ───────────────────────────────────────── */
@@ -127,7 +126,7 @@ select:focus-visible {
 
   /* Gradient text — clean monochrome silver/white */
   .text-gradient {
-    background: linear-gradient(135deg, #FFFFFF 0%, #A3A3A3 100%);
+    background: linear-gradient(135deg, var(--ink-primary) 0%, var(--ink-secondary) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -136,7 +135,7 @@ select:focus-visible {
   /* Gradient text — high-contrast monochrome accent */
   .text-gradient-blue,
   .text-gradient-mono {
-    background: linear-gradient(135deg, #FFFFFF 0%, #737373 100%);
+    background: linear-gradient(135deg, var(--accent-soft) 0%, var(--accent) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -184,7 +183,7 @@ select:focus-visible {
   bottom: -2px;
   width: 100%;
   height: 1.5px;
-  background-color: #FFFFFF;
+  background-color: var(--accent);
   transform: scaleX(0);
   transform-origin: right center;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
