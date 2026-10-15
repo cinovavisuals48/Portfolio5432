@@ -11,51 +11,41 @@
 
 /* ─── CSS Design Tokens (Pure Monochrome Grayscale Scale) ──── */
 :root {
-  /* Grayscale scale:
-     #000000 (true black) -> #0D0D0D -> #1A1A1A -> #2E2E2E ->
-     #4D4D4D -> #737373 -> #A3A3A3 -> #D4D4D4 -> #E8E8E8 ->
-     #F5F5F5 -> #FFFFFF (true white)
-  */
-  --mono-0:    #000000;
-  --mono-50:   #0D0D0D;
-  --mono-100:  #1A1A1A;
-  --mono-200:  #2E2E2E;
-  --mono-300:  #4D4D4D;
-  --mono-400:  #737373;
-  --mono-500:  #A3A3A3;
-  --mono-600:  #D4D4D4;
-  --mono-700:  #E8E8E8;
-  --mono-800:  #F5F5F5;
-  --mono-900:  #FFFFFF;
+  --mono-0: #17191c;
+  --mono-50: #26292d;
+  --mono-100: #3a3e43;
+  --mono-200: #5e6368;
+  --mono-300: #777d83;
+  --mono-400: #969ba0;
+  --mono-500: #b7bab9;
+  --mono-600: #d8d6d0;
+  --mono-700: #e8e5de;
+  --mono-800: #f3f0e9;
+  --mono-900: #fbfaf7;
 
-  --bg-primary:   #000000;
-  --bg-secondary: #0D0D0D;
-  --bg-card:      #141414;
-  --bg-elevated:  #1A1A1A;
+  --bg-primary: #fbfaf7;
+  --bg-secondary: #f1efe9;
+  --bg-card: #e8e5de;
+  --bg-elevated: #ffffff;
 
-  /* Accent & Monochromatic glow */
-  --accent:           #FFFFFF;
-  --accent-soft:      #D4D4D4;
-  --accent-muted:     #A3A3A3;
-  --accent-glow:      rgba(255, 255, 255, 0.12);
+  --accent: #204bff;
+  --accent-soft: #dce4ff;
+  --accent-muted: #6d7fc9;
+  --accent-glow: rgba(32, 75, 255, 0.14);
+  --accent-blue: #204bff;
+  --accent-blue-soft: #dce4ff;
 
-  /* Fallback aliases mapped to pure monochrome */
-  --accent-blue:      #FFFFFF;
-  --accent-blue-soft: #D4D4D4;
+  --ink-primary: #17191c;
+  --ink-secondary: #3a3e43;
+  --ink-muted: #777d83;
+  --ink-subtle: #969ba0;
+  --border-thin: rgba(23, 25, 28, 0.14);
+  --border-soft: rgba(23, 25, 28, 0.24);
 
-  --ink-primary:   #FFFFFF;
-  --ink-secondary: #E8E8E8;
-  --ink-muted:     #A3A3A3;
-  --ink-subtle:    #737373;
-
-  --border-thin:  rgba(255, 255, 255, 0.08);
-  --border-soft:  rgba(255, 255, 255, 0.16);
-
-  --radius-card:  1rem;
-  --radius-btn:   0.5rem;
-
+  --radius-card: 0.25rem;
+  --radius-btn: 999px;
   --font-display: 'Syne', sans-serif;
-  --font-body:    'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
 }
 
 /* ─── Base Reset ────────────────────────────────────────────── */
@@ -64,16 +54,6 @@
   margin: 0;
   padding: 0;
 }
-
-/* ─── Universal OS Cursor Suppression ────────────────────────── */
-/* Completely disable the original OS cursor across all devices, computers, and browsers under all circumstances */
-*, *::before, *::after,
-html, body, :root, #__next {
-  cursor: none !important;
-  cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=') 0 0, none !important;
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1 1'%3E%3Crect width='1' height='1' fill='none'/%3E%3C/svg%3E") 0 0, none !important;
-}
-
 
 html {
   scroll-behavior: smooth;
@@ -388,59 +368,44 @@ select:focus-visible {
   );
 }
 
-/* ─── Universal Cursor Disable Absolute Override ─────────────── */
-/* Guarantees that no element, pseudo-class, class, or state shows the native OS cursor */
-html,
-body,
-:root,
-#__next,
-*,
-*::before,
-*::after,
-a,
-a *,
-button,
-button *,
-input,
-textarea,
-select,
-option,
-optgroup,
-label,
-summary,
-details,
-svg,
-svg *,
-canvas,
-iframe,
-video,
-audio,
-embed,
-object,
-[role],
-[role] *,
-[tabindex],
-[contenteditable],
-.cursor-pointer,
-.cursor-default,
-.cursor-text,
-.cursor-not-allowed,
-.cursor-grab,
-.cursor-grabbing,
-.btn-primary,
-.btn-ghost,
-.btn-back,
-.btn-book-project,
-.btn-work,
-*:hover,
-*:active,
-*:focus,
-*:focus-visible,
-*:focus-within,
-*:visited,
-*::placeholder {
-  cursor: none !important;
-  cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=') 0 0, none !important;
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1 1'%3E%3Crect width='1' height='1' fill='none'/%3E%3C/svg%3E") 0 0, none !important;
+/* Editorial portfolio overrides */
+html { background: var(--bg-primary); color: var(--ink-primary); }
+body { background: var(--bg-primary); color: var(--ink-primary); }
+section { scroll-margin-top: 5rem; }
+
+/* Keep the hero cinematic, then let the work breathe on paper. */
+#home { background: var(--mono-0); color: var(--mono-900); min-height: 92svh; }
+#home ~ section, #projects, #what-i-make, #about, #contact { background: var(--bg-primary); color: var(--ink-primary); }
+#projects { border-top: 1px solid var(--border-thin); }
+
+.section-py { padding-block: clamp(5rem, 11vw, 10rem); }
+
+#projects .grid { gap: clamp(1.5rem, 3vw, 3rem); }
+#projects article { border: 0; border-radius: 0; background: transparent; box-shadow: none !important; transform: none !important; }
+#projects article > div > div:first-child { border-radius: 0; background: var(--bg-card) !important; }
+#projects article img { filter: saturate(.82); transition: transform .7s cubic-bezier(.16,1,.3,1), filter .7s ease; }
+#projects article:hover img { filter: saturate(1); }
+#projects article h3 { color: var(--ink-primary); }
+#projects .btn-ghost { border-color: var(--border-soft); }
+
+#about, #what-i-make, #contact { border-top: 1px solid var(--border-thin); }
+#about .rounded-3xl, #what-i-make .rounded-xl, #contact a { border-radius: 0; border-color: var(--border-thin); background: transparent; }
+#what-i-make .grid > div { display: grid; grid-template-columns: minmax(12rem, 1fr) 2fr; align-items: baseline; gap: 2rem; padding: 1.5rem 0; border-inline: 0; border-top: 1px solid var(--border-thin); }
+#what-i-make .grid > div:last-child { border-bottom: 1px solid var(--border-thin); }
+#what-i-make .grid > div > div:first-child { margin: 0; }
+#what-i-make .grid > div > div:first-child > div { display: none; }
+#what-i-make .grid > div p { max-width: 34rem; }
+
+.btn-primary, .btn-ghost { color: var(--ink-primary); border-color: var(--ink-primary); background: transparent; box-shadow: none; }
+.btn-primary:hover, .btn-ghost:hover { color: var(--bg-primary); background: var(--ink-primary); border-color: var(--ink-primary); }
+.btn-book-project { background: var(--accent); color: white; border-color: var(--accent); }
+.btn-work { background: transparent; color: white; border-color: rgba(255,255,255,.7); }
+
+@media (max-width: 700px) {
+  #what-i-make .grid > div { display: flex; flex-direction: column; gap: .75rem; }
+  #home { min-height: 100svh; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

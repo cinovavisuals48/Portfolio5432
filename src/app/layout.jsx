@@ -7,11 +7,10 @@ import './globals.css'
 import Navbar from '../components/Navbar'
 import { BookingProvider } from '../context/BookingContext'
 import BookingModal from '../components/BookingModal'
-import CursorGlow from '../components/CursorGlow'
-import CustomCursor from '../components/CustomCursor'
+
 
 export const viewport = {
-  themeColor: '#000000',
+  themeColor: '#fbfaf7',
 }
 
 // ── SEO METADATA — edit these values ──────────────────────────
@@ -63,24 +62,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="scroll-smooth" style={{ cursor: 'none' }}>
-      <head>
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-              html, body, :root, #__next, *, *::before, *::after {
-                cursor: none !important;
-                cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=') 0 0, none !important;
-                cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1 1'%3E%3Crect width='1' height='1' fill='none'/%3E%3C/svg%3E") 0 0, none !important;
-              }
-            `,
-          }}
-        />
-      </head>
-      <body className="bg-bg-primary text-ink-primary font-body antialiased overflow-x-hidden" style={{ cursor: 'none' }}>
+    <html lang="en" className="scroll-smooth">
+
+      <body className="bg-bg-primary text-ink-primary font-body antialiased overflow-x-hidden">
         <BookingProvider>
-          <CursorGlow />
-          <CustomCursor />
           <Navbar />
           {children}
           <BookingModal />
