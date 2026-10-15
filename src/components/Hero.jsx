@@ -8,7 +8,6 @@
 import { motion, useScroll, useTransform, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { useRef, useState, useEffect } from 'react'
 import { links } from '../data/links'
-import Beams from './Beams'
 import { useBooking } from '../context/BookingContext'
 
 const ROTATING_WORDS = [
@@ -90,45 +89,6 @@ export default function Hero() {
       className="relative min-h-screen flex flex-col justify-center overflow-hidden"
       style={{ paddingTop: '7rem', paddingBottom: '5rem' }}
     >
-      {/* Background Elements */}
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        {/* 3D Animated Beams */}
-        <div
-          className="absolute inset-0 z-0 overflow-hidden"
-          style={{
-            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 60%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 60%, transparent 100%)',
-          }}
-        >
-          <Beams
-            beamWidth={2}
-            beamHeight={18}
-            beamNumber={14}
-            lightColor="#ffffff"
-            beamColor="#000000"
-            backgroundColor="#000000"
-            speed={1.6}
-            noiseIntensity={1.75}
-            scale={0.2}
-            rotation={-12}
-          />
-        </div>
-
-        {/* Subtle radial gradient */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2
-                        w-[800px] h-[600px] rounded-full opacity-[0.03] z-10"
-          style={{ background: 'radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%)' }}
-        />
-        {/* Grid pattern */}
-        <div className="absolute inset-0 opacity-[0.02] z-10"
-          style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)`,
-            backgroundSize: '60px 60px',
-          }}
-        />
-      </div>
-
       {/* Main Content */}
       <motion.div
         style={{ y }}

@@ -28,12 +28,10 @@
   --bg-card: #e8e5de;
   --bg-elevated: #ffffff;
 
-  --accent: #204bff;
-  --accent-soft: #dce4ff;
-  --accent-muted: #6d7fc9;
-  --accent-glow: rgba(32, 75, 255, 0.14);
-  --accent-blue: #204bff;
-  --accent-blue-soft: #dce4ff;
+  --accent: #242629;
+  --accent-soft: #dedbd3;
+  --accent-muted: #77746d;
+  --accent-glow: rgba(36, 38, 41, 0.14);
 
   --ink-primary: #17191c;
   --ink-secondary: #3a3e43;
@@ -373,33 +371,40 @@ html { background: var(--bg-primary); color: var(--ink-primary); }
 body { background: var(--bg-primary); color: var(--ink-primary); }
 section { scroll-margin-top: 5rem; }
 
-/* Keep the hero cinematic, then let the work breathe on paper. */
-#home { background: var(--mono-0); color: var(--mono-900); min-height: 92svh; }
+/* Solid editorial surfaces keep every text/background pairing intentional. */
+#home { background: #242629; color: #f7f5ef; min-height: 92svh; }
 #home ~ section, #projects, #what-i-make, #about, #contact { background: var(--bg-primary); color: var(--ink-primary); }
-#projects { border-top: 1px solid var(--border-thin); }
+#projects { background: #e8e5de; border-top: 1px solid #c9c5bc; }
+#what-i-make { background: #d8d6d0; }
+#about { background: #f3f0e9; }
+#contact { background: #242629; color: #f7f5ef; border-top-color: #3f4245; }
+#contact * { border-color: #55585b; }
 
 .section-py { padding-block: clamp(5rem, 11vw, 10rem); }
 
 #projects .grid { gap: clamp(1.5rem, 3vw, 3rem); }
 #projects article { border: 0; border-radius: 0; background: transparent; box-shadow: none !important; transform: none !important; }
-#projects article > div > div:first-child { border-radius: 0; background: var(--bg-card) !important; }
-#projects article img { filter: saturate(.82); transition: transform .7s cubic-bezier(.16,1,.3,1), filter .7s ease; }
-#projects article:hover img { filter: saturate(1); }
+#projects article > div > div:first-child { border-radius: 0; background: #d8d6d0 !important; }
+#projects article img { filter: grayscale(.18) saturate(.65); transition: transform .7s cubic-bezier(.16,1,.3,1), filter .7s ease; }
+#projects article:hover img { filter: grayscale(0) saturate(.82); }
 #projects article h3 { color: var(--ink-primary); }
 #projects .btn-ghost { border-color: var(--border-soft); }
 
-#about, #what-i-make, #contact { border-top: 1px solid var(--border-thin); }
 #about .rounded-3xl, #what-i-make .rounded-xl, #contact a { border-radius: 0; border-color: var(--border-thin); background: transparent; }
-#what-i-make .grid > div { display: grid; grid-template-columns: minmax(12rem, 1fr) 2fr; align-items: baseline; gap: 2rem; padding: 1.5rem 0; border-inline: 0; border-top: 1px solid var(--border-thin); }
-#what-i-make .grid > div:last-child { border-bottom: 1px solid var(--border-thin); }
+#what-i-make .grid > div { display: grid; grid-template-columns: minmax(12rem, 1fr) 2fr; align-items: baseline; gap: 2rem; padding: 1.5rem 0; border-inline: 0; border-top: 1px solid rgba(23,25,28,.2); }
+#what-i-make .grid > div:last-child { border-bottom: 1px solid rgba(23,25,28,.2); }
 #what-i-make .grid > div > div:first-child { margin: 0; }
 #what-i-make .grid > div > div:first-child > div { display: none; }
 #what-i-make .grid > div p { max-width: 34rem; }
 
 .btn-primary, .btn-ghost { color: var(--ink-primary); border-color: var(--ink-primary); background: transparent; box-shadow: none; }
 .btn-primary:hover, .btn-ghost:hover { color: var(--bg-primary); background: var(--ink-primary); border-color: var(--ink-primary); }
-.btn-book-project { background: var(--accent); color: white; border-color: var(--accent); }
-.btn-work { background: transparent; color: white; border-color: rgba(255,255,255,.7); }
+.btn-book-project { background: #f7f5ef; color: #242629; border-color: #f7f5ef; }
+.btn-book-project:hover { background: #242629; color: #f7f5ef; border-color: #f7f5ef; }
+.btn-work { background: transparent; color: #f7f5ef; border-color: rgba(247,245,239,.7); }
+
+/* The floating navigation stays legible over both paper and charcoal surfaces. */
+.fixed nav { background: #242629 !important; border-color: #55585b !important; box-shadow: 0 8px 32px rgba(0,0,0,.18) !important; }
 
 @media (max-width: 700px) {
   #what-i-make .grid > div { display: flex; flex-direction: column; gap: .75rem; }
