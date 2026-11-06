@@ -1,112 +1,57 @@
 'use client'
 
 // ─────────────────────────────────────────────────────────────
-// WHY ME SECTION — src/components/WhyMe.jsx
-// Four-card grid layout highlighting key differentiators
+// WHY ME — src/components/WhyMe.jsx
+// Four columns separated by hairlines.
 // ─────────────────────────────────────────────────────────────
 
-import { motion } from 'framer-motion'
+import { Reveal, Line, SectionLabel } from './Reveal'
 
 const features = [
   {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 3v18c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7l-6-6H5c-1.1 0-2 .9-2 2z"/>
-        <polyline points="14 3 14 8 19 8"/>
-      </svg>
-    ),
     title: 'Built around your product',
-    description: 'The work mirrors how the product actually feels. Smooth easing, real UI patterns, restrained motion. No templates or AI generated content.'
+    description: 'The work mirrors how the product actually feels. Smooth easing, real UI patterns, restrained motion. No templates or AI generated content.',
   },
   {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10"/>
-        <polyline points="12 6 12 12 16 14"/>
-      </svg>
-    ),
     title: 'Delivered in 10 business days',
-    description: 'From the moment we kick off, you have final files within 10 working days. Fast enough to keep your launch on track, thorough enough to get it right.'
+    description: 'From the moment we kick off, you have final files within 10 working days. Fast enough to keep your launch on track, thorough enough to get it right.',
   },
   {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M9 3L5.5 9.5L3 15"/>
-        <path d="M15 3l3.5 6.5L21 15"/>
-        <line x1="12" y1="3" x2="12" y2="15"/>
-        <path d="M3 15h18"/>
-      </svg>
-    ),
     title: 'Aligned before production',
-    description: 'Every project starts with a Figma storyboard you approve. By the time animation begins, there are no surprises.'
+    description: 'Every project starts with a Figma storyboard you approve. By the time animation begins, there are no surprises.',
   },
   {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-        <path d="M10 17l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
-      </svg>
-    ),
     title: 'Two clean revision rounds',
-    description: 'Two revision rounds included in every project. Scope stays clear, delivery stays on time.'
-  }
+    description: 'Two revision rounds included in every project. Scope stays clear, delivery stays on time.',
+  },
 ]
 
 export default function WhyMe() {
   return (
-    <section id="why-me" className="section-py relative overflow-hidden">
-      <div className="max-w-[clamp(1280px,82vw,1920px)] mx-auto px-6 relative z-10">
-
-        {/* Section Label */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-[#A3A3A3] text-sm font-display font-600 tracking-[0.1em] uppercase mb-3"
-        >
-          Why Me
-        </motion.p>
-
-        {/* Headline */}
-        <motion.h2
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="font-display font-800 text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.1] tracking-tight text-ink-primary mb-12"
-        >
-          What makes this different
-        </motion.h2>
-
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {features.map((feature, i) => (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="group p-6 rounded-xl border border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04] transition-all duration-300"
-            >
-              {/* Icon */}
-              <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-4 text-[#A3A3A3] group-hover:text-white group-hover:bg-white/10 group-hover:border-white/20 transition-all duration-300">
-                {feature.icon}
-              </div>
-
-              {/* Title */}
-              <h3 className="font-display font-700 text-[1.1rem] text-ink-primary mb-3">
-                {feature.title}
-              </h3>
-
-              {/* Description */}
-              <p className="text-ink-muted text-[0.9rem] leading-relaxed">
-                {feature.description}
-              </p>
-            </motion.div>
-          ))}
+    <section id="why-me" className="section-py border-t border-line">
+      <div className="container-site">
+        <div className="grid lg:grid-cols-12 gap-6 mb-14 md:mb-20">
+          <SectionLabel index="04" className="lg:col-span-3">Why me</SectionLabel>
+          <h2 className="lg:col-span-9 display text-[clamp(2.8rem,7vw,7.5rem)]">
+            <Line>What makes this</Line>
+            <Line delay={0.08}><span className="serif-italic">different</span></Line>
+          </h2>
         </div>
 
+        <ul className="grid sm:grid-cols-2 lg:grid-cols-4 border-t border-line">
+          {features.map((f, i) => (
+            <Reveal
+              as="li"
+              key={f.title}
+              delay={i * 0.06}
+              className="border-b border-line sm:[&:nth-child(odd)]:border-r lg:border-r lg:[&:last-child]:border-r-0 pt-6 pb-10 sm:pr-6 sm:[&:nth-child(even)]:pl-6 lg:pl-6 lg:first:pl-0"
+            >
+              <span className="label text-accent">{String(i + 1).padStart(2, '0')}</span>
+              <h3 className="mt-10 text-[1.4rem] leading-[1.15] tracking-[-0.01em] font-medium">{f.title}</h3>
+              <p className="mt-4 text-ink-muted leading-relaxed text-[0.95rem]">{f.description}</p>
+            </Reveal>
+          ))}
+        </ul>
       </div>
     </section>
   )

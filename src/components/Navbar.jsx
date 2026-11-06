@@ -2,331 +2,174 @@
 
 // ─────────────────────────────────────────────────────────────
 // NAVBAR — src/components/Navbar.jsx
-// Glassy floating navbar with shrink/expand morphing animation
+// Minimal top bar: brand left, local time centre, links + CTA right.
+// Hides on scroll down, returns on scroll up. Full-screen menu on mobile.
 // ─────────────────────────────────────────────────────────────
 
 import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useRouter, usePathname } from 'next/navigation'
-import { useBooking } from '../context/BookingContext'
+import { usePathname } from 'next/navigation'
+import { links } from '../data/links'
+import { EASE } from './Reveal'
 
 const navLinks = [
-  { label: 'Work',     href: '/projects', isExternal: true },
-  { label: 'About',    href: '/#about', isExternal: false },
-  { label: 'FAQ',      href: '/#faq', isExternal: false },
+  { label: 'Work',  href: '/projects' },
+  { label: 'About', href: '/about' },
+  { label: 'FAQ',   href: '/#faq' },
 ]
 
-
-
-// Smooth spring config for morphing
-const springConfig = {
-  type: 'spring',
-  stiffness: 300,
-  damping: 30,
-  mass: 0.8,
-}
-
-const layoutTransition = {
-  type: 'tween',
-  duration: 0.35,
-  ease: [0.4, 0, 0.2, 1],
+function useIndiaTime() {
+  const [time, setTime] = useState('')
+  useEffect(() => {
+    const fmt = new Intl.DateTimeFormat('en-GB', {
+      hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata',
+    })
+    const tick = () => setTime(fmt.format(new Date()))
+    tick()
+    const id = setInterval(tick, 15000)
+    return () => clearInterval(id)
+  }, [])
+  return time
 }
 
 export default function Navbar() {
-  const router = useRouter()
   const pathname = usePathname()
-  const { openBooking } = useBooking()
-  const [scrolled, setScrolled] = useState(false)
+  const reduce = useReducedMotion()
+  const time = useIndiaTime()
+  const [hidden, setHidden] = useState(false)
+  const [solid, setSolid] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const lastScrollY = useRef(0)
+  const lastY = useRef(0)
 
   useEffect(() => {
-    const DELTA_THRESHOLD = 8 // ignore tiny jitter from momentum/rubber-band scroll
-
     const onScroll = () => {
-      const currentScrollY = window.scrollY
-      const delta = currentScrollY - lastScrollY.current
-
-      if (Math.abs(delta) < DELTA_THRESHOLD) return
-
-      if (currentScrollY > 60 && delta > 0) {
-        setScrolled(true)
-      } else if (delta < 0) {
-        setScrolled(false)
+      const y = window.scrollY
+      const delta = y - lastY.current
+      setSolid(y > 24)
+      if (Math.abs(delta) > 6) {
+        setHidden(y > 160 && delta > 0)
+        lastY.current = y
       }
-
-      lastScrollY.current = currentScrollY
     }
+    onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const handleNavClick = (e, href, isExternal) => {
-    e.preventDefault()
-    setMobileOpen(false)
-    
-    // Handle section links (e.g., /#about, /#faq)
-    if (href.startsWith('/#')) {
-      const sectionId = href.replace('/#', '')
-      
-      // Check if we're on the home page
-      if (pathname === '/' || pathname === '') {
-        // Already on home page, just scroll to the section
-        setTimeout(() => {
-          const el = document.querySelector(`#${sectionId}`)
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-          }
-        }, 50)
-      } else {
-        // Not on home page, navigate to home first
-        router.push('/')
-        // After navigation, scroll to section
-        setTimeout(() => {
-          const el = document.querySelector(`#${sectionId}`)
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-          }
-        }, 600)
-      }
-    } else if (isExternal || href === '/projects' || href === '/book-project') {
-      // Handle page navigation
-      router.push(href)
-    }
-  }
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [mobileOpen])
+
+  const isActive = (href) =>
+    href === '/projects' ? pathname.startsWith('/projects') : href === pathname
+
+  // Navigation itself (and the transition) is handled by PageTransition.
+  const handleNavClick = () => setMobileOpen(false)
 
   return (
     <>
-      {/* Navbar Container - Fixed positioning with centering */}
-      <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 px-4">
-        <motion.nav
-          initial={{ y: -20, opacity: 0 }}
-          animate={{
-            y: 0,
-            opacity: 1,
-            paddingLeft: scrolled ? 12 : 16,
-            paddingRight: scrolled ? 12 : 16,
-            paddingTop: scrolled ? 8 : 10,
-            paddingBottom: scrolled ? 8 : 10,
-            gap: scrolled ? 12 : 24,
-          }}
-          transition={{
-            y: springConfig,
-            opacity: springConfig,
-            paddingLeft: layoutTransition,
-            paddingRight: layoutTransition,
-            paddingTop: layoutTransition,
-            paddingBottom: layoutTransition,
-            gap: layoutTransition,
-          }}
-          className="relative flex items-center backdrop-blur-xl border border-white/20 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
-          style={{
-            background: 'rgba(255, 255, 255, 0.08)',
-            willChange: 'padding, gap',
-          }}
-        >
-          {/* Logo - Circular */}
-          <Link href="/" className="flex items-center gap-2.5 group shrink-0" onClick={() => setMobileOpen(false)}>
-            <motion.div 
-              className="relative overflow-hidden rounded-full bg-neutral-900 flex items-center justify-center"
-              animate={{
-                width: scrolled ? 32 : 36,
-                height: scrolled ? 32 : 36,
-              }}
-              transition={layoutTransition}
-            >
-              {/* TODO: Replace with new Moulidoesmotion logo file at /images/logo.png */}
-              <Image
-                src="/images/logo.png"
-                alt="Moulidoesmotion"
-                width={36}
-                height={36}
-                className="object-cover"
-              />
-            </motion.div>
-            <span className="font-display font-semibold text-[0.95rem] tracking-tight text-white">
-              Moulidoesmotion
-            </span>
+      <motion.header
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: hidden && !mobileOpen ? '-100%' : 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: EASE }}
+        className={`fixed top-0 inset-x-0 z-50 transition-colors duration-500 ${
+          solid || mobileOpen ? 'bg-bg-primary/90 border-b border-line' : 'bg-transparent border-b border-transparent'
+        }`}
+      >
+        <nav className="container-site h-16 md:h-[4.5rem] grid grid-cols-[1fr_auto] md:grid-cols-3 items-center" aria-label="Main">
+          {/* Brand */}
+          <Link href="/" className="flex items-center gap-2.5 justify-self-start" onClick={() => setMobileOpen(false)}>
+            <Image src="/images/logo.png" alt="" width={28} height={28} className="rounded-full" priority />
+            <span className="font-body font-semibold text-[0.95rem] tracking-tight">Moulidoesmotion</span>
           </Link>
 
-          {/* Desktop Links - Hidden when scrolled */}
-          <AnimatePresence>
-            {!scrolled && (
-              <motion.div
-                key="nav-links"
-                initial={{ opacity: 0, scale: 0.9, width: 0 }}
-                animate={{ opacity: 1, scale: 1, width: 'auto' }}
-                exit={{ opacity: 0, scale: 0.9, width: 0 }}
-                transition={layoutTransition}
-                className="hidden md:flex items-center gap-1 overflow-hidden"
-              >
-                {navLinks.map((link) => (
+          {/* Location + time */}
+          <p className="label hidden md:block justify-self-center" aria-label={`India, local time ${time}`}>
+            India <span className="mx-2 text-ink-subtle">/</span> {time || '--:--'} IST
+          </p>
+
+          {/* Links */}
+          <div className="justify-self-end flex items-center gap-6">
+            <ul className="hidden md:flex items-center gap-6">
+              {navLinks.map((link) => (
+                <li key={link.href}>
                   <Link
-                    key={link.href}
                     href={link.href}
-                    onClick={(e) => {
-                      handleNavClick(e, link.href, link.isExternal)
-                    }}
-                    className="relative text-white/80 hover:text-white text-sm font-medium px-4 py-2 group transition-colors"
+                    onClick={handleNavClick}
+                    aria-current={isActive(link.href) ? 'page' : undefined}
+                    className={`label link-underline inline-flex items-center gap-2 hover:text-ink-primary transition-colors ${
+                      isActive(link.href) ? 'text-ink-primary' : ''
+                    }`}
                   >
-                    <span>{link.label}</span>
-                    <span className="absolute bottom-1 left-4 right-4 h-[1.5px] bg-white scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                    {isActive(link.href) && <span className="w-1.5 h-1.5 rounded-full bg-accent" aria-hidden />}
+                    {link.label}
                   </Link>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
+                </li>
+              ))}
+            </ul>
+            <Link href="/book-project" className="btn-pill hidden md:inline-flex !py-2.5">
+              Book a project
+            </Link>
 
-          {/* Desktop CTA / Three dots when scrolled */}
-          <div className="hidden md:flex items-center">
-            <AnimatePresence mode="popLayout">
-              {scrolled ? (
-                <motion.div 
-                  key="spacer" 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                  className="w-2" 
-                />
-              ) : (
-                <motion.div
-                  key="book"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={springConfig}
-                >
-                  <button
-                    type="button"
-                    onClick={() => openBooking()}
-                    className="
-                      inline-flex items-center gap-2
-                      px-5 py-2
-                      bg-white hover:bg-black
-                      text-black hover:text-white
-                      border border-white
-                      rounded-full
-                      text-sm font-semibold
-                      transition-all duration-200
-                      shadow-[0_2px_10px_rgba(255,255,255,0.12)]
-                      cursor-pointer
-                    "
-                  >
-                    Book a Project
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <button
+              type="button"
+              className="md:hidden label text-ink-primary py-2"
+              onClick={() => setMobileOpen((v) => !v)}
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-menu"
+            >
+              {mobileOpen ? 'Close' : 'Menu'}
+            </button>
           </div>
+        </nav>
+      </motion.header>
 
-          {/* Mobile Hamburger */}
-          <button
-            className="md:hidden flex flex-col gap-1 p-2 rounded-full hover:bg-white/10 transition-colors"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
-          >
-            <motion.span
-              animate={mobileOpen ? { rotate: 45, y: 5 } : { rotate: 0, y: 0 }}
-              transition={{ duration: 0.2 }}
-              className="block w-4 h-[1.5px] bg-white rounded-full"
-            />
-            <motion.span
-              animate={mobileOpen ? { opacity: 0 } : { opacity: 1 }}
-              transition={{ duration: 0.2 }}
-              className="block w-4 h-[1.5px] bg-white rounded-full"
-            />
-            <motion.span
-              animate={mobileOpen ? { rotate: -45, y: -5 } : { rotate: 0, y: 0 }}
-              transition={{ duration: 0.2 }}
-              className="block w-4 h-[1.5px] bg-white rounded-full"
-            />
-          </button>
-        </motion.nav>
-      </div>
-
-      {/* Mobile Menu */}
+      {/* Mobile menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="fixed top-20 left-4 right-4 z-40 
-                       backdrop-blur-xl bg-white/10
-                       border border-white/20
-                       rounded-2xl
-                       shadow-[0_8px_32px_rgba(0,0,0,0.3)]
-                       overflow-hidden"
+            id="mobile-menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-40 bg-bg-primary pt-24 pb-8 md:hidden flex flex-col"
           >
-            <div className="flex flex-col p-4 gap-1">
-              {navLinks.map((link, i) => (
-                <motion.div 
-                  key={link.href}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                >
-                  <Link
-                    href={link.href}
-                    onClick={(e) => {
-                      handleNavClick(e, link.href, link.isExternal)
-                    }}
-                    className="text-lg font-display font-semibold text-white py-3 px-4
-                               rounded-xl hover:bg-white/10
-                               flex items-center justify-between transition-colors"
+            <ul className="container-site flex-1">
+              {[...navLinks, { label: 'Contact', href: '/#contact' }].map((link, i) => (
+                <li key={link.href} className="border-b border-line overflow-hidden">
+                  <motion.div
+                    initial={reduce ? { opacity: 0 } : { y: '100%' }}
+                    animate={reduce ? { opacity: 1 } : { y: 0 }}
+                    transition={{ duration: 0.7, ease: EASE, delay: 0.05 + i * 0.05 }}
                   >
-                    {link.label}
-                    <span className="text-white/40 text-sm font-body">0{i + 1}</span>
-                  </Link>
-                </motion.div>
+                    <Link
+                      href={link.href}
+                      onClick={handleNavClick}
+                      className="flex items-baseline justify-between py-4"
+                    >
+                      <span className="display text-[3.4rem]">{link.label}</span>
+                      <span className="label">0{i + 1}</span>
+                    </Link>
+                  </motion.div>
+                </li>
               ))}
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: navLinks.length * 0.05 }}
+            </ul>
+            <div className="container-site flex items-center justify-between gap-4">
+              <Link
+                href="/book-project"
+                onClick={() => setMobileOpen(false)}
+                className="btn-pill"
               >
-                <Link
-                  href="/projects"
-                  onClick={() => setMobileOpen(false)}
-                  className="text-lg font-display font-semibold text-white py-3 px-4
-                             rounded-xl hover:bg-white/10
-                             flex items-center justify-between transition-colors"
-                >
-                  All Projects
-                  <span className="text-white/40 text-sm font-body">0{navLinks.length + 1}</span>
-                </Link>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: (navLinks.length + 1) * 0.05 }}
-                className="mt-2"
-              >
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMobileOpen(false)
-                    openBooking()
-                  }}
-                  className="
-                    w-full inline-flex items-center justify-center gap-2
-                    px-5 py-3
-                    bg-white text-black
-                    border border-white
-                    hover:bg-black hover:text-white
-                    rounded-full
-                    text-sm font-semibold
-                    transition-all duration-200
-                    cursor-pointer
-                  "
-                >
-                  Book a Project
-                </button>
-              </motion.div>
+                Book a project
+              </Link>
+              <div className="flex gap-4">
+                <a href={links.instagram} target="_blank" rel="noopener noreferrer" className="label">Instagram</a>
+                <a href={links.twitter} target="_blank" rel="noopener noreferrer" className="label">X</a>
+              </div>
             </div>
           </motion.div>
         )}

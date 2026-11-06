@@ -2,7 +2,8 @@
 
 // ─────────────────────────────────────────────────────────────
 // PROJECTS PAGE — src/app/projects/page.jsx
-// Comprehensive project showcase with thumbnails and filtering
+// All work: text filter tabs, large two-column grid, then the
+// short UI animation loops.
 // ─────────────────────────────────────────────────────────────
 
 import { useState } from 'react'
@@ -12,104 +13,69 @@ import ProjectCard from '../../components/ProjectCard'
 import Footer from '../../components/Footer'
 import SmoothScroll from '../../components/SmoothScroll'
 import Link from 'next/link'
-import { useBooking } from '../../context/BookingContext'
+import { Line, SplitText, Reveal, Arrow } from '../../components/Reveal'
 
 export default function ProjectsPage() {
-  const { openBooking } = useBooking()
   const [activeCategory, setActiveCategory] = useState('All')
 
-  const shortUiAnimations = projects.filter((project) => project.shortUiAnimation)
-
+  const shortUiAnimations = projects.filter((p) => p.shortUiAnimation)
+  const mainProjects = projects.filter((p) => !p.shortUiAnimation)
   const filteredProjects = activeCategory === 'All'
-    ? projects.filter((project) => !project.shortUiAnimation)
-    : projects.filter((project) => project.category === activeCategory && !project.shortUiAnimation)
+    ? mainProjects
+    : mainProjects.filter((p) => p.category === activeCategory)
 
   return (
     <SmoothScroll>
-      <main className="relative min-h-screen">
-
-        <section className="pt-32 pb-20 px-6">
-          <div className="max-w-[clamp(1280px,82vw,1920px)] mx-auto">
-
+      <main id="main" className="relative min-h-screen">
+        <section className="pt-32 md:pt-40 pb-20">
+          <div className="container-site">
             {/* Header */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="mb-10"
-            >
-              <Link 
-                href="/" 
-                className="btn-back mb-6 inline-flex"
-              >
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M11.5 7H2.5M6.5 3L2.5 7l4 4" stroke="currentColor" 
-                    strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                Back to Home
-              </Link>
+            <div className="flex items-center justify-between mb-10">
+              <Link href="/" className="btn-back">← Back to home</Link>
+              <p className="label">Portfolio</p>
+            </div>
 
-              <p className="text-[#A3A3A3] text-sm font-display font-600 tracking-[0.1em] uppercase mb-3">
-                Portfolio
-              </p>
-              <h1 className="font-display font-800 text-[clamp(2.2rem,5vw,4rem)]
-                             leading-[1] tracking-tight text-ink-primary mb-4">
-                My Work
-              </h1>
-              <p className="text-ink-muted text-[0.95rem] max-w-xl leading-relaxed">
-                A collection of motion design projects including SaaS explainers, 
-                product videos, and UI animations. Click any project to watch.
-              </p>
-            </motion.div>
+            <h1 className="display text-[clamp(4rem,16vw,17rem)]">
+              <SplitText>All <span className="serif-italic">work</span></SplitText>
+            </h1>
 
-            {/* Category Filter */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="mb-10"
-            >
-              <div className="flex flex-wrap gap-2">
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => setActiveCategory(category)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border
-                      ${activeCategory === category
-                        ? 'bg-white text-black border-white font-semibold shadow-[0_2px_10px_rgba(255,255,255,0.12)]'
-                        : 'bg-[rgba(255,255,255,0.04)] text-ink-muted hover:bg-[rgba(255,255,255,0.08)] hover:text-ink-primary border-[rgba(255,255,255,0.08)]'
-                      }`}
-                  >
-                    {category}
-                    {category !== 'All' && (
-                      <span className="ml-1.5 text-xs opacity-60">
-                        ({projects.filter(p => p.category === category).length})
-                      </span>
-                    )}
-                  </button>
-                ))}
+            <div className="mt-10 md:mt-14 pt-6 border-t border-line grid gap-8 lg:grid-cols-12">
+              <p className="lg:col-span-5 text-ink-muted max-w-[46ch] leading-relaxed">
+                A collection of motion design projects including SaaS explainers, product videos, and UI animations. Click any project to watch.
+              </p>
+
+              {/* Filter */}
+              <div className="lg:col-span-7 flex flex-wrap gap-x-5 gap-y-3 lg:justify-end" role="group" aria-label="Filter by category">
+                {categories.map((category) => {
+                  const count = category === 'All'
+                    ? mainProjects.length
+                    : mainProjects.filter((p) => p.category === category).length
+                  const isActive = activeCategory === category
+                  return (
+                    <button
+                      key={category}
+                      type="button"
+                      onClick={() => setActiveCategory(category)}
+                      aria-pressed={isActive}
+                      className={`label transition-colors ${isActive ? 'text-ink-primary' : 'hover:text-ink-primary'}`}
+                    >
+                      <span className={isActive ? 'border-b border-accent pb-1' : ''}>{category}</span>
+                      <sup className="ml-1 text-ink-subtle">{count}</sup>
+                    </button>
+                  )
+                })}
               </div>
-            </motion.div>
+            </div>
 
-            {/* Projects Count */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3, delay: 0.15 }}
-              className="text-ink-subtle text-sm mb-6"
-            >
-              Showing {filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''}
-            </motion.p>
-
-            {/* Projects Grid */}
+            {/* Grid */}
             <AnimatePresence mode="wait">
-              <motion.div 
+              <motion.div
                 key={activeCategory}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6"
+                className="mt-14 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-16"
               >
                 {filteredProjects.map((project, index) => (
                   <ProjectCard key={project.id} project={project} index={index} />
@@ -117,83 +83,49 @@ export default function ProjectsPage() {
               </motion.div>
             </AnimatePresence>
 
-            {shortUiAnimations.length > 0 && (
-              <motion.section
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, delay: 0.05 }}
-                className="mt-16"
-              >
-                <div className="mb-8">
-                  <p className="text-[#A3A3A3] text-sm font-display font-600 tracking-[0.1em] uppercase mb-3">
-                    Short UI Animations
-                  </p>
-                  <h2 className="font-display font-800 text-[clamp(1.8rem,3.5vw,2.5rem)] leading-[1.05] tracking-tight text-ink-primary mb-3">
-                    Micro UI motion previews
-                  </h2>
-                  <p className="text-ink-muted text-[0.95rem] max-w-2xl leading-relaxed">
-                    A few short UI animation pieces I built to practice and push my motion work.
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
-                  {shortUiAnimations.map((project, index) => (
-                    <ProjectCard
-                      key={project.id}
-                      project={project}
-                      index={index}
-                      previewOnly
-                    />
-                  ))}
-                </div>
-              </motion.section>
-            )}
-
-            {/* Empty State */}
             {filteredProjects.length === 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center py-16"
-              >
-                <p className="text-ink-muted text-lg mb-4">
-                  No projects in this category yet.
-                </p>
-                <button
-                  onClick={() => setActiveCategory('All')}
-                  className="text-white link-underline font-medium"
-                >
+              <div className="py-16 border-b border-line">
+                <p className="text-ink-muted text-lg mb-4">No projects in this category yet.</p>
+                <button type="button" onClick={() => setActiveCategory('All')} className="label link-underline text-ink-primary">
                   See all work
                 </button>
-              </motion.div>
+              </div>
             )}
 
-            {/* Bottom CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="mt-20 text-center"
-            >
-              <div className="inline-block p-8 rounded-2xl bg-white/[0.03] border border-white/10">
-                <h3 className="font-display font-700 text-xl text-ink-primary mb-2">
-                  Like what you see?
-                </h3>
-                <p className="text-ink-muted text-[0.92rem] mb-5">
-                  Let&apos;s create something amazing together.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => openBooking()}
-                  className="btn-primary inline-flex cursor-pointer"
-                >
-                  Book a Project
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor"
-                      strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
+            {/* Short UI animations */}
+            {shortUiAnimations.length > 0 && (
+              <section className="mt-28 md:mt-36">
+                <div className="grid gap-6 lg:grid-cols-12 pb-6 border-b border-line mb-10">
+                  <p className="label lg:col-span-3">Short UI animations</p>
+                  <div className="lg:col-span-9">
+                    <h2 className="display text-[clamp(2.4rem,5vw,5rem)]">
+                      <Line>Micro UI <span className="serif-italic">motion</span> previews</Line>
+                    </h2>
+                    <p className="mt-4 text-ink-muted max-w-[52ch]">
+                      A few short UI animation pieces I built to practice and push my motion work.
+                    </p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+                  {shortUiAnimations.map((project, index) => (
+                    <ProjectCard key={project.id} project={project} index={index} previewOnly />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* CTA */}
+            <Reveal className="mt-28 md:mt-36 border-t border-line pt-10 flex flex-col md:flex-row md:items-end justify-between gap-8">
+              <h3 className="display text-[clamp(2.4rem,6vw,6rem)]">
+                Like what <span className="serif-italic">you see?</span>
+              </h3>
+              <div className="flex flex-col items-start md:items-end gap-4">
+                <p className="text-ink-muted">Let&apos;s create something amazing together.</p>
+                <Link href="/book-project" className="btn-pill">
+                  Book a project <Arrow />
+                </Link>
               </div>
-            </motion.div>
+            </Reveal>
           </div>
         </section>
 

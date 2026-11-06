@@ -84,7 +84,9 @@ const isBudgetAllowed = (budget, videoLength) => {
   return PROJECT_FORM_CONFIG.budgets[budget]?.allowedLengths.includes(videoLength)
 }
 
-export default function BookingStepper({ onClose, onSubmitted, isModal = false }) {
+// variant: 'page' — the large panel on /book-project (default)
+//          'modal' — legacy borderless style for a popup
+export default function BookingStepper({ onClose, onSubmitted, isModal = false, variant = isModal ? 'modal' : 'page' }) {
   const {
     formData,
     setFormData,
@@ -330,7 +332,7 @@ Budget: ${formData.budget}
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', stiffness: 220, damping: 20 }}
-            className="w-16 h-16 sm:w-20 sm:h-20 bg-white text-black rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_4px_24px_rgba(255,255,255,0.25)]"
+            className="w-16 h-16 sm:w-20 sm:h-20 bg-accent text-accent-ink rounded-full flex items-center justify-center mx-auto mb-6"
           >
             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
@@ -381,7 +383,36 @@ Budget: ${formData.budget}
       <Stepper
         initialStep={1}
         currentStep={currentStep}
-        stepCircleContainerClassName={isModal ? '!border-none !bg-transparent !shadow-none !backdrop-filter-none' : ''}
+        stepCircleContainerClassName={variant === 'modal' ? '!border-none !bg-transparent !shadow-none !backdrop-filter-none' : 'booking-panel'}
+        stepContainerClassName="booking-steps"
+        // Progress: one labelled segment per step, filled in blue as you go.
+        renderStepIndicator={({ step, currentStep: cur, label, onStepClick }) => {
+          const state = cur === step ? 'active' : cur > step ? 'complete' : 'upcoming'
+          return (
+            <button
+              key={step}
+              type="button"
+              onClick={onStepClick}
+              className="booking-step"
+              data-state={state}
+              aria-current={state === 'active' ? 'step' : undefined}
+              aria-label={`Step ${step}: ${label}`}
+            >
+              <span className="booking-step-bar">
+                <motion.span
+                  className="booking-step-fill"
+                  initial={false}
+                  animate={{ scaleX: state === 'upcoming' ? 0 : 1 }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                />
+              </span>
+              <span className="booking-step-label">
+                <span className="booking-step-num">{String(step).padStart(2, '0')}</span>
+                <span className="booking-step-name">{label}</span>
+              </span>
+            </button>
+          )
+        }}
         onStepChange={(step) => {
           setCurrentStep(step)
           setStepError('')
@@ -484,24 +515,24 @@ Budget: ${formData.budget}
       >
         {/* ── STEP 1: NAME ────────────────────────────────────── */}
         <Step>
-          <div className="space-y-4">
+          <div className="space-y-9">
             <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-[#A3A3A3]">
+              <div className="flex items-center gap-2">
+                <span className="label !text-accent">
                   Step 01 / 07 • Introduction
                 </span>
               </div>
-              <h2 className="font-display font-800 text-xl sm:text-2xl text-white tracking-tight">
+              <h2 className="mt-4 text-[clamp(1.9rem,2.7vw,2.8rem)] leading-[1.06] tracking-[-0.025em] font-medium text-ink-primary">
                 What&apos;s your name?
               </h2>
-              <p className="text-ink-muted text-xs sm:text-sm mt-1">
+              <p className="mt-3 text-ink-muted text-base md:text-[1.05rem] leading-relaxed max-w-[52ch]">
                 Let&apos;s start with your full name so I know who I&apos;ll be working with.
               </p>
             </div>
 
             <div className="pt-2">
-              <label className="block text-ink-primary text-xs font-semibold uppercase tracking-wider mb-2">
-                Full Name <span className="text-[#A3A3A3]">*</span>
+              <label className="block label !text-ink-secondary mb-3">
+                Full Name <span className="text-accent">*</span>
               </label>
               <input
                 type="text"
@@ -516,7 +547,7 @@ Budget: ${formData.budget}
                 }}
                 autoFocus
                 placeholder="Jane Doe"
-                className="w-full px-4 py-3.5 bg-white/[0.04] border border-white/10 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all text-sm sm:text-base"
+                className="booking-input"
               />
             </div>
           </div>
@@ -524,24 +555,24 @@ Budget: ${formData.budget}
 
         {/* ── STEP 2: EMAIL ───────────────────────────────────── */}
         <Step>
-          <div className="space-y-4">
+          <div className="space-y-9">
             <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-[#A3A3A3]">
+              <div className="flex items-center gap-2">
+                <span className="label !text-accent">
                   Step 02 / 07 • Contact Details
                 </span>
               </div>
-              <h2 className="font-display font-800 text-xl sm:text-2xl text-white tracking-tight">
+              <h2 className="mt-4 text-[clamp(1.9rem,2.7vw,2.8rem)] leading-[1.06] tracking-[-0.025em] font-medium text-ink-primary">
                 Where should I email you?
               </h2>
-              <p className="text-ink-muted text-xs sm:text-sm mt-1">
+              <p className="mt-3 text-ink-muted text-base md:text-[1.05rem] leading-relaxed max-w-[52ch]">
                 Your primary email address for briefs, deliverables, and project updates.
               </p>
             </div>
 
             <div className="pt-2">
-              <label className="block text-ink-primary text-xs font-semibold uppercase tracking-wider mb-2">
-                Email Address <span className="text-[#A3A3A3]">*</span>
+              <label className="block label !text-ink-secondary mb-3">
+                Email Address <span className="text-accent">*</span>
               </label>
               <input
                 type="email"
@@ -556,7 +587,7 @@ Budget: ${formData.budget}
                 }}
                 autoFocus
                 placeholder="jane@company.com"
-                className="w-full px-4 py-3.5 bg-white/[0.04] border border-white/10 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all text-sm sm:text-base"
+                className="booking-input"
               />
             </div>
           </div>
@@ -564,27 +595,27 @@ Budget: ${formData.budget}
 
         {/* ── STEP 3: PREFERRED CONTACT METHOD ────────────────── */}
         <Step>
-          <div className="space-y-4">
+          <div className="space-y-9">
             <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-[#A3A3A3]">
+              <div className="flex items-center gap-2">
+                <span className="label !text-accent">
                   Step 03 / 07 • Communication
                 </span>
               </div>
-              <h2 className="font-display font-800 text-xl sm:text-2xl text-white tracking-tight">
+              <h2 className="mt-4 text-[clamp(1.9rem,2.7vw,2.8rem)] leading-[1.06] tracking-[-0.025em] font-medium text-ink-primary">
                 Preferred contact method
               </h2>
-              <p className="text-ink-muted text-xs sm:text-sm mt-1">
+              <p className="mt-3 text-ink-muted text-base md:text-[1.05rem] leading-relaxed max-w-[52ch]">
                 How do you prefer to collaborate throughout the animation process?
               </p>
             </div>
 
             {/* Selection pills */}
             <div className="pt-2">
-              <label className="block text-ink-primary text-xs font-semibold uppercase tracking-wider mb-2.5">
-                Select your preferred channel <span className="text-[#A3A3A3]">*</span>
+              <label className="block label !text-ink-secondary mb-3">
+                Select your preferred channel <span className="text-accent">*</span>
               </label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {CONTACT_METHODS.map((method) => {
                   const isSelected = formData.preferredContact === method.id
                   return (
@@ -592,18 +623,18 @@ Budget: ${formData.budget}
                       key={method.id}
                       type="button"
                       onClick={() => handleSelectContactMethod(method.id)}
-                      className={`px-3 py-2.5 rounded-xl border text-left text-xs sm:text-sm font-medium transition-all duration-200 flex items-center gap-2 cursor-pointer ${
+                      className={`px-4 py-4 rounded-xl border text-left text-sm sm:text-[0.95rem] font-medium transition-all duration-200 flex items-center gap-2 cursor-pointer ${
                         isSelected
-                          ? 'bg-white text-black border-white shadow-[0_2px_12px_rgba(255,255,255,0.15)] font-semibold'
-                          : 'bg-white/[0.03] border-white/10 text-ink-muted hover:border-white/30 hover:text-white'
+                          ? 'bg-accent/10 text-ink-primary border-accent'
+                          : 'bg-transparent border-line-strong text-ink-secondary hover:border-ink-muted hover:text-ink-primary'
                       }`}
                     >
                       <div
                         className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0 ${
-                          isSelected ? 'border-black' : 'border-white/30'
+                          isSelected ? 'border-accent' : 'border-line-strong'
                         }`}
                       >
-                        {isSelected && <div className="w-1.5 h-1.5 bg-black rounded-full" />}
+                        {isSelected && <div className="w-1.5 h-1.5 bg-accent rounded-full" />}
                       </div>
                       <span className="whitespace-normal leading-tight">{method.label}</span>
                     </button>
@@ -623,8 +654,8 @@ Budget: ${formData.budget}
                   transition={{ duration: 0.25 }}
                   className="pt-2 overflow-hidden"
                 >
-                  <label className="block text-ink-primary text-xs font-semibold uppercase tracking-wider mb-2">
-                    Your {activeContactConfig?.label || 'Contact'} Handle or Number <span className="text-[#A3A3A3]">*</span>
+                  <label className="block label !text-ink-secondary mb-3">
+                    Your {activeContactConfig?.label || 'Contact'} Handle or Number <span className="text-accent">*</span>
                   </label>
                   <input
                     type="text"
@@ -638,9 +669,9 @@ Budget: ${formData.budget}
                       }
                     }}
                     placeholder={activeContactConfig?.placeholder || 'Enter your contact details'}
-                    className="w-full px-4 py-3 bg-white/[0.04] border border-white/15 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all text-sm"
+                    className="booking-input"
                   />
-                  <p className="text-ink-muted text-[0.75rem] mt-1.5">
+                  <p className="text-ink-muted text-sm mt-2">
                     I will reach out directly through this handle for updates and reviews.
                   </p>
                 </motion.div>
@@ -650,7 +681,7 @@ Budget: ${formData.budget}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="p-3 bg-white/[0.03] border border-white/10 rounded-xl text-xs text-ink-muted flex items-center gap-2.5"
+                  className="p-4 border border-line rounded-xl text-sm text-ink-muted flex items-center gap-3"
                 >
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white shrink-0">
                     <rect width="20" height="16" x="2" y="4" rx="2" />
@@ -668,25 +699,25 @@ Budget: ${formData.budget}
 
         {/* ── STEP 4: PROJECT DESCRIPTION & INSPIRATION LINKS ──── */}
         <Step>
-          <div className="space-y-4">
+          <div className="space-y-9">
             <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-[#A3A3A3]">
+              <div className="flex items-center gap-2">
+                <span className="label !text-accent">
                   Step 04 / 07 • Project Scope
                 </span>
               </div>
-              <h2 className="font-display font-800 text-xl sm:text-2xl text-white tracking-tight">
+              <h2 className="mt-4 text-[clamp(1.9rem,2.7vw,2.8rem)] leading-[1.06] tracking-[-0.025em] font-medium text-ink-primary">
                 Project description & references
               </h2>
-              <p className="text-ink-muted text-xs sm:text-sm mt-1">
+              <p className="mt-3 text-ink-muted text-base md:text-[1.05rem] leading-relaxed max-w-[52ch]">
                 Tell me what you are building and share any styles you admire.
               </p>
             </div>
 
-            <div className="pt-1 space-y-3.5">
+            <div className="pt-1 space-y-7">
               <div>
-                <label className="block text-ink-primary text-xs font-semibold uppercase tracking-wider mb-2">
-                  Project Description <span className="text-[#A3A3A3]">*</span>
+                <label className="block label !text-ink-secondary mb-3">
+                  Project Description <span className="text-accent">*</span>
                 </label>
                 <textarea
                   name="projectDescription"
@@ -694,13 +725,13 @@ Budget: ${formData.budget}
                   onChange={handleChange}
                   rows={3}
                   placeholder="Tell me what product or feature you're launching, who your audience is, and what key points the animation should convey..."
-                  className="w-full px-4 py-3 bg-white/[0.04] border border-white/10 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all text-sm resize-none"
+                  className="booking-input resize-none"
                 />
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-ink-primary text-xs font-semibold uppercase tracking-wider">
+                  <label className="block label !text-ink-secondary mb-3">
                     Inspiration & References <span className="text-ink-muted font-normal lowercase">(optional)</span>
                   </label>
                 </div>
@@ -710,7 +741,7 @@ Budget: ${formData.budget}
                   onChange={handleChange}
                   rows={2}
                   placeholder="Paste links to videos, YouTube/Vimeo references, or visual styles you like..."
-                  className="w-full px-4 py-3 bg-white/[0.04] border border-white/10 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all text-sm resize-none"
+                  className="booking-input resize-none"
                 />
               </div>
             </div>
@@ -719,27 +750,27 @@ Budget: ${formData.budget}
 
         {/* ── STEP 5: DEADLINE & VIDEO LENGTH ─────────────────── */}
         <Step>
-          <div className="space-y-4">
+          <div className="space-y-9">
             <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-[#A3A3A3]">
+              <div className="flex items-center gap-2">
+                <span className="label !text-accent">
                   Step 05 / 07 • Timeline & Length
                 </span>
               </div>
-              <h2 className="font-display font-800 text-xl sm:text-2xl text-white tracking-tight">
+              <h2 className="mt-4 text-[clamp(1.9rem,2.7vw,2.8rem)] leading-[1.06] tracking-[-0.025em] font-medium text-ink-primary">
                 Deadline & video duration
               </h2>
-              <p className="text-ink-muted text-xs sm:text-sm mt-1">
+              <p className="mt-3 text-ink-muted text-base md:text-[1.05rem] leading-relaxed max-w-[52ch]">
                 Select your target delivery date and anticipated video length.
               </p>
             </div>
 
             {/* Deadline selection */}
             <div>
-              <label className="block text-ink-primary text-xs font-semibold uppercase tracking-wider mb-2">
-                Timeline / Deadline <span className="text-[#A3A3A3]">*</span>
+              <label className="block label !text-ink-secondary mb-3">
+                Timeline / Deadline <span className="text-accent">*</span>
               </label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-3">
                 {DEADLINE_OPTIONS.map((opt) => {
                   const isSelected = formData.deadline === opt.id
                   return (
@@ -750,14 +781,14 @@ Budget: ${formData.budget}
                         setStepError('')
                         setFormData((prev) => ({ ...prev, deadline: opt.id }))
                       }}
-                      className={`p-2.5 rounded-xl border text-left transition-all duration-200 cursor-pointer ${
+                      className={`p-4 sm:p-5 rounded-xl border text-left transition-all duration-200 cursor-pointer ${
                         isSelected
-                          ? 'bg-white text-black border-white shadow-[0_2px_12px_rgba(255,255,255,0.15)] font-semibold'
-                          : 'bg-white/[0.03] border-white/10 text-ink-muted hover:border-white/30 hover:text-white'
+                          ? 'bg-accent/10 text-ink-primary border-accent'
+                          : 'bg-transparent border-line-strong text-ink-secondary hover:border-ink-muted hover:text-ink-primary'
                       }`}
                     >
-                      <div className="text-xs font-medium">{opt.label}</div>
-                      <div className={`text-[0.68rem] ${isSelected ? 'text-neutral-700' : 'text-neutral-500'}`}>
+                      <div className="text-sm sm:text-[0.95rem] font-medium">{opt.label}</div>
+                      <div className={`mt-1 text-xs ${isSelected ? 'text-accent-soft' : 'text-ink-subtle'}`}>
                         {opt.note}
                       </div>
                     </button>
@@ -768,10 +799,10 @@ Budget: ${formData.budget}
 
             {/* Video length selection */}
             <div className="pt-1">
-              <label className="block text-ink-primary text-xs font-semibold uppercase tracking-wider mb-2">
-                Estimated Video Length <span className="text-[#A3A3A3]">*</span>
+              <label className="block label !text-ink-secondary mb-3">
+                Estimated Video Length <span className="text-accent">*</span>
               </label>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 {Object.keys(PROJECT_FORM_CONFIG.videoLengths).map((len) => {
                   const isSelected = formData.videoLength === len
                   const info = PROJECT_FORM_CONFIG.videoLengths[len]
@@ -780,16 +811,16 @@ Budget: ${formData.budget}
                       key={len}
                       type="button"
                       onClick={() => handleSelectVideoLength(len)}
-                      className={`px-1.5 py-2.5 sm:px-2 sm:py-3 rounded-xl border text-center transition-all duration-200 cursor-pointer flex flex-col items-center justify-center min-h-[66px] sm:min-h-[72px] ${
+                      className={`px-1.5 py-2.5 sm:px-2 sm:py-3 rounded-xl border text-center transition-all duration-200 cursor-pointer flex flex-col items-center justify-center min-h-[84px] sm:min-h-[96px] ${
                         isSelected
-                          ? 'bg-white text-black border-white shadow-[0_2px_12px_rgba(255,255,255,0.15)] font-semibold'
-                          : 'bg-white/[0.03] border-white/10 text-ink-muted hover:border-white/30 hover:text-white'
+                          ? 'bg-accent/10 text-ink-primary border-accent'
+                          : 'bg-transparent border-line-strong text-ink-secondary hover:border-ink-muted hover:text-ink-primary'
                       }`}
                     >
-                      <div className="text-xs sm:text-sm font-bold tracking-tight mb-1">{len}</div>
+                      <div className="text-sm sm:text-base font-semibold tracking-tight mb-1">{len}</div>
                       <div
                         className={`text-[0.66rem] sm:text-[0.7rem] leading-[1.25] text-center font-medium ${
-                          isSelected ? 'text-neutral-800' : 'text-neutral-400'
+                          isSelected ? 'text-accent-soft' : 'text-ink-muted'
                         }`}
                       >
                         {info.label}
@@ -799,7 +830,7 @@ Budget: ${formData.budget}
                 })}
               </div>
               {formData.videoLength && (
-                <p className="text-ink-muted text-[0.72rem] mt-2">
+                <p className="text-ink-muted text-sm mt-3">
                   💡 {PROJECT_FORM_CONFIG.videoLengths[formData.videoLength]?.helperText}
                 </p>
               )}
@@ -809,22 +840,22 @@ Budget: ${formData.budget}
 
         {/* ── STEP 6: BUDGET LOGIC ────────────────────────────── */}
         <Step>
-          <div className="space-y-4">
+          <div className="space-y-9">
             <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-[#A3A3A3]">
+              <div className="flex items-center gap-2">
+                <span className="label !text-accent">
                   Step 06 / 07 • Investment
                 </span>
               </div>
-              <h2 className="font-display font-800 text-xl sm:text-2xl text-white tracking-tight">
+              <h2 className="mt-4 text-[clamp(1.9rem,2.7vw,2.8rem)] leading-[1.06] tracking-[-0.025em] font-medium text-ink-primary">
                 Select your budget
               </h2>
-              <p className="text-ink-muted text-xs sm:text-sm mt-1">
+              <p className="mt-3 text-ink-muted text-base md:text-[1.05rem] leading-relaxed max-w-[52ch]">
                 Calibrated tiers reflecting turnaround speed and video complexity.
               </p>
             </div>
 
-            <div className="pt-1 space-y-2.5">
+            <div className="pt-1 space-y-3">
               {Object.keys(PROJECT_FORM_CONFIG.budgets).map((budgetKey) => {
                 const isSelected = formData.budget === budgetKey
                 const config = PROJECT_FORM_CONFIG.budgets[budgetKey]
@@ -838,22 +869,22 @@ Budget: ${formData.budget}
                       if (isAllowed) handleSelectBudget(budgetKey)
                     }}
                     disabled={!isAllowed}
-                    className={`w-full p-3.5 rounded-xl border text-left transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 ${
+                    className={`w-full p-5 sm:px-6 rounded-xl border text-left transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 ${
                       !isAllowed
-                        ? 'opacity-35 cursor-not-allowed bg-white/[0.01] border-white/5'
+                        ? 'opacity-35 cursor-not-allowed bg-transparent border-line'
                         : isSelected
-                        ? 'bg-white text-black border-white shadow-[0_4px_16px_rgba(255,255,255,0.15)] cursor-pointer'
-                        : 'bg-white/[0.03] border-white/10 text-white hover:border-white/30 cursor-pointer'
+                        ? 'bg-accent/10 text-ink-primary border-accent cursor-pointer'
+                        : 'bg-transparent border-line-strong text-ink-primary hover:border-ink-muted cursor-pointer'
                     }`}
                   >
                     <div className="space-y-0.5">
                       <div className="flex items-center gap-2">
-                        <span className="font-display font-bold text-sm sm:text-base">
+                        <span className="font-medium text-base sm:text-lg tracking-tight">
                           {budgetKey}
                         </span>
                         <span
                           className={`text-[0.65rem] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider ${
-                            isSelected ? 'bg-black text-white' : 'bg-white/10 text-neutral-300'
+                            isSelected ? 'bg-accent text-accent-ink' : 'bg-white/[0.06] text-ink-secondary'
                           }`}
                         >
                           {config.badge}
@@ -864,7 +895,7 @@ Budget: ${formData.budget}
                           </span>
                         )}
                       </div>
-                      <p className={`text-xs ${isSelected ? 'text-neutral-700 font-medium' : 'text-neutral-400'}`}>
+                      <p className={`text-xs ${isSelected ? 'text-ink-secondary' : 'text-ink-muted'}`}>
                         {config.helperText}
                       </p>
                     </div>
@@ -872,10 +903,10 @@ Budget: ${formData.budget}
                     <div className="shrink-0 flex items-center gap-1.5 self-end sm:self-center">
                       <div
                         className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                          isSelected ? 'border-black' : 'border-white/30'
+                          isSelected ? 'border-accent' : 'border-line-strong'
                         }`}
                       >
-                        {isSelected && <div className="w-2 h-2 bg-black rounded-full" />}
+                        {isSelected && <div className="w-2 h-2 bg-accent rounded-full" />}
                       </div>
                     </div>
                   </button>
@@ -887,23 +918,23 @@ Budget: ${formData.budget}
 
         {/* ── STEP 7: REVIEW TEMPLATE & SUBMIT ────────────────── */}
         <Step>
-          <div className="space-y-4">
+          <div className="space-y-9">
             <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-[#A3A3A3]">
+              <div className="flex items-center gap-2">
+                <span className="label !text-accent">
                   Step 07 / 07 • Final Review
                 </span>
               </div>
-              <h2 className="font-display font-800 text-xl sm:text-2xl text-white tracking-tight">
+              <h2 className="mt-4 text-[clamp(1.9rem,2.7vw,2.8rem)] leading-[1.06] tracking-[-0.025em] font-medium text-ink-primary">
                 Review your project brief
               </h2>
-              <p className="text-ink-muted text-xs sm:text-sm mt-1">
+              <p className="mt-3 text-ink-muted text-base md:text-[1.05rem] leading-relaxed max-w-[52ch]">
                 Everything you selected is formatted below. Click &quot;Send it over&quot; to submit.
               </p>
             </div>
 
             {/* Template Summary Card */}
-            <div className="p-4 sm:p-5 bg-white/[0.03] border border-white/12 rounded-2xl space-y-3.5 relative overflow-hidden">
+            <div className="p-5 sm:p-6 border border-line rounded-2xl space-y-4 relative overflow-hidden">
               <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
                 <span className="text-xs font-mono font-semibold tracking-wider text-neutral-400 uppercase">
                   Project Brief Template
@@ -915,7 +946,7 @@ Budget: ${formData.budget}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 {/* Client Name */}
-                <div className="bg-white/[0.02] p-2.5 rounded-lg border border-white/5">
+                <div className="p-4 rounded-lg border border-line">
                   <div className="flex justify-between items-center text-neutral-400 mb-0.5">
                     <span>Client Name</span>
                     <button type="button" onClick={() => setCurrentStep(1)} className="text-[0.65rem] underline text-white/70 hover:text-white cursor-pointer">
@@ -926,7 +957,7 @@ Budget: ${formData.budget}
                 </div>
 
                 {/* Email */}
-                <div className="bg-white/[0.02] p-2.5 rounded-lg border border-white/5">
+                <div className="p-4 rounded-lg border border-line">
                   <div className="flex justify-between items-center text-neutral-400 mb-0.5">
                     <span>Email Address</span>
                     <button type="button" onClick={() => setCurrentStep(2)} className="text-[0.65rem] underline text-white/70 hover:text-white cursor-pointer">
@@ -937,7 +968,7 @@ Budget: ${formData.budget}
                 </div>
 
                 {/* Preferred Contact */}
-                <div className="bg-white/[0.02] p-2.5 rounded-lg border border-white/5 sm:col-span-2">
+                <div className="p-4 rounded-lg border border-line sm:col-span-2">
                   <div className="flex justify-between items-center text-neutral-400 mb-0.5">
                     <span>Preferred Communication</span>
                     <button type="button" onClick={() => setCurrentStep(3)} className="text-[0.65rem] underline text-white/70 hover:text-white cursor-pointer">
@@ -955,7 +986,7 @@ Budget: ${formData.budget}
                 </div>
 
                 {/* Timeline & Duration & Budget */}
-                <div className="bg-white/[0.02] p-2.5 rounded-lg border border-white/5 sm:col-span-2 flex flex-wrap justify-between items-center gap-2">
+                <div className="p-4 rounded-lg border border-line sm:col-span-2 flex flex-wrap justify-between items-center gap-2">
                   <div>
                     <span className="text-neutral-400 block text-[0.7rem]">Timeline</span>
                     <span className="text-white font-semibold">{formData.deadline}</span>
@@ -974,7 +1005,7 @@ Budget: ${formData.budget}
                 </div>
 
                 {/* Project Description */}
-                <div className="bg-white/[0.02] p-2.5 rounded-lg border border-white/5 sm:col-span-2">
+                <div className="p-4 rounded-lg border border-line sm:col-span-2">
                   <div className="flex justify-between items-center text-neutral-400 mb-1">
                     <span>Project Description</span>
                     <button type="button" onClick={() => setCurrentStep(4)} className="text-[0.65rem] underline text-white/70 hover:text-white cursor-pointer">
@@ -988,7 +1019,7 @@ Budget: ${formData.budget}
 
                 {/* Inspiration */}
                 {formData.inspirationReferences && (
-                  <div className="bg-white/[0.02] p-2.5 rounded-lg border border-white/5 sm:col-span-2">
+                  <div className="p-4 rounded-lg border border-line sm:col-span-2">
                     <div className="flex justify-between items-center text-neutral-400 mb-1">
                       <span>Inspiration Links & Style</span>
                       <button type="button" onClick={() => setCurrentStep(4)} className="text-[0.65rem] underline text-white/70 hover:text-white cursor-pointer">

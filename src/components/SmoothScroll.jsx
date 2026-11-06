@@ -2,36 +2,33 @@
 
 // ─────────────────────────────────────────────────────────────
 // SMOOTH SCROLL — src/components/SmoothScroll.jsx
-// Uses Lenis for buttery smooth scrolling throughout the site.
+// Lenis smooth scrolling. Skipped entirely for reduced-motion users.
 // ─────────────────────────────────────────────────────────────
 
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import Lenis from 'lenis'
 
 export default function SmoothScroll({ children }) {
-  const lenisRef = useRef(null)
-
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.15,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 2,
     })
+    window.__lenis = lenis // used by PageTransition to jump under the cover
 
-    lenisRef.current = lenis
-
-    function raf(time) {
+    let id
+    const raf = (time) => {
       lenis.raf(time)
-      requestAnimationFrame(raf)
+      id = requestAnimationFrame(raf)
     }
-
-    requestAnimationFrame(raf)
+    id = requestAnimationFrame(raf)
 
     return () => {
+      cancelAnimationFrame(id)
+      if (window.__lenis === lenis) window.__lenis = null
       lenis.destroy()
     }
   }, [])

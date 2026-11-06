@@ -16,12 +16,20 @@ export default function BookingModal() {
     }
   }
 
+  // Close on Escape
+  useEffect(() => {
+    if (!isBookingOpen) return
+    const onKey = (e) => { if (e.key === 'Escape') closeBooking() }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [isBookingOpen, closeBooking])
+
   // Prevent scroll when modal is active
   useEffect(() => {
     if (isBookingOpen) {
       document.body.style.overflow = 'hidden'
       return () => {
-        document.body.style.overflow = 'auto'
+        document.body.style.overflow = ''
       }
     }
   }, [isBookingOpen])
@@ -29,7 +37,7 @@ export default function BookingModal() {
   return (
     <AnimatePresence>
       {isBookingOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center overflow-x-hidden overflow-y-auto">
+        <div data-lenis-prevent className="fixed inset-0 z-[9999] flex items-center justify-center overflow-x-hidden overflow-y-auto">
           {/* Blurred Background Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -37,7 +45,7 @@ export default function BookingModal() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             onClick={closeBooking}
-            className="fixed inset-0 bg-black/80 backdrop-blur-xl z-[-1]"
+            className="fixed inset-0 bg-[#0c0c0b]/90 z-[-1]"
             aria-hidden="true"
           />
 
@@ -52,19 +60,17 @@ export default function BookingModal() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.94, y: 15 }}
               transition={{ type: 'spring', duration: 0.35, bounce: 0.15 }}
-              className="relative w-full rounded-2xl sm:rounded-3xl border border-white/15 bg-[#0D0D0D]/95 backdrop-blur-3xl shadow-[0_30px_90px_rgba(0,0,0,0.9),0_0_50px_rgba(255,255,255,0.04)] overflow-hidden"
+              className="relative w-full rounded-xl border border-line bg-bg-secondary overflow-hidden"
               onClick={(e) => e.stopPropagation()}
               role="dialog"
               aria-modal="true"
               aria-label="Book a Project Modal"
             >
-              {/* Subtle top gloss line */}
-              <div className="absolute top-0 left-10 right-10 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none" />
 
               {/* Dedicated Top Header Bar - separates close button cleanly from step indicators */}
-              <div className="flex items-center justify-between px-5 sm:px-8 pt-4 pb-3 border-b border-white/8 relative z-20">
+              <div className="flex items-center justify-between px-5 sm:px-8 pt-4 pb-3 border-b border-line relative z-20">
                 <div className="flex items-center gap-2.5">
-                  <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                  <span className="w-2 h-2 rounded-full bg-accent" />
                   <span className="text-xs font-display font-semibold tracking-[0.14em] uppercase text-white/90">
                     Book a Project
                   </span>

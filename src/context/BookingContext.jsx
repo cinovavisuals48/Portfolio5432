@@ -70,8 +70,10 @@ export function BookingProvider({ children }) {
     } catch (e) {}
   }, [currentStep, isHydrated])
 
+  // "Book a project" is its own page now (/book-project). Anything that
+  // still calls openBooking() is sent there with the page transition.
   const openBooking = useCallback(() => {
-    setIsBookingOpen(true)
+    window.dispatchEvent(new CustomEvent('pt:navigate', { detail: { path: '/book-project' } }))
   }, [])
 
   const closeBooking = useCallback(() => {

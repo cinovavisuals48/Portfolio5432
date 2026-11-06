@@ -1,131 +1,70 @@
 'use client'
 
 // ─────────────────────────────────────────────────────────────
-// CONTACT SECTION — src/components/Contact.jsx
-// Clean minimal contact section
+// CONTACT — src/components/Contact.jsx
+// Giant "Book a project" line that opens the booking form,
+// plus social links. Links live in src/data/links.js.
 // ─────────────────────────────────────────────────────────────
 
-import { motion } from 'framer-motion'
 import { links } from '../data/links'
-import { useBooking } from '../context/BookingContext'
+import Link from 'next/link'
+import { useRef } from 'react'
+import { Reveal, Line, SectionLabel, Arrow } from './Reveal'
+import ProximityText from './ProximityText'
 
 const socials = [
-  {
-    name: 'Instagram',
-    handle: '@moulidoesmotion',
-    href: links.instagram,
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="1.5"/>
-        <circle cx="12" cy="12" r="4.5" stroke="currentColor" strokeWidth="1.5"/>
-        <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
-      </svg>
-    ),
-  },
-  {
-    name: 'X / Twitter',
-    handle: '@moulidoesmotion',
-    href: links.twitter,
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-      </svg>
-    ),
-  },
+  { name: 'Instagram', handle: '@moulidoesmotion', href: links.instagram },
+  { name: 'X / Twitter', handle: '@moulidoesmotion', href: links.twitter },
 ]
 
 export default function Contact() {
-  const { openBooking } = useBooking()
+  const ctaRef = useRef(null)
 
   return (
-    <section id="contact" className="section-py relative overflow-hidden">
-      <div className="max-w-[clamp(1280px,82vw,1920px)] mx-auto px-6 relative z-10">
+    <section id="contact" className="pt-[clamp(5rem,11vw,10rem)] pb-16 border-t border-line">
+      <div className="container-site">
+        <div className="grid lg:grid-cols-12 gap-6 mb-10 md:mb-14">
+          <SectionLabel index="04" className="lg:col-span-3">Get in touch</SectionLabel>
+          <div className="lg:col-span-9">
+            <p className="text-[clamp(1.5rem,2.8vw,2.6rem)] leading-[1.15] tracking-[-0.02em] font-medium max-w-[22ch]">
+              Ready to move <span className="serif-italic text-accent">your product</span> forward?
+            </p>
+            <p className="mt-5 text-ink-muted max-w-[46ch] leading-relaxed">
+              Fill out a quick brief or reach out on social. Let&apos;s turn your product into a motion story.
+            </p>
+          </div>
+        </div>
 
-        {/* Section Label */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-[#A3A3A3] text-sm font-display font-600 tracking-[0.1em] uppercase mb-3"
+        {/* Big CTA: turns blue on hover, letters near the cursor go thin */}
+        <Link
+          ref={ctaRef}
+          href="/book-project"
+          className="group relative block w-full text-left border-y border-line py-6 md:py-8 overflow-hidden"
         >
-          Get In Touch
-        </motion.p>
+          <span className="relative flex items-end justify-between gap-6 transition-colors duration-500 group-hover:text-accent group-focus-visible:text-accent">
+            <span className="display text-[clamp(2.6rem,11.4vw,13.5rem)] whitespace-nowrap">
+              <Line>
+                <ProximityText text="Book a project" areaRef={ctaRef} />
+              </Line>
+            </span>
+            <Arrow size={56} className="hidden md:block mb-[2vw] shrink-0 transition-transform duration-700 ease-expo group-hover:translate-x-2" />
+          </span>
+        </Link>
 
-        {/* Heading */}
-        <motion.h2
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="font-display font-800 text-[clamp(2rem,4.5vw,3.5rem)]
-                     leading-[1] tracking-tight text-ink-primary mb-4"
-        >
-          Ready to move{' '}
-          <span className="text-gradient-mono">your product</span>
-          <br />
-          forward?
-        </motion.h2>
-
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-ink-muted text-[0.92rem] max-w-md leading-relaxed mb-10"
-        >
-          Fill out a quick brief or reach out on social. Let&apos;s turn your product into a motion story.
-        </motion.p>
-
-        {/* Primary CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.15 }}
-          className="mb-10"
-        >
-          <button
-            type="button"
-            onClick={() => openBooking()}
-            className="btn-primary cursor-pointer"
-          >
-            Book a Project
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M2.5 7h9M7.5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5"
-                strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-        </motion.div>
-
-        {/* Social Links */}
-        <div className="flex flex-wrap gap-3">
-          {socials.map((social, i) => (
-            <motion.a
-              key={social.name}
-              href={social.href}
+        <Reveal className="mt-10 grid sm:grid-cols-2 lg:grid-cols-12 gap-6">
+          {socials.map((s, i) => (
+            <a
+              key={s.name}
+              href={s.href}
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.08 }}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg
-                         border border-thin bg-bg-card
-                         hover:border-[rgba(255,255,255,0.12)] hover:bg-bg-elevated
-                         transition-all duration-200 group"
+              className={`group flex items-baseline justify-between gap-4 border-b border-line pb-4 lg:col-span-3 ${i === 0 ? 'lg:col-start-4' : ''}`}
             >
-              <span className="text-ink-muted group-hover:text-ink-primary transition-colors">
-                {social.icon}
-              </span>
-              <div>
-                <div className="font-display font-600 text-[0.85rem] text-ink-primary">
-                  {social.name}
-                </div>
-                <div className="text-ink-muted text-[0.75rem]">{social.handle}</div>
-              </div>
-            </motion.a>
+              <span className="label">{s.name}</span>
+              <span className="text-[1.1rem] link-underline group-hover:text-accent transition-colors">{s.handle} ↗</span>
+            </a>
           ))}
-        </div>
+        </Reveal>
       </div>
     </section>
   )

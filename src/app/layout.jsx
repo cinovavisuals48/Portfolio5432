@@ -4,14 +4,20 @@
 // ─────────────────────────────────────────────────────────────
 
 import './globals.css'
+import { Archivo, Inter_Tight, JetBrains_Mono, Instrument_Serif } from 'next/font/google'
 import Navbar from '../components/Navbar'
 import { BookingProvider } from '../context/BookingContext'
-import BookingModal from '../components/BookingModal'
-import CursorGlow from '../components/CursorGlow'
 import CustomCursor from '../components/CustomCursor'
+import PageTransition from '../components/PageTransition'
+
+// ── FONTS ─────────────────────────────────────────────────────
+const display = Archivo({ subsets: ['latin'], axes: ['wdth'], variable: '--font-display', display: 'swap' })
+const body = Inter_Tight({ subsets: ['latin'], variable: '--font-body', display: 'swap' })
+const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-mono', display: 'swap' })
+const serif = Instrument_Serif({ subsets: ['latin'], weight: '400', style: ['normal', 'italic'], variable: '--font-serif', display: 'swap' })
 
 export const viewport = {
-  themeColor: '#000000',
+  themeColor: '#141413',
 }
 
 // ── SEO METADATA — edit these values ──────────────────────────
@@ -57,33 +63,25 @@ export const metadata = {
   manifest: '/site.webmanifest',
   other: {
     'msapplication-TileImage': '/mstile-150x150.png',
-    'theme-color': '#000000',
+    'theme-color': '#141413',
   },
 }
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="scroll-smooth" style={{ cursor: 'none' }}>
-      <head>
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-              html, body, :root, #__next, *, *::before, *::after {
-                cursor: none !important;
-                cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=') 0 0, none !important;
-                cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1 1'%3E%3Crect width='1' height='1' fill='none'/%3E%3C/svg%3E") 0 0, none !important;
-              }
-            `,
-          }}
-        />
-      </head>
-      <body className="bg-bg-primary text-ink-primary font-body antialiased overflow-x-hidden" style={{ cursor: 'none' }}>
+    <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable} ${serif.variable}`}>
+      <body className="bg-bg-primary text-ink-primary font-body antialiased overflow-x-hidden">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-accent focus:text-accent-ink focus:px-4 focus:py-2 focus:rounded-full"
+        >
+          Skip to content
+        </a>
         <BookingProvider>
-          <CursorGlow />
           <CustomCursor />
           <Navbar />
           {children}
-          <BookingModal />
+          <PageTransition />
         </BookingProvider>
       </body>
     </html>

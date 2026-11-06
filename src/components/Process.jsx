@@ -1,98 +1,64 @@
 'use client'
 
 // ─────────────────────────────────────────────────────────────
-// PROCESS SECTION — src/components/Process.jsx
-// Five-step workflow timeline from brief to delivery
+// PROCESS — src/components/Process.jsx
+// Five steps as large numbered rows.
 // ─────────────────────────────────────────────────────────────
 
-import { motion } from 'framer-motion'
+import { Reveal, Line, SectionLabel } from './Reveal'
 
 const steps = [
   {
-    number: '01',
     title: 'Intake form',
-    description: 'You fill out a short form with the project goal, references, brand assets, and budget. If you have a script, send it. If not, we\'ll write one together.'
+    description: "You fill out a short form with the project goal, references, brand assets, and budget. If you have a script, send it. If not, we'll write one together.",
   },
   {
-    number: '02',
     title: 'First contact',
-    description: 'You fill out the intake form. I review it, reach out with a few questions, and come back with a price estimate based on your scope.'
+    description: 'You fill out the intake form. I review it, reach out with a few questions, and come back with a price estimate based on your scope.',
   },
   {
-    number: '03',
     title: 'Storyboard & script',
-    description: 'I build a frame-by-frame storyboard in Figma so you can see every scene before animation starts. If you don\'t have a script yet, I\'ll write one based on your brief.'
+    description: "I build a frame-by-frame storyboard in Figma so you can see every scene before animation starts. If you don't have a script yet, I'll write one based on your brief.",
   },
   {
-    number: '04',
     title: 'Animation in After Effects',
-    description: 'Once the storyboard and script are approved, I move into After Effects. You don\'t have to manage anything during this phase, just wait for the first cut.'
+    description: "Once the storyboard and script are approved, I move into After Effects. You don't have to manage anything during this phase, just wait for the first cut.",
   },
   {
-    number: '05',
     title: 'Two revision rounds, then delivery',
-    description: 'If something needs adjusting, two rounds of revisions are included at no extra cost. Final files delivered in every aspect ratio you need.'
-  }
+    description: 'If something needs adjusting, two rounds of revisions are included at no extra cost. Final files delivered in every aspect ratio you need.',
+  },
 ]
 
 export default function Process() {
   return (
-    <section id="process" className="section-py relative overflow-hidden">
-      <div className="max-w-[clamp(1280px,82vw,1920px)] mx-auto px-6 relative z-10">
-
-        {/* Section Label */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-[#A3A3A3] text-sm font-display font-600 tracking-[0.1em] uppercase mb-3"
-        >
-          The Process
-        </motion.p>
-
-        {/* Headline */}
-        <motion.h2
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="font-display font-800 text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.1] tracking-tight text-ink-primary mb-12"
-        >
-          From brief to delivery in{' '}
-          <span className="text-white">five</span> steps
-        </motion.h2>
-
-        {/* Steps Timeline */}
-        <div className="space-y-1">
-          {steps.map((step, i) => (
-            <motion.div
-              key={step.number}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="border-b border-white/10 py-8 flex gap-6 lg:gap-12 group hover:border-white/20 transition-colors"
-            >
-              {/* Number */}
-              <div className="flex-shrink-0 w-16 lg:w-24">
-                <span className="font-display font-800 text-[2.5rem] lg:text-[3rem] text-ink-muted/40 group-hover:text-ink-muted/60 transition-colors">
-                  {step.number}
-                </span>
-              </div>
-
-              {/* Content */}
-              <div className="flex-1 min-w-0">
-                <h3 className="font-display font-700 text-[1.2rem] text-ink-primary mb-3">
-                  {step.title}
-                </h3>
-                <p className="text-ink-muted text-[0.92rem] leading-relaxed">
-                  {step.description}
-                </p>
-              </div>
-            </motion.div>
-          ))}
+    <section id="process" className="section-py border-t border-line">
+      <div className="container-site">
+        <div className="grid lg:grid-cols-12 gap-6 mb-14 md:mb-20">
+          <SectionLabel index="05" className="lg:col-span-3">The process</SectionLabel>
+          <h2 className="lg:col-span-9 display text-[clamp(2.8rem,7vw,7.5rem)]">
+            <Line>From brief to delivery</Line>
+            <Line delay={0.08}>in <span className="serif-italic">five</span> steps</Line>
+          </h2>
         </div>
 
+        <ol className="border-t border-line">
+          {steps.map((s, i) => (
+            <Reveal as="li" key={s.title} delay={i * 0.04} className="group border-b border-line">
+              <div className="grid grid-cols-[auto_1fr] lg:grid-cols-12 gap-x-6 gap-y-3 py-8 md:py-10 items-baseline">
+                <span className="display text-[clamp(2.6rem,4.6vw,4.4rem)] text-ink-subtle transition-colors duration-500 group-hover:text-accent lg:col-span-3">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <h3 className="lg:col-span-4 text-[clamp(1.3rem,2vw,1.8rem)] leading-[1.15] tracking-[-0.01em] font-medium">
+                  {s.title}
+                </h3>
+                <p className="col-start-2 lg:col-start-auto lg:col-span-5 text-ink-muted leading-relaxed max-w-[52ch]">
+                  {s.description}
+                </p>
+              </div>
+            </Reveal>
+          ))}
+        </ol>
       </div>
     </section>
   )

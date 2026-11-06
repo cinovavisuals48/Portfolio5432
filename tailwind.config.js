@@ -9,81 +9,61 @@ module.exports = {
     extend: {
       // ─────────────────────────────────────────────
       // COLORS — edit here to change the brand palette
+      // Charcoal ground, warm off-white type, one electric-blue accent.
       // ─────────────────────────────────────────────
       colors: {
-        mono: {
-          black: '#000000',
-          900:   '#0D0D0D',
-          800:   '#1A1A1A',
-          700:   '#2E2E2E',
-          600:   '#4D4D4D',
-          500:   '#737373',
-          400:   '#A3A3A3',
-          300:   '#D4D4D4',
-          200:   '#E8E8E8',
-          100:   '#F5F5F5',
-          white: '#FFFFFF',
-        },
         bg: {
-          primary:   '#000000',
-          secondary: '#0D0D0D',
-          card:      '#141414',
-          elevated:  '#1A1A1A',
-        },
-        accent: {
-          DEFAULT: '#FFFFFF',
-          soft:    '#D4D4D4',
-          muted:   '#A3A3A3',
-          glow:    'rgba(255, 255, 255, 0.12)',
-          // Legacy aliases mapped to monochrome to prevent any accidental color leak
-          blue:    '#FFFFFF',
-          violet:  '#E8E8E8',
-        },
-        brand: {
-          DEFAULT: '#FFFFFF',
+          primary:   '#141413', // page background (charcoal)
+          secondary: '#1A1A18',
+          card:      '#1E1E1C', // media placeholders
+          elevated:  '#242422',
         },
         ink: {
-          primary:   '#FFFFFF',
-          secondary: '#E8E8E8',
-          muted:     '#A3A3A3',
-          subtle:    '#737373',
+          primary:   '#EEEAE2', // warm off-white
+          secondary: '#D9D4CA',
+          muted:     '#9A958C',
+          subtle:    '#6B675F',
+        },
+        line: {
+          DEFAULT: 'rgba(238, 234, 226, 0.12)',
+          strong:  'rgba(238, 234, 226, 0.24)',
+        },
+        accent: {
+          DEFAULT: '#7C9CFF', // electric blue — use sparingly
+          soft:    '#A9BDFF',
+          ink:     '#0F1530', // text on accent fills
+        },
+        // Legacy alias kept so older class names still resolve
+        mono: {
+          black: '#141413',
+          white: '#EEEAE2',
         },
       },
-      // ─────────────────────────────────────────────
-      // FONTS — defined in globals.css via Google Fonts
-      // ─────────────────────────────────────────────
       fontFamily: {
-        display: ['Syne', 'sans-serif'],
-        body:    ['Plus Jakarta Sans', 'sans-serif'],
+        display: ['var(--font-display)', 'Arial Narrow', 'sans-serif'],
+        body:    ['var(--font-body)', 'system-ui', 'sans-serif'],
+        serif:   ['var(--font-serif)', 'Georgia', 'serif'],
+        mono:    ['var(--font-mono)', 'ui-monospace', 'monospace'],
       },
-      // ─────────────────────────────────────────────
-      // SPACING & SIZING
-      // ─────────────────────────────────────────────
       spacing: {
         '18': '4.5rem',
         '22': '5.5rem',
         '30': '7.5rem',
       },
-      fontSize: {
-        '10xl': ['10rem',  { lineHeight: '1' }],
-        '9xl':  ['8rem',   { lineHeight: '1' }],
-        '8xl':  ['6.5rem', { lineHeight: '1' }],
+      maxWidth: {
+        site: '1680px',
       },
-      borderRadius: {
-        '2xl': '1rem',
-        '3xl': '1.5rem',
-        '4xl': '2rem',
-      },
-      animation: {
-        'float':      'float 6s ease-in-out infinite',
-        'float-slow': 'float 9s ease-in-out infinite',
-        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      transitionTimingFunction: {
+        expo: 'cubic-bezier(0.16, 1, 0.3, 1)',
       },
       keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%':      { transform: 'translateY(-12px)' },
+        marquee: {
+          from: { transform: 'translate3d(0,0,0)' },
+          to:   { transform: 'translate3d(-50%,0,0)' },
         },
+      },
+      animation: {
+        marquee: 'marquee 38s linear infinite',
       },
     },
   },

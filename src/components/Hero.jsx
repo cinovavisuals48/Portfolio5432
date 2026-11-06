@@ -1,242 +1,120 @@
 'use client'
 
 // ─────────────────────────────────────────────────────────────
-// HERO SECTION — src/components/Hero.jsx
-// Clean, minimal hero with black/grey gradient
+// HERO — src/components/Hero.jsx
+// Oversized editorial headline, supporting copy, CTAs and a
+// slow marquee of what I make. No background effects.
 // ─────────────────────────────────────────────────────────────
 
 import { motion, useScroll, useTransform, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { useRef, useState, useEffect } from 'react'
-import { links } from '../data/links'
-import Beams from './Beams'
-import { useBooking } from '../context/BookingContext'
+import { Line, SplitText, EASE, Arrow } from './Reveal'
 
-const ROTATING_WORDS = [
-  'SaaS',
-  'Fintech',
-  'Launch Videos',
-  'Product Explainers',
-  'UI Animation',
-]
+// Edit the rotating words here — the longest one reserves the width.
+const ROTATING_WORDS = ['SaaS', 'Fintech', 'Launch Videos', 'Product Explainers', 'UI Animation']
+const LONGEST = ROTATING_WORDS.reduce((a, b) => (b.length > a.length ? b : a))
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.08, delayChildren: 0.2 },
-  },
+function RotatingWord() {
+  const reduce = useReducedMotion()
+  const [i, setI] = useState(0)
+
+  useEffect(() => {
+    if (reduce) return
+    const id = setInterval(() => setI((n) => (n + 1) % ROTATING_WORDS.length), 2400)
+    return () => clearInterval(id)
+  }, [reduce])
+
+  return (
+    <span className="relative inline-grid align-baseline overflow-hidden pb-[0.08em] -mb-[0.08em]">
+      <span className="invisible col-start-1 row-start-1 whitespace-nowrap">{LONGEST}.</span>
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.span
+          key={ROTATING_WORDS[i]}
+          initial={reduce ? { opacity: 0 } : { y: '100%' }}
+          animate={reduce ? { opacity: 1 } : { y: '0%' }}
+          exit={reduce ? { opacity: 0 } : { y: '-100%' }}
+          transition={{ duration: 0.8, ease: EASE }}
+          className="col-start-1 row-start-1 whitespace-nowrap"
+        >
+          {ROTATING_WORDS[i]}<span className="text-accent">.</span>
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  )
 }
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-  },
-}
-
-const wordSlideVariants = {
-  initial: {
-    y: '100%',
-    opacity: 0,
-  },
-  animate: {
-    y: '0%',
-    opacity: 1,
-    transition: {
-      y: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
-      opacity: { duration: 0.3, ease: 'easeOut' },
-    },
-  },
-  exit: {
-    y: '-100%',
-    opacity: 0,
-    transition: {
-      y: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
-      opacity: { duration: 0.25, ease: 'easeIn' },
-    },
-  },
-}
-
-const reducedMotionVariants = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1, transition: { duration: 0.2 } },
-  exit: { opacity: 0, transition: { duration: 0.2 } },
+function Marquee() {
+  const items = [...ROTATING_WORDS, ...ROTATING_WORDS]
+  return (
+    <div className="group relative overflow-hidden border-y border-line py-5 md:py-7" aria-hidden>
+      <div className="flex w-max animate-marquee group-hover:[animation-play-state:paused] motion-reduce:animate-none">
+        {[0, 1].map((copy) => (
+          <ul key={copy} className="flex shrink-0 items-center">
+            {items.map((word, idx) => (
+              <li key={`${copy}-${idx}`} className="flex items-center">
+                <span className="serif-italic text-[clamp(2rem,4.6vw,4.4rem)] leading-none px-6 md:px-10 text-ink-primary">
+                  {word}
+                </span>
+                <span className="text-accent text-[0.7rem]">◆</span>
+              </li>
+            ))}
+          </ul>
+        ))}
+      </div>
+    </div>
+  )
 }
 
 export default function Hero() {
-  const { openBooking } = useBooking()
+  const reduce = useReducedMotion()
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '15%'])
-
-  const [wordIndex, setWordIndex] = useState(0)
-  const shouldReduceMotion = useReducedMotion()
-
-  useEffect(() => {
-    if (shouldReduceMotion) return
-
-    const interval = setInterval(() => {
-      setWordIndex((prev) => (prev + 1) % ROTATING_WORDS.length)
-    }, 2200)
-
-    return () => clearInterval(interval)
-  }, [shouldReduceMotion])
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', reduce ? '0%' : '-12%'])
 
   return (
-    <section
-      ref={ref}
-      id="home"
-      className="relative min-h-screen flex flex-col justify-center overflow-hidden"
-      style={{ paddingTop: '7rem', paddingBottom: '5rem' }}
-    >
-      {/* Background Elements */}
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        {/* 3D Animated Beams */}
-        <div
-          className="absolute inset-0 z-0 overflow-hidden"
-          style={{
-            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 60%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 60%, transparent 100%)',
-          }}
+    <section ref={ref} id="home" className="relative pt-28 md:pt-36">
+      <div className="container-site md:min-h-[calc(100svh-9rem)] flex flex-col pb-10 md:pb-14">
+        {/* Meta row */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 0.1 }}
+          className="flex items-start justify-between gap-6 mb-10 md:mb-14"
         >
-          <Beams
-            beamWidth={2}
-            beamHeight={18}
-            beamNumber={14}
-            lightColor="#ffffff"
-            beamColor="#000000"
-            backgroundColor="#000000"
-            speed={1.6}
-            noiseIntensity={1.75}
-            scale={0.2}
-            rotation={-12}
-          />
-        </div>
+          <p className="label"><span className="text-accent">●</span>&nbsp; Motion designer</p>
+          <p className="label text-right">Based in India<br className="sm:hidden" /><span className="hidden sm:inline"> — </span>working globally</p>
+        </motion.div>
 
-        {/* Subtle radial gradient */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2
-                        w-[800px] h-[600px] rounded-full opacity-[0.03] z-10"
-          style={{ background: 'radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%)' }}
-        />
-        {/* Grid pattern */}
-        <div className="absolute inset-0 opacity-[0.02] z-10"
-          style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)`,
-            backgroundSize: '60px 60px',
-          }}
-        />
+        {/* Headline */}
+        <motion.h1 style={{ y }} className="display text-[clamp(2.6rem,11.6vw,13rem)] text-ink-primary">
+          <SplitText delay={0.1}>Hi, I&apos;m Mouli.</SplitText>
+          <SplitText delay={0.3}>I do motion for</SplitText>
+          <Line animateOnMount delay={0.35} className="serif-italic text-[min(1.06em,10.4vw)] leading-[1.02] mt-[0.04em]">
+            <span className="sr-only">SaaS, Fintech, Launch Videos, Product Explainers and UI Animation.</span>
+            <span aria-hidden><RotatingWord /></span>
+          </Line>
+        </motion.h1>
+
+        {/* Bottom row */}
+        <motion.div
+          initial={{ opacity: 0, y: reduce ? 0 : 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: EASE, delay: 0.6 }}
+          className="mt-auto pt-12 grid gap-8 md:grid-cols-12 md:items-end"
+        >
+          <p className="md:col-span-5 text-[clamp(1.05rem,1.45vw,1.4rem)] leading-[1.4] text-ink-secondary max-w-[30ch]">
+            Explainers, launch videos, and UI animation for founders who want their product to stand out.
+          </p>
+          <p className="label hidden md:block md:col-span-3 md:col-start-6">↓ Scroll</p>
+          <div className="md:col-span-4 flex flex-wrap items-center gap-3 md:justify-end">
+            <a href="#projects" className="btn-ghost">
+              See the work <Arrow />
+            </a>
+          </div>
+        </motion.div>
       </div>
 
-      {/* Main Content */}
-      <motion.div
-        style={{ y }}
-        className="relative z-10 max-w-[clamp(1280px,82vw,1920px)] mx-auto px-6 w-full"
-      >
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="max-w-4xl"
-        >
-          {/* Eyebrow */}
-          <motion.div variants={itemVariants} className="mb-6">
-            <span className="tag-pill">
-              <span className="w-1.5 h-1.5 rounded-full bg-white mr-2 inline-block" />
-              Motion Designer
-            </span>
-          </motion.div>
-
-          {/* Headline */}
-          <motion.h1
-            variants={itemVariants}
-            className="font-display font-800 leading-[1.05] tracking-tight mb-8 text-[clamp(2.5rem,5.5vw,5.5rem)]"
-          >
-            {/* Screen reader full announcement */}
-            <span className="sr-only">
-              Hi, I&apos;m Mouli. I do motion for SaaS, Fintech, Launch Videos, Product Explainers, and UI Animation.
-            </span>
-
-            {/* Visual presentation */}
-            <span aria-hidden="true" className="block text-ink-primary">
-              Hi, I&apos;m Mouli.
-            </span>
-            <span aria-hidden="true" className="block text-ink-primary">
-              I do motion for{' '}
-              <span className="inline-grid relative overflow-hidden align-baseline py-1 -my-1">
-                {/* Longest word placeholder to reserve exact width & prevent any layout shift */}
-                <span className="invisible opacity-0 pointer-events-none select-none col-start-1 row-start-1 whitespace-nowrap">
-                  Product Explainers.
-                </span>
-                <AnimatePresence mode="popLayout" initial={false}>
-                  <motion.span
-                    key={ROTATING_WORDS[wordIndex]}
-                    variants={shouldReduceMotion ? reducedMotionVariants : wordSlideVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                    className="col-start-1 row-start-1 block whitespace-nowrap text-gradient-mono"
-                  >
-                    {ROTATING_WORDS[wordIndex]}.
-                  </motion.span>
-                </AnimatePresence>
-              </span>
-            </span>
-          </motion.h1>
-
-          {/* Subtext */}
-          <motion.p
-            variants={itemVariants}
-            className="font-body text-ink-muted text-[clamp(1rem,1.3vw,1.4rem)]
-                       leading-relaxed max-w-xl mb-10"
-          >
-            Explainers, launch videos, and UI animation for founders who want their product to stand out.
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div variants={itemVariants} className="flex flex-wrap gap-4 items-center">
-            <button
-              type="button"
-              onClick={() => openBooking()}
-              className="btn-book-project cursor-pointer"
-            >
-              Book a Project
-              <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-                <path d="M3 7.5h9M7.5 3l4.5 4.5L7.5 12" stroke="currentColor"
-                  strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-
-            <a
-              href="#projects"
-              onClick={(e) => {
-                e.preventDefault()
-                document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })
-              }}
-              className="btn-work"
-            >
-              See Work
-            </a>
-          </motion.div>
-        </motion.div>
-      </motion.div>
-
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 0.8 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-      >
-        <span className="text-ink-subtle text-[0.7rem] tracking-[0.15em] uppercase">Scroll</span>
-        <motion.div
-          className="w-[1px] h-8 bg-gradient-to-b from-ink-subtle to-transparent"
-          animate={{ scaleY: [1, 0.4, 1], opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          style={{ transformOrigin: 'top' }}
-        />
-      </motion.div>
+      <Marquee />
     </section>
   )
 }

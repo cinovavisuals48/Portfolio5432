@@ -17,14 +17,10 @@
   margin-right: auto;
   width: 100%;
   max-width: 44rem;
-  border-radius: 1.5rem;
-  background: rgba(13, 13, 13, 0.92);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-radius: 0.75rem;
+  background: #1A1A18;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow:
-    0 24px 60px -15px rgba(0, 0, 0, 0.85),
-    0 0 35px rgba(255, 255, 255, 0.03);
+  box-shadow: none;
   position: relative;
   overflow: hidden;
 }
@@ -37,7 +33,7 @@
   left: 20%;
   right: 20%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  background: transparent;
   pointer-events: none;
 }
 
@@ -250,4 +246,130 @@
     height: 0.8rem;
     width: 0.8rem;
   }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   BOOKING PANEL — the large brief panel on /book-project
+   ───────────────────────────────────────────────────────────── */
+.booking-panel.stepper-circle-container {
+  max-width: none;
+  background: #1A1A18;
+  border: 1px solid rgba(238, 234, 226, 0.12);
+  border-radius: 1.25rem;
+}
+
+/* Progress row: seven labelled segments */
+.booking-panel .stepper-indicator-row.booking-steps {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.5rem;
+  padding: 2.25rem 3rem 0;
+}
+.booking-steps .stepper-step-connector { display: none; }
+
+.booking-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  text-align: left;
+  min-width: 0;
+  cursor: pointer;
+  outline: none;
+}
+.booking-step-bar {
+  position: relative;
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: rgba(238, 234, 226, 0.14);
+  overflow: hidden;
+}
+.booking-step-fill {
+  position: absolute;
+  inset: 0;
+  background: #7C9CFF;
+  transform-origin: left;
+}
+.booking-step-label {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6B675F;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: color .3s ease;
+}
+.booking-step-num { color: inherit; }
+.booking-step-name { overflow: hidden; text-overflow: ellipsis; }
+.booking-step[data-state='complete'] .booking-step-label { color: #9A958C; }
+.booking-step[data-state='active'] .booking-step-label { color: #EEEAE2; }
+.booking-step[data-state='active'] .booking-step-num { color: #7C9CFF; }
+.booking-step:hover .booking-step-label { color: #EEEAE2; }
+.booking-step:focus-visible .booking-step-bar { outline: 2px solid #7C9CFF; outline-offset: 4px; }
+
+/* Body + footer spacing */
+.booking-panel .stepper-content-default { min-height: 380px; }
+.booking-panel .stepper-step-default { padding: 2.75rem 3rem 0.5rem; }
+.booking-panel .stepper-footer-container {
+  margin-top: 1.5rem;
+  padding: 1.5rem 3rem 2.25rem;
+  border-top: 1px solid rgba(238, 234, 226, 0.12);
+}
+
+/* Buttons: match the site's pills */
+.booking-panel .stepper-next-button {
+  background: #7C9CFF;
+  border-color: #7C9CFF;
+  color: #0F1530;
+  font-family: var(--font-mono), monospace;
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.95rem 1.6rem;
+  box-shadow: none;
+}
+.booking-panel .stepper-next-button:hover:not(:disabled) {
+  background: #EEEAE2;
+  border-color: #EEEAE2;
+  color: #141413;
+  box-shadow: none;
+}
+.booking-panel .stepper-back-button {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9A958C;
+  padding: 0.95rem 1.1rem;
+}
+
+/* Underline inputs */
+.booking-input {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(238, 234, 226, 0.24);
+  border-radius: 0;
+  padding: 0.75rem 0 0.9rem;
+  color: #EEEAE2;
+  font-size: clamp(1.15rem, 1.5vw, 1.45rem);
+  letter-spacing: -0.01em;
+  transition: border-color .3s ease;
+}
+textarea.booking-input { font-size: 1.05rem; line-height: 1.55; }
+.booking-input::placeholder { color: #6B675F; }
+.booking-input:focus { outline: none; border-bottom-color: #7C9CFF; }
+
+@media (max-width: 1023px) {
+  .booking-panel .stepper-indicator-row.booking-steps { padding: 1.75rem 1.5rem 0; gap: 0.35rem; }
+  .booking-panel .stepper-step-default { padding: 2.25rem 1.5rem 0.5rem; }
+  .booking-panel .stepper-footer-container { padding: 1.25rem 1.5rem 1.75rem; }
+}
+@media (max-width: 640px) {
+  .booking-step-name { display: none; }
 }
