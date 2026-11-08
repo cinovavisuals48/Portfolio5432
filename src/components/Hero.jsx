@@ -103,7 +103,7 @@ export default function Hero() {
           className="mt-auto pt-12 grid gap-8 md:grid-cols-12 md:items-end"
         >
           <p className="md:col-span-5 text-[clamp(1.05rem,1.45vw,1.4rem)] leading-[1.4] text-ink-secondary max-w-[30ch]">
-            Explainers, launch videos, and UI animation for founders who want their product to stand out.
+            Explainers, launch videos and UI animation for founders who want people to get their product fast.
           </p>
           <p className="label hidden md:block md:col-span-3 md:col-start-6">↓ Scroll</p>
           <div className="md:col-span-4 flex flex-wrap items-center gap-3 md:justify-end">

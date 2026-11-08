@@ -27,10 +27,10 @@ export default function Contact() {
           <SectionLabel index="04" className="lg:col-span-3">Get in touch</SectionLabel>
           <div className="lg:col-span-9">
             <p className="text-[clamp(1.5rem,2.8vw,2.6rem)] leading-[1.15] tracking-[-0.02em] font-medium max-w-[22ch]">
-              Ready to move <span className="serif-italic text-accent">your product</span> forward?
+              Got a <span className="serif-italic text-accent">product</span> people should see?
             </p>
             <p className="mt-5 text-ink-muted max-w-[46ch] leading-relaxed">
-              Fill out a quick brief or reach out on social. Let&apos;s turn your product into a motion story.
+              Fill out a short brief or message me on social. I usually reply within a day.
             </p>
           </div>
         </div>

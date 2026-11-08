@@ -11,16 +11,16 @@ import { SplitText, Reveal } from '../../components/Reveal'
 
 export const metadata = {
   title: 'About — Moulidoesmotion',
-  description: 'Mouli is a motion designer focused on product motion and visual storytelling.',
+  description: 'Mouli is a motion designer who makes product animations and explainer videos.',
   alternates: { canonical: '/about' },
 }
 
-const INTRO = "Hi, I'm Mouli. I'm a motion designer focused on product motion and visual storytelling."
+const INTRO = "Hi, I'm Mouli. I'm a motion designer who makes animations for software products."
 
 const PARAGRAPHS = [
-  'I work with startups and product teams to bring digital products to life through motion. From UI animations and interactions to feature showcases and product launches, I help make products feel more engaging and easier to understand.',
-  'Most of my work is about finding interesting ways to show how a product works and what makes it special. Sometimes I build a visual story around a product from scratch. Other times, I take an existing idea and turn it into a complete visual experience. This usually involves designing interfaces, animating UI elements, creating transitions and exploring different ways to present product features.',
-  "I enjoy the space where design, animation and storytelling come together. I believe good motion is not just about making things look pretty. It's about making products easier to understand, keeping people interested and creating experiences that feel good to watch.",
+  'I work with startups and product teams. I make UI animations, feature videos and launch videos that help people understand a product and want to try it.',
+  "Most of my work comes down to one question: what's the clearest way to show how this product works? Sometimes I start from nothing and build the whole story. Other times a team already has an idea and I turn it into a finished video. Either way, I end up designing screens, animating UI and trying a few different ways to show each feature.",
+  "I like the part of the job where design, animation and storytelling meet. Good motion isn't just decoration. It should make a product easier to understand and keep people watching until the end.",
 ]
 
 export default function AboutPage() {

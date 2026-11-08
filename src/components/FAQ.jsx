@@ -13,32 +13,32 @@ const faqs = [
   {
     id: 1,
     question: 'How does the process work?',
-    answer: 'You fill out the intake form. I reach out, ask a few questions, and come back with a price estimate. We align on the concept and script. I storyboard in Figma. You approve. I animate. Two revision rounds, then delivery. The full breakdown is in the section above.',
+    answer: 'You fill out the booking form. I get back to you with a few questions and a price. We agree on the idea and script, then I storyboard it in Figma. Once you approve the storyboard, I animate. You get two rounds of revisions, then the final files.',
   },
   {
     id: 2,
     question: 'How long does a project take?',
-    answer: "Most projects deliver within 10 business days from kickoff. Faster is sometimes possible, but not at the cost of quality. If you're under tight deadline, mention it in the intake form.",
+    answer: "Most projects take about 10 working days from kickoff. I can sometimes go faster, but not if it hurts the result. If you have a tight deadline, mention it in the booking form.",
   },
   {
     id: 3,
     question: 'What do I need from you to get started?',
-    answer: 'Your product (a link or access), brand basics (logo as SVG, brand colors), any reference videos you like, what you want the video to achieve, and roughly how long you want it. The form walks you through everything.',
+    answer: 'A link to your product (or access to it), your logo as an SVG, your brand colours, any videos you like, what the video is for and roughly how long it should be. The form asks for all of this.',
   },
   {
     id: 4,
     question: 'How many revisions are included?',
-    answer: "Two rounds. That's almost always enough because the storyboard locks the direction before any animation starts. Extra rounds are billed at a flat rate, agreed up front.",
+    answer: "Two rounds. That's usually plenty, because we agree on the storyboard before I start animating. If you need more, extra rounds cost a flat fee we agree on first.",
   },
   {
     id: 5,
     question: 'How much does it cost?',
-    answer: 'It completely depends on a few things - length, scope, and how much you bring to the table. Most projects start around $300 for something short like a 15-second clip and can go up to $2,500+ for full-length ads or explainers. I lock the price once the scope is clear.',
+    answer: "It depends on the length, the scope and how much material you already have. A short 15-second clip starts around $300, and full explainers or ads can go past $2,500. I give you a fixed price once we've agreed on the scope.",
   },
   {
     id: 6,
     question: 'Do you work with early-stage startups?',
-    answer: "Yes. Most of my clients are founders who are still building - early product, growing team, not yet at scale. The work is built so it makes early-stage products look the way they're meant to.",
+    answer: "Yes. Most of my clients are founders who are still building, with an early product and a small team. I help their product look as good as they know it is.",
   },
 ]
 

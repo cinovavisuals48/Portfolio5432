@@ -41,7 +41,7 @@ export default function ProjectsPage() {
 
             <div className="mt-10 md:mt-14 pt-6 border-t border-line grid gap-8 lg:grid-cols-12">
               <p className="lg:col-span-5 text-ink-muted max-w-[46ch] leading-relaxed">
-                A collection of motion design projects including SaaS explainers, product videos, and UI animations. Click any project to watch.
+                SaaS explainers, product videos and UI animations. Tap any project to watch it.
               </p>
 
               {/* Filter */}
@@ -102,7 +102,7 @@ export default function ProjectsPage() {
                       <Line>Micro UI <span className="serif-italic">motion</span> previews</Line>
                     </h2>
                     <p className="mt-4 text-ink-muted max-w-[52ch]">
-                      A few short UI animation pieces I built to practice and push my motion work.
+                      Short UI animations I made to practise and try out new ideas.
                     </p>
                   </div>
                 </div>
@@ -120,7 +120,7 @@ export default function ProjectsPage() {
                 Like what <span className="serif-italic">you see?</span>
               </h3>
               <div className="flex flex-col items-start md:items-end gap-4">
-                <p className="text-ink-muted">Let&apos;s create something amazing together.</p>
+                <p className="text-ink-muted">Tell me what you&apos;re working on.</p>
                 <Link href="/book-project" className="btn-pill">
                   Book a project <Arrow />
                 </Link>

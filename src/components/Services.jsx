@@ -10,19 +10,19 @@ import { Reveal, Line, SectionLabel } from './Reveal'
 const offerings = [
   {
     label: 'Smooth UI animations',
-    description: 'Component-level motion that makes your interface feel intentional. Hover states, transitions, micro-interactions - the details that make a product feel finished.',
+    description: "Motion for the small stuff: hover states, transitions and micro-interactions. It's the detail that makes an interface feel finished.",
   },
   {
     label: 'Product promo videos',
-    description: 'Videos that show what your product does in a way that actually converts. Built around your UI, not stock footage or generic templates.',
+    description: 'Short videos that show what your product does and why it matters. Built from your real UI, not stock footage or templates.',
   },
   {
     label: 'Explainer videos',
-    description: 'Breaks down a complicated feature or product into something a first-time visitor instantly gets. Clear, clean, no fluff.',
+    description: 'I take a complicated product or feature and make it simple enough for a first-time visitor to understand in seconds.',
   },
   {
     label: "Don't see your style here?",
-    description: "If you have a reference or a general idea of what you're after, we can figure it out together. I've got enough experience in After Effects to match most styles, just bring the inspiration.",
+    description: "Send me a reference or even a rough idea and we'll work it out together. I can match most styles in After Effects.",
   },
 ]
 
@@ -59,7 +59,7 @@ export default function Services() {
         </ol>
 
         <Reveal className="mt-14 grid lg:grid-cols-12 gap-6">
-          <p className="label lg:col-span-3">My tech stack</p>
+          <p className="label lg:col-span-3">Tools I use</p>
           <ul className="lg:col-span-9 flex flex-wrap gap-x-2 gap-y-1 text-[clamp(1.1rem,1.6vw,1.45rem)] text-ink-secondary">
             {tools.map((t, i) => (
               <li key={t}>

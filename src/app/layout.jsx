@@ -24,7 +24,7 @@ export const viewport = {
 export const metadata = {
   title: 'Moulidoesmotion — SaaS Motion Design',
   description:
-    'Premium SaaS motion design, UI animation, and product explainer videos for indie hackers and bootstrapped founders. Based in India, working globally.',
+    'Motion design, UI animation and product explainer videos for SaaS founders and indie hackers. Based in India, working with teams anywhere.',
   keywords: [
     'motion design',
     'SaaS explainer video',
@@ -39,7 +39,7 @@ export const metadata = {
   openGraph: {
     title: 'Moulidoesmotion — SaaS Motion Design',
     description:
-      'Premium SaaS motion design and product explainer videos.',
+      'Motion design and product explainer videos for SaaS.',
     url: 'https://moulidoesmotion.com',
     siteName: 'Moulidoesmotion',
     locale: 'en_US',
@@ -48,7 +48,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Moulidoesmotion — SaaS Motion Design',
-    description: 'Premium SaaS motion design & product explainers.',
+    description: 'Motion design and product explainers for SaaS.',
     creator: '@moulidoesmotion',
   },
   robots: { index: true, follow: true },

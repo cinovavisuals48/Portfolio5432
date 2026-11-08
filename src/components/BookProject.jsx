@@ -15,7 +15,7 @@ import ProximityText from './ProximityText'
 import { Reveal } from './Reveal'
 
 const INTRO =
-  "Tell me a bit about your product and what you want people to understand. I'll get back to you within 24 hours with a few questions, ideas and a rough idea of cost."
+  "Tell me about your product and what you want people to take away from the video. I'll reply within 24 hours with a few questions, some ideas and a rough price."
 
 const DETAILS = [
   { label: 'Reply time', value: 'Within 24 hours' },
