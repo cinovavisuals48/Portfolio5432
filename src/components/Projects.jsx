@@ -66,18 +66,23 @@ function FollowPreview({ current, active, total, listRef }) {
       raf = requestAnimationFrame(loop)
     }
 
-    const onEnter = (e) => { pointer = { x: e.clientX, y: e.clientY }; setFloating(true) }
-    const onMove = (e) => { pointer = { x: e.clientX, y: e.clientY } }
+    // Follow only on real mouse movement over the list. Scrolling docks the
+    // card again (the list slides away under a still cursor, and no
+    // pointerleave fires for that), until the mouse moves over the list again.
+    const follow = (e) => { pointer = { x: e.clientX, y: e.clientY }; setFloating(true) }
     const onLeave = () => { pointer = null; setFloating(false) }
-    list.addEventListener('pointerenter', onEnter)
-    list.addEventListener('pointermove', onMove)
+    const onScroll = () => { if (pointer) onLeave() }
+    list.addEventListener('pointerenter', follow)
+    list.addEventListener('pointermove', follow)
     list.addEventListener('pointerleave', onLeave)
+    window.addEventListener('scroll', onScroll, { passive: true })
     raf = requestAnimationFrame(loop)
     return () => {
       cancelAnimationFrame(raf)
-      list.removeEventListener('pointerenter', onEnter)
-      list.removeEventListener('pointermove', onMove)
+      list.removeEventListener('pointerenter', follow)
+      list.removeEventListener('pointermove', follow)
       list.removeEventListener('pointerleave', onLeave)
+      window.removeEventListener('scroll', onScroll)
     }
   }, [listRef, x, y, scale, rotate])
 

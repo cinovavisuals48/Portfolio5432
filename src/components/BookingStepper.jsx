@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Stepper, { Step } from './Stepper'
 import { useBooking } from '../context/BookingContext'
@@ -94,6 +94,13 @@ export default function BookingStepper({ onClose, onSubmitted, isModal = false, 
     setCurrentStep,
     resetBookingForm,
   } = useBooking()
+
+  // Put the cursor in the step's field on mouse/trackpad devices only.
+  // On phones and tablets this would pop the keyboard open as soon as the
+  // page loads, so there the field waits for a tap.
+  const focusOnDesktop = useCallback((el) => {
+    if (el && window.matchMedia('(pointer: fine)').matches) el.focus({ preventScroll: true })
+  }, [])
 
   const [stepError, setStepError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -545,7 +552,7 @@ Budget: ${formData.budget}
                     handleBeforeNext(1).then((valid) => valid && setCurrentStep(2))
                   }
                 }}
-                autoFocus
+                ref={focusOnDesktop}
                 placeholder="Jane Doe"
                 className="booking-input"
               />
@@ -585,7 +592,7 @@ Budget: ${formData.budget}
                     handleBeforeNext(2).then((valid) => valid && setCurrentStep(3))
                   }
                 }}
-                autoFocus
+                ref={focusOnDesktop}
                 placeholder="jane@company.com"
                 className="booking-input"
               />

@@ -107,7 +107,7 @@ export default function Hero() {
           </p>
           <p className="label hidden md:block md:col-span-3 md:col-start-6">↓ Scroll</p>
           <div className="md:col-span-4 flex flex-wrap items-center gap-3 md:justify-end">
-            <a href="#projects" className="btn-ghost">
+            <a href="/projects" className="btn-ghost">
               See the work <Arrow />
             </a>
           </div>

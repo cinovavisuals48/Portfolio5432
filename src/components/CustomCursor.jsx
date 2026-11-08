@@ -45,11 +45,8 @@ export default function CustomCursor() {
     }
     root.classList.add('has-custom-cursor')
 
-    const onMove = (e) => {
-      x.set(e.clientX)
-      y.set(e.clientY)
-      setVisible(true)
-      const target = e.target instanceof Element ? e.target : null
+    let last = null
+    const pick = (target) => {
       const labelled = target?.closest('[data-cursor]')
       if (labelled) {
         setMode('label')
@@ -60,14 +57,34 @@ export default function CustomCursor() {
         setMode('default')
       }
     }
+    const onMove = (e) => {
+      x.set(e.clientX)
+      y.set(e.clientY)
+      last = { x: e.clientX, y: e.clientY }
+      setVisible(true)
+      pick(e.target instanceof Element ? e.target : null)
+    }
+    // When the page scrolls under a still cursor, re-check what's beneath it
+    // so labels like "View" don't stick after the element has moved away.
+    let raf = 0
+    const onScroll = () => {
+      if (!last || raf) return
+      raf = requestAnimationFrame(() => {
+        raf = 0
+        pick(document.elementFromPoint(last.x, last.y))
+      })
+    }
     const onLeave = () => setVisible(false)
 
     window.addEventListener('pointermove', onMove, { passive: true })
+    window.addEventListener('scroll', onScroll, { passive: true })
     document.documentElement.addEventListener('pointerleave', onLeave)
     window.addEventListener('blur', onLeave)
     return () => {
       root.classList.remove('has-custom-cursor')
       window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(raf)
       document.documentElement.removeEventListener('pointerleave', onLeave)
       window.removeEventListener('blur', onLeave)
     }

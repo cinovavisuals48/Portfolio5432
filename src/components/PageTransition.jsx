@@ -54,7 +54,7 @@ function waitFor(check) {
     const start = performance.now()
     const tick = () => {
       if (check() || performance.now() - start > 2500) return resolve()
-      requestAnimationFrame(tick)
+      setTimeout(tick, 16)
     }
     tick()
   })
@@ -186,10 +186,12 @@ export default function PageTransition() {
           </div>
 
           {/* Destination name */}
+          {/* Hidden as the columns lift, so nothing is left drawn over the page */}
           <motion.div
             className="absolute inset-x-0 top-1/2 -translate-y-1/2 container-site text-accent-ink"
             initial={{ opacity: 1 }}
-            animate={{ opacity: 1 }}
+            animate={{ opacity: state.phase === 'in' ? 1 : 0 }}
+            transition={{ duration: 0.2, delay: state.phase === 'in' ? 0 : 0.25 }}
           >
             <motion.div
               className="flex items-center justify-between label !text-accent-ink"
@@ -209,9 +211,9 @@ export default function PageTransition() {
                   initial={{ y: '110%' }}
                   animate={{ y: state.phase === 'in' ? '0%' : '-110%' }}
                   transition={{
-                    duration: state.phase === 'in' ? 0.7 : 0.45,
+                    duration: state.phase === 'in' ? 0.7 : 0.35,
                     ease: EASE,
-                    delay: state.phase === 'in' ? IN * 0.6 + i * 0.035 : i * 0.025,
+                    delay: state.phase === 'in' ? IN * 0.6 + i * 0.035 : i * 0.015,
                   }}
                 >
                   {ch === ' ' ? ' ' : ch}
@@ -219,7 +221,12 @@ export default function PageTransition() {
               ))}
             </p>
 
-            <div className="mt-4 h-px bg-accent-ink/20 overflow-hidden">
+            <motion.div
+              className="mt-4 h-px bg-accent-ink/20 overflow-hidden"
+              initial={{ opacity: 1 }}
+              animate={{ opacity: state.phase === 'in' ? 1 : 0 }}
+              transition={{ duration: 0.15 }}
+            >
               <motion.div
                 className="h-full bg-accent-ink origin-left"
                 initial={{ scaleX: 0 }}
@@ -229,7 +236,7 @@ export default function PageTransition() {
                   opacity: { duration: 0.2 },
                 }}
               />
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       )}
