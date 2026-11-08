@@ -258,10 +258,10 @@
   border-radius: 1.25rem;
 }
 
-/* Progress row: seven labelled segments */
+/* Progress row: five labelled segments */
 .booking-panel .stepper-indicator-row.booking-steps {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0.5rem;
   padding: 2.25rem 3rem 0;
 }
@@ -370,6 +370,6 @@ textarea.booking-input { font-size: 1.05rem; line-height: 1.55; }
   .booking-panel .stepper-step-default { padding: 2.25rem 1.5rem 0.5rem; }
   .booking-panel .stepper-footer-container { padding: 1.25rem 1.5rem 1.75rem; }
 }
-@media (max-width: 640px) {
+@media (max-width: 440px) {
   .booking-step-name { display: none; }
 }

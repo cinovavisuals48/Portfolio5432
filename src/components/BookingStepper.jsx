@@ -1,103 +1,148 @@
 'use client'
 
+// ─────────────────────────────────────────────────────────────
+// BOOKING FORM — src/components/BookingStepper.jsx
+// Five steps, project first and personal details last:
+//   1. Project  — what it is, website, references
+//   2. Scope    — length and deadline
+//   3. Budget   — tiers are guidance only, nothing is blocked
+//   4. You      — name, email, preferred contact
+//   5. Review   — check and send (Web3Forms)
+// Edit the options in the config blocks below.
+// ─────────────────────────────────────────────────────────────
+
 import React, { useCallback, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Stepper, { Step } from './Stepper'
 import { useBooking } from '../context/BookingContext'
 
-const PROJECT_FORM_CONFIG = {
-  budgets: {
-    '$300–$600': {
-      allowedLengths: ['5–10s', '10–20s'],
-      helperText: 'Best for short teasers & UI loops. Supports videos up to 20s.',
-      badge: 'Starter',
-    },
-    '$600–$1,000': {
-      allowedLengths: ['5–10s', '10–20s', '20–40s'],
-      helperText: 'Best for product showcases. Supports videos up to 40s.',
-      badge: 'Popular',
-    },
-    '$1,000–$2,000': {
-      allowedLengths: ['5–10s', '10–20s', '20–40s', '40–60s'],
-      helperText: 'Best for full product explainers. Supports videos up to 60s.',
-      badge: 'Full Scale',
-    },
-    '$2,000–$5,000': {
-      allowedLengths: ['5–10s', '10–20s', '20–40s', '40–60s', '60+s'],
-      helperText: 'Best for premium launch campaigns & high video complexity. All lengths supported.',
-      badge: 'Campaign',
-    },
-  },
-  videoLengths: {
-    '5–10s': {
-      label: 'Micro Teaser',
-      helperText: 'Projects of this length typically start from $300.',
-    },
-    '10–20s': {
-      label: 'Social Clip',
-      helperText: 'Projects of this length typically start from $300.',
-    },
-    '20–40s': {
-      label: 'Product Showcase',
-      helperText: 'Projects of this length typically start from $600.',
-    },
-    '40–60s': {
-      label: 'Full Explainer',
-      helperText: 'Projects of this length typically start from $1,000.',
-    },
-    '60+s': {
-      label: 'Launch Campaign',
-      helperText: 'Projects of this length typically start from $2,000.',
-    },
-  },
-}
+const NOT_SURE = 'Not sure yet'
 
-const CONTACT_METHODS = [
-  { id: 'Email', label: 'Email', placeholder: '', note: 'We will reply directly to your email.' },
-  { id: 'WhatsApp', label: 'WhatsApp', placeholder: '+1 (555) 123-4567 (with country code)' },
-  { id: 'Telegram', label: 'Telegram', placeholder: '@username or phone number' },
-  { id: 'Discord', label: 'Discord', placeholder: 'username#1234 or @handle' },
-  { id: 'Instagram DM', label: 'Instagram DM', placeholder: '@your_instagram_handle' },
-  { id: 'X / Twitter DM', label: 'X / Twitter DM', placeholder: '@your_twitter_handle' },
-  { id: 'Phone Call', label: 'Phone Call', placeholder: '+1 (555) 123-4567 (with country code)' },
+const VIDEO_LENGTHS = [
+  { id: '5–10s', label: 'Micro teaser', from: 300 },
+  { id: '10–20s', label: 'Social clip', from: 300 },
+  { id: '20–40s', label: 'Product showcase', from: 600 },
+  { id: '40–60s', label: 'Full explainer', from: 1000 },
+  { id: '60+s', label: 'Launch campaign', from: 2000 },
+  { id: NOT_SURE, label: 'Help me decide', from: 0 },
+]
+
+const BUDGETS = [
+  { id: '$300–$600', badge: 'Starter', max: 600, note: 'Short teasers and UI loops, up to about 20s.' },
+  { id: '$600–$1,000', badge: 'Popular', max: 1000, note: 'Product showcases, up to about 40s.' },
+  { id: '$1,000–$2,000', badge: 'Full scale', max: 2000, note: 'Full product explainers, up to about 60s.' },
+  { id: '$2,000–$5,000', badge: 'Campaign', max: 5000, note: 'Launch campaigns and complex pieces, any length.' },
+  { id: NOT_SURE, badge: "Let's talk", max: Infinity, note: "Share the idea and I'll suggest a scope that fits." },
 ]
 
 const DEADLINE_OPTIONS = [
+  { id: 'ASAP (Rush fee may apply)', label: 'ASAP (< 1 week)', note: 'Priority queue, rush fee' },
   { id: 'Within 1–2 weeks', label: 'Within 1–2 weeks', note: 'Standard turnaround' },
-  { id: 'ASAP (Rush fee may apply)', label: 'ASAP (< 1 week)', note: 'Priority queue & rush fee' },
   { id: 'Within 3–4 weeks', label: 'Within 3–4 weeks', note: 'Comfortable timeline' },
-  { id: 'Flexible / No rush', label: 'Flexible / No rush', note: 'Open-ended scheduling' },
+  { id: 'Flexible / No rush', label: 'Flexible', note: 'No fixed date' },
 ]
 
-const STEP_LABELS = [
-  'Name',
-  'Email',
-  'Contact',
-  'Brief',
-  'Timeline',
-  'Budget',
-  'Review',
+const CONTACT_METHODS = [
+  { id: 'Email', label: 'Email' },
+  { id: 'WhatsApp', label: 'WhatsApp', field: 'WhatsApp number', error: 'Please add your WhatsApp number.', placeholder: '+1 555 123 4567 (with country code)' },
+  { id: 'Other', label: 'Other', field: 'Where and how', error: 'Please add where and how to reach you.', placeholder: 'e.g. Telegram @handle, Discord username, a call…' },
 ]
 
-const isBudgetAllowed = (budget, videoLength) => {
-  if (!videoLength) return true
-  return PROJECT_FORM_CONFIG.budgets[budget]?.allowedLengths.includes(videoLength)
+const STEP_LABELS = ['Project', 'Scope', 'Budget', 'You', 'Review']
+const LAST_STEP = STEP_LABELS.length
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+// Soft warning when the budget sits below what that length usually costs.
+function budgetNote(budgetId, lengthId) {
+  const budget = BUDGETS.find((b) => b.id === budgetId)
+  const length = VIDEO_LENGTHS.find((l) => l.id === lengthId)
+  if (!budget || !length || budget.max > length.from) return ''
+  return `${length.id} videos usually start from $${length.from.toLocaleString('en-US')}. Send it anyway and we can shape the scope to fit.`
+}
+
+// Shared look for the selectable cards
+const optionClass = (selected) =>
+  `rounded-xl border text-left transition-all duration-200 cursor-pointer ${
+    selected
+      ? 'bg-accent/10 text-ink-primary border-accent'
+      : 'bg-transparent border-line-strong text-ink-secondary hover:border-ink-muted hover:text-ink-primary'
+  }`
+
+function StepHeader({ step, kicker, title, children }) {
+  return (
+    <div>
+      <span className="label !text-accent">
+        Step {String(step).padStart(2, '0')} / {String(LAST_STEP).padStart(2, '0')} • {kicker}
+      </span>
+      <h2 className="mt-4 text-[clamp(1.9rem,2.7vw,2.8rem)] leading-[1.06] tracking-[-0.025em] font-medium text-ink-primary">
+        {title}
+      </h2>
+      {children && (
+        <p className="mt-3 text-ink-muted text-base md:text-[1.05rem] leading-relaxed max-w-[52ch]">{children}</p>
+      )}
+    </div>
+  )
+}
+
+function FieldLabel({ children, optional }) {
+  return (
+    <label className="block label !text-ink-secondary mb-3">
+      {children}{' '}
+      {optional ? (
+        <span className="text-ink-muted font-normal lowercase">(optional)</span>
+      ) : (
+        <span className="text-accent">*</span>
+      )}
+    </label>
+  )
+}
+
+function Radio({ selected }) {
+  return (
+    <span className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${selected ? 'border-accent' : 'border-line-strong'}`}>
+      {selected && <span className="w-2 h-2 bg-accent rounded-full" />}
+    </span>
+  )
+}
+
+function ErrorBox({ children }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -6 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -6 }}
+      className="mb-4 px-4 py-2.5 bg-red-500/10 border border-red-500/25 rounded-xl text-red-400 text-xs sm:text-sm flex items-center gap-2"
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" className="shrink-0">
+        <path fillRule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm-.75-9.75a.75.75 0 0 1 1.5 0v3.5a.75.75 0 0 1-1.5 0v-3.5zm.75 6.5a.875.875 0 1 1 0-1.75.875.875 0 0 1 0 1.75z" clipRule="evenodd" />
+      </svg>
+      <span>{children}</span>
+    </motion.div>
+  )
+}
+
+function ReviewItem({ label, onEdit, wide, children }) {
+  return (
+    <div className={`p-4 rounded-lg border border-line ${wide ? 'sm:col-span-2' : ''}`}>
+      <div className="flex justify-between items-center text-neutral-400 mb-1">
+        <span>{label}</span>
+        <button type="button" onClick={onEdit} className="text-[0.65rem] underline text-white/70 hover:text-white cursor-pointer">
+          Edit
+        </button>
+      </div>
+      {children}
+    </div>
+  )
 }
 
 // variant: 'page' — the large panel on /book-project (default)
 //          'modal' — legacy borderless style for a popup
 export default function BookingStepper({ onClose, onSubmitted, isModal = false, variant = isModal ? 'modal' : 'page' }) {
-  const {
-    formData,
-    setFormData,
-    currentStep,
-    setCurrentStep,
-    resetBookingForm,
-  } = useBooking()
+  const { formData, setFormData, currentStep, setCurrentStep, resetBookingForm } = useBooking()
 
-  // Put the cursor in the step's field on mouse/trackpad devices only.
-  // On phones and tablets this would pop the keyboard open as soon as the
-  // page loads, so there the field waits for a tap.
+  // Put the cursor in the step's first field on mouse/trackpad devices only.
+  // On phones and tablets this would pop the keyboard open on page load.
   const focusOnDesktop = useCallback((el) => {
     if (el && window.matchMedia('(pointer: fine)').matches) el.focus({ preventScroll: true })
   }, [])
@@ -108,191 +153,106 @@ export default function BookingStepper({ onClose, onSubmitted, isModal = false, 
   const [errorMessage, setErrorMessage] = useState('')
   const [submittedData, setSubmittedData] = useState(null)
 
-  // Handle generic input change
-  const handleChange = (e) => {
-    const { name, value } = e.target
+  const set = (field, value) => {
     setStepError('')
     setErrorMessage('')
-    setFormData((prev) => {
-      const updated = { ...prev, [name]: value }
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
+  const handleChange = (e) => set(e.target.name, e.target.value)
 
-      // If budget changes, ensure compatibility with video length
-      if (name === 'budget' && prev.videoLength) {
-        if (!PROJECT_FORM_CONFIG.budgets[value]?.allowedLengths.includes(prev.videoLength)) {
-          // Keep video length or pick compatible
-        }
-      }
-      return updated
-    })
+  const selectContact = (id) => {
+    setStepError('')
+    setFormData((prev) => ({ ...prev, preferredContact: id, contactDetail: id === 'Email' ? '' : prev.contactDetail }))
   }
 
-  // Handle contact method select
-  const handleSelectContactMethod = (methodId) => {
-    setStepError('')
-    setFormData((prev) => ({
-      ...prev,
-      preferredContact: methodId,
-      // Clear detail if user switches back to email
-      contactDetail: methodId === 'Email' ? '' : prev.contactDetail,
-    }))
-  }
-
-  // Handle video length select
-  const handleSelectVideoLength = (length) => {
-    setStepError('')
-    setFormData((prev) => {
-      const updated = { ...prev, videoLength: length }
-      // If current budget does not support this length, adjust to the first allowed budget
-      if (prev.budget && !isBudgetAllowed(prev.budget, length)) {
-        const firstCompatible = Object.keys(PROJECT_FORM_CONFIG.budgets).find((b) =>
-          PROJECT_FORM_CONFIG.budgets[b].allowedLengths.includes(length)
-        )
-        if (firstCompatible) updated.budget = firstCompatible
-      }
-      return updated
-    })
-  }
-
-  // Handle budget select
-  const handleSelectBudget = (budgetKey) => {
-    setStepError('')
-    setFormData((prev) => ({ ...prev, budget: budgetKey }))
-  }
-
-  // Validate step before advancing
-  const handleBeforeNext = async (step) => {
-    setStepError('')
-    setErrorMessage('')
-
+  // Validate a step before moving on. Returns an error message or ''.
+  const errorFor = (step) => {
+    const d = formData
     if (step === 1) {
-      if (!formData.fullName.trim()) {
-        setStepError('Please enter your full name to continue.')
-        return false
-      }
-      if (formData.fullName.trim().length < 2) {
-        setStepError('Please enter a valid name.')
-        return false
-      }
+      if (!d.projectDescription.trim()) return 'Tell me a little about what you want to make.'
+      if (d.projectDescription.trim().length < 10) return 'A bit more detail please (at least 10 characters).'
     }
-
     if (step === 2) {
-      if (!formData.email.trim()) {
-        setStepError('Please enter your email address.')
-        return false
-      }
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(formData.email.trim())) {
-        setStepError('Please enter a valid email address (e.g. name@company.com).')
-        return false
-      }
+      if (!d.videoLength) return 'Pick a rough length, or "Not sure yet".'
+      if (!d.deadline) return 'Pick a timeline.'
     }
-
-    if (step === 3) {
-      if (formData.preferredContact !== 'Email' && !formData.contactDetail.trim()) {
-        const method = CONTACT_METHODS.find((m) => m.id === formData.preferredContact)
-        setStepError(`Please provide your ${method?.label || 'contact'} details.`)
-        return false
-      }
-    }
-
+    if (step === 3 && !d.budget) return 'Pick a budget range, or "Not sure yet".'
     if (step === 4) {
-      if (!formData.projectDescription.trim()) {
-        setStepError('Please give a brief description of what you are looking to create.')
-        return false
-      }
-      if (formData.projectDescription.trim().length < 10) {
-        setStepError('Please provide a bit more detail about your project (at least 10 characters).')
-        return false
+      if (d.fullName.trim().length < 2) return 'Please enter your name.'
+      if (!EMAIL_RE.test(d.email.trim())) return 'Please enter a valid email (e.g. name@company.com).'
+      if (d.preferredContact !== 'Email' && !d.contactDetail.trim()) {
+        const m = CONTACT_METHODS.find((c) => c.id === d.preferredContact)
+        return m?.error || 'Please add your contact details.'
       }
     }
-
-    if (step === 5) {
-      if (!formData.deadline) {
-        setStepError('Please select a deadline.')
-        return false
-      }
-      if (!formData.videoLength) {
-        setStepError('Please select an estimated video duration.')
-        return false
-      }
-    }
-
-    if (step === 6) {
-      if (!formData.budget) {
-        setStepError('Please select a budget range.')
-        return false
-      }
-      if (!isBudgetAllowed(formData.budget, formData.videoLength)) {
-        setStepError(`The selected budget does not support ${formData.videoLength} videos. Please select an appropriate tier.`)
-        return false
-      }
-    }
-
-    return true
+    return ''
   }
 
-  // Submit via Web3Forms (same logic preserved)
+  const handleBeforeNext = async (step) => {
+    setErrorMessage('')
+    const err = errorFor(step)
+    setStepError(err)
+    return !err
+  }
+
+  // Enter in a single-line field moves to the next step
+  const nextOnEnter = (step) => (e) => {
+    if (e.key !== 'Enter') return
+    e.preventDefault()
+    handleBeforeNext(step).then((ok) => ok && setCurrentStep(step + 1))
+  }
+
   const handleSubmit = async (e) => {
     if (e) e.preventDefault()
     setErrorMessage('')
     setStepError('')
 
-    const isValid = await handleBeforeNext(6)
-    if (!isValid) return
+    // Re-check every step; jump to the first one with a problem
+    for (let s = 1; s < LAST_STEP; s++) {
+      const err = errorFor(s)
+      if (err) {
+        setCurrentStep(s)
+        setStepError(err)
+        return
+      }
+    }
 
     setIsLoading(true)
     setSubmitState('loading')
 
     try {
       const web3formsKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY
-
       if (!web3formsKey) {
         throw new Error('Web3Forms access key is not configured. Please check your environment variables.')
       }
 
-      const contactMethodFull =
-        formData.preferredContact === 'Email'
-          ? `Email (${formData.email})`
-          : `${formData.preferredContact}: ${formData.contactDetail}`
+      // Web3Forms prints every field it receives as its own row in the
+      // email, so send each answer once and leave out anything not filled in.
+      // The keys below are the row titles you see in the email.
+      const answers = {
+        'Contact via':
+          formData.preferredContact === 'Email' ? '' : `${formData.preferredContact}: ${formData.contactDetail.trim()}`,
+        Project: formData.projectDescription.trim(),
+        Website: formData.website.trim(),
+        References: formData.inspirationReferences.trim(),
+        Length: formData.videoLength,
+        Timeline: formData.deadline,
+        Budget: formData.budget,
+      }
 
       const formDataObj = {
         access_key: web3formsKey,
         subject: `New Project Booking from ${formData.fullName}`,
-        name: formData.fullName,
         from_name: formData.fullName,
-        email: formData.email,
-        message: `
-Full Name: ${formData.fullName}
-Email: ${formData.email}
-Preferred Contact Method: ${contactMethodFull}
-
-Project Description:
-${formData.projectDescription}
-
-Inspiration & References:
-${formData.inspirationReferences || 'Not provided'}
-
-Deadline: ${formData.deadline}
-Video Length: ${formData.videoLength}
-Budget: ${formData.budget}
-        `.trim(),
-        phone: formData.preferredContact === 'Phone Call' || formData.preferredContact === 'WhatsApp' ? formData.contactDetail : '',
-        whatsapp_number: formData.preferredContact === 'WhatsApp' ? formData.contactDetail : '',
-        contact_method: contactMethodFull,
-        project_description: formData.projectDescription,
-        inspiration_references: formData.inspirationReferences || 'Not provided',
-        deadline: formData.deadline,
-        video_length: formData.videoLength,
-        budget: formData.budget,
+        name: formData.fullName,
+        email: formData.email, // also the reply-to address
+        ...Object.fromEntries(Object.entries(answers).filter(([, v]) => v)),
         botcheck: '',
       }
 
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify(formDataObj),
       })
 
@@ -309,8 +269,7 @@ Budget: ${formData.budget}
         setSubmitState('success')
         if (onSubmitted) onSubmitted(formData)
       } else {
-        const failureMessage = data?.message || `Submission failed with status ${response.status}. Please try again.`
-        setErrorMessage(failureMessage)
+        setErrorMessage(data?.message || `Submission failed with status ${response.status}. Please try again.`)
         setSubmitState('error')
       }
     } catch (error) {
@@ -322,10 +281,11 @@ Budget: ${formData.budget}
     }
   }
 
-  // Success view
+  // ── Success view ─────────────────────────────────────────
   if (submitState === 'success') {
-    const clientName = (submittedData?.fullName || formData.fullName).split(' ')[0] || 'friend'
-    const contactChannel = submittedData?.preferredContact || formData.preferredContact
+    const sent = submittedData || formData
+    const clientName = sent.fullName.split(' ')[0] || 'friend'
+    const channel = sent.preferredContact === 'Other' ? sent.contactDetail : sent.preferredContact
 
     return (
       <div className="stepper-outer-container py-6">
@@ -346,26 +306,20 @@ Budget: ${formData.budget}
             </svg>
           </motion.div>
 
-          <p className="text-[#A3A3A3] text-xs font-display font-semibold tracking-[0.15em] uppercase mb-2">
-            Project Brief Sent
-          </p>
+          <p className="text-[#A3A3A3] text-xs font-display font-semibold tracking-[0.15em] uppercase mb-2">Project Brief Sent</p>
 
           <h2 className="font-display font-800 text-2xl sm:text-4xl text-white mb-3 tracking-tight">
             Thanks for reaching out, {clientName}!
           </h2>
 
           <p className="text-ink-muted text-sm sm:text-base leading-relaxed max-w-md mx-auto mb-8">
-            Your project brief has been received. I&apos;ll review the details and reach out via{' '}
-            <span className="text-white font-medium">{contactChannel}</span> within 24 hours.
+            Your brief is in. I&apos;ll review it and reach out via{' '}
+            <span className="text-white font-medium">{channel}</span> within 24 hours.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3">
             {onClose ? (
-              <button
-                type="button"
-                onClick={onClose}
-                className="stepper-next-button px-6 py-3 text-sm cursor-pointer"
-              >
+              <button type="button" onClick={onClose} className="stepper-next-button px-6 py-3 text-sm cursor-pointer">
                 Close Window
               </button>
             ) : (
@@ -382,8 +336,8 @@ Budget: ${formData.budget}
     )
   }
 
-  // Current contact placeholder
-  const activeContactConfig = CONTACT_METHODS.find((m) => m.id === formData.preferredContact)
+  const activeContact = CONTACT_METHODS.find((m) => m.id === formData.preferredContact) || CONTACT_METHODS[0]
+  const lengthInfo = VIDEO_LENGTHS.find((l) => l.id === formData.videoLength)
 
   return (
     <div className="w-full">
@@ -429,50 +383,16 @@ Budget: ${formData.budget}
         stepLabels={STEP_LABELS}
         backButtonText="Back"
         nextButtonText="Continue"
-        renderFooter={({ currentStep: cStep, totalSteps, isLastStep, handleBack, handleNext }) => (
+        renderFooter={({ currentStep: cStep, handleBack, handleNext }) => (
           <div className="w-full">
-            {/* Step error prompt */}
+            <AnimatePresence>{stepError && <ErrorBox key="step">{stepError}</ErrorBox>}</AnimatePresence>
             <AnimatePresence>
-              {stepError && (
-                <motion.div
-                  initial={{ opacity: 0, y: -6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  className="mb-4 px-4 py-2.5 bg-red-500/10 border border-red-500/25 rounded-xl text-red-400 text-xs sm:text-sm flex items-center gap-2"
-                >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" className="shrink-0">
-                    <path fillRule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm-.75-9.75a.75.75 0 0 1 1.5 0v3.5a.75.75 0 0 1-1.5 0v-3.5zm.75 6.5a.875.875 0 1 1 0-1.75.875.875 0 0 1 0 1.75z" clipRule="evenodd" />
-                  </svg>
-                  <span>{stepError}</span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Step 7 error */}
-            <AnimatePresence>
-              {cStep === 7 && errorMessage && (
-                <motion.div
-                  initial={{ opacity: 0, y: -6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  className="mb-4 px-4 py-2.5 bg-red-500/10 border border-red-500/25 rounded-xl text-red-400 text-xs sm:text-sm flex items-center gap-2"
-                >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" className="shrink-0">
-                    <path fillRule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm-.75-9.75a.75.75 0 0 1 1.5 0v3.5a.75.75 0 0 1-1.5 0v-3.5zm.75 6.5a.875.875 0 1 1 0-1.75.875.875 0 0 1 0 1.75z" clipRule="evenodd" />
-                  </svg>
-                  <span>{errorMessage}</span>
-                </motion.div>
-              )}
+              {cStep === LAST_STEP && errorMessage && <ErrorBox key="submit">{errorMessage}</ErrorBox>}
             </AnimatePresence>
 
             <div className={`stepper-footer-nav ${cStep !== 1 ? 'spread' : 'end'}`}>
               {cStep !== 1 && (
-                <button
-                  type="button"
-                  onClick={handleBack}
-                  disabled={isLoading}
-                  className="stepper-back-button"
-                >
+                <button type="button" onClick={handleBack} disabled={isLoading} className="stepper-back-button">
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                     <path d="M8.5 3.5L5 7l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -480,13 +400,8 @@ Budget: ${formData.budget}
                 </button>
               )}
 
-              {cStep === 7 ? (
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={isLoading}
-                  className="stepper-next-button px-6 py-3"
-                >
+              {cStep === LAST_STEP ? (
+                <button type="button" onClick={handleSubmit} disabled={isLoading} className="stepper-next-button px-6 py-3">
                   {isLoading ? (
                     <>
                       <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-black" fill="none" viewBox="0 0 24 24">
@@ -505,11 +420,7 @@ Budget: ${formData.budget}
                   )}
                 </button>
               ) : (
-                <button
-                  type="button"
-                  onClick={handleNext}
-                  className="stepper-next-button"
-                >
+                <button type="button" onClick={handleNext} className="stepper-next-button">
                   <span>Continue</span>
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                     <path d="M5.5 3.5L9 7l-3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -520,234 +431,49 @@ Budget: ${formData.budget}
           </div>
         )}
       >
-        {/* ── STEP 1: NAME ────────────────────────────────────── */}
+        {/* ── STEP 1: PROJECT ─────────────────────────────────── */}
         <Step>
           <div className="space-y-9">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="label !text-accent">
-                  Step 01 / 07 • Introduction
-                </span>
-              </div>
-              <h2 className="mt-4 text-[clamp(1.9rem,2.7vw,2.8rem)] leading-[1.06] tracking-[-0.025em] font-medium text-ink-primary">
-                What&apos;s your name?
-              </h2>
-              <p className="mt-3 text-ink-muted text-base md:text-[1.05rem] leading-relaxed max-w-[52ch]">
-                Let&apos;s start with your full name so I know who I&apos;ll be working with.
-              </p>
-            </div>
-
-            <div className="pt-2">
-              <label className="block label !text-ink-secondary mb-3">
-                Full Name <span className="text-accent">*</span>
-              </label>
-              <input
-                type="text"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault()
-                    handleBeforeNext(1).then((valid) => valid && setCurrentStep(2))
-                  }
-                }}
-                ref={focusOnDesktop}
-                placeholder="Jane Doe"
-                className="booking-input"
-              />
-            </div>
-          </div>
-        </Step>
-
-        {/* ── STEP 2: EMAIL ───────────────────────────────────── */}
-        <Step>
-          <div className="space-y-9">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="label !text-accent">
-                  Step 02 / 07 • Contact Details
-                </span>
-              </div>
-              <h2 className="mt-4 text-[clamp(1.9rem,2.7vw,2.8rem)] leading-[1.06] tracking-[-0.025em] font-medium text-ink-primary">
-                Where should I email you?
-              </h2>
-              <p className="mt-3 text-ink-muted text-base md:text-[1.05rem] leading-relaxed max-w-[52ch]">
-                Your primary email address for briefs, deliverables, and project updates.
-              </p>
-            </div>
-
-            <div className="pt-2">
-              <label className="block label !text-ink-secondary mb-3">
-                Email Address <span className="text-accent">*</span>
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault()
-                    handleBeforeNext(2).then((valid) => valid && setCurrentStep(3))
-                  }
-                }}
-                ref={focusOnDesktop}
-                placeholder="jane@company.com"
-                className="booking-input"
-              />
-            </div>
-          </div>
-        </Step>
-
-        {/* ── STEP 3: PREFERRED CONTACT METHOD ────────────────── */}
-        <Step>
-          <div className="space-y-9">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="label !text-accent">
-                  Step 03 / 07 • Communication
-                </span>
-              </div>
-              <h2 className="mt-4 text-[clamp(1.9rem,2.7vw,2.8rem)] leading-[1.06] tracking-[-0.025em] font-medium text-ink-primary">
-                Preferred contact method
-              </h2>
-              <p className="mt-3 text-ink-muted text-base md:text-[1.05rem] leading-relaxed max-w-[52ch]">
-                How do you prefer to collaborate throughout the animation process?
-              </p>
-            </div>
-
-            {/* Selection pills */}
-            <div className="pt-2">
-              <label className="block label !text-ink-secondary mb-3">
-                Select your preferred channel <span className="text-accent">*</span>
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {CONTACT_METHODS.map((method) => {
-                  const isSelected = formData.preferredContact === method.id
-                  return (
-                    <button
-                      key={method.id}
-                      type="button"
-                      onClick={() => handleSelectContactMethod(method.id)}
-                      className={`px-4 py-4 rounded-xl border text-left text-sm sm:text-[0.95rem] font-medium transition-all duration-200 flex items-center gap-2 cursor-pointer ${
-                        isSelected
-                          ? 'bg-accent/10 text-ink-primary border-accent'
-                          : 'bg-transparent border-line-strong text-ink-secondary hover:border-ink-muted hover:text-ink-primary'
-                      }`}
-                    >
-                      <div
-                        className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0 ${
-                          isSelected ? 'border-accent' : 'border-line-strong'
-                        }`}
-                      >
-                        {isSelected && <div className="w-1.5 h-1.5 bg-accent rounded-full" />}
-                      </div>
-                      <span className="whitespace-normal leading-tight">{method.label}</span>
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
-
-            {/* Dynamic input field when NOT email */}
-            <AnimatePresence mode="wait">
-              {formData.preferredContact !== 'Email' ? (
-                <motion.div
-                  key="other-contact-input"
-                  initial={{ opacity: 0, y: 10, height: 0 }}
-                  animate={{ opacity: 1, y: 0, height: 'auto' }}
-                  exit={{ opacity: 0, y: -10, height: 0 }}
-                  transition={{ duration: 0.25 }}
-                  className="pt-2 overflow-hidden"
-                >
-                  <label className="block label !text-ink-secondary mb-3">
-                    Your {activeContactConfig?.label || 'Contact'} Handle or Number <span className="text-accent">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="contactDetail"
-                    value={formData.contactDetail}
-                    onChange={handleChange}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault()
-                        handleBeforeNext(3).then((valid) => valid && setCurrentStep(4))
-                      }
-                    }}
-                    placeholder={activeContactConfig?.placeholder || 'Enter your contact details'}
-                    className="booking-input"
-                  />
-                  <p className="text-ink-muted text-sm mt-2">
-                    I will reach out directly through this handle for updates and reviews.
-                  </p>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="email-confirm-note"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="p-4 border border-line rounded-xl text-sm text-ink-muted flex items-center gap-3"
-                >
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white shrink-0">
-                    <rect width="20" height="16" x="2" y="4" rx="2" />
-                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                  </svg>
-                  <span>
-                    Direct communication will be conducted via your email:{' '}
-                    <strong className="text-white">{formData.email || 'provided in Step 2'}</strong>
-                  </span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </Step>
-
-        {/* ── STEP 4: PROJECT DESCRIPTION & INSPIRATION LINKS ──── */}
-        <Step>
-          <div className="space-y-9">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="label !text-accent">
-                  Step 04 / 07 • Project Scope
-                </span>
-              </div>
-              <h2 className="mt-4 text-[clamp(1.9rem,2.7vw,2.8rem)] leading-[1.06] tracking-[-0.025em] font-medium text-ink-primary">
-                Project description & references
-              </h2>
-              <p className="mt-3 text-ink-muted text-base md:text-[1.05rem] leading-relaxed max-w-[52ch]">
-                Tell me what you are building and share any styles you admire.
-              </p>
-            </div>
+            <StepHeader step={1} kicker="The project" title="What are we making?">
+              The product, who it&apos;s for and what the animation needs to get across. Rough is fine.
+            </StepHeader>
 
             <div className="pt-1 space-y-7">
               <div>
-                <label className="block label !text-ink-secondary mb-3">
-                  Project Description <span className="text-accent">*</span>
-                </label>
+                <FieldLabel>Project description</FieldLabel>
                 <textarea
                   name="projectDescription"
                   value={formData.projectDescription}
                   onChange={handleChange}
+                  ref={focusOnDesktop}
                   rows={3}
-                  placeholder="Tell me what product or feature you're launching, who your audience is, and what key points the animation should convey..."
+                  placeholder="e.g. A 30s launch video for our new dashboard feature, aimed at product teams…"
                   className="booking-input resize-none"
                 />
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block label !text-ink-secondary mb-3">
-                    Inspiration & References <span className="text-ink-muted font-normal lowercase">(optional)</span>
-                  </label>
-                </div>
+                <FieldLabel optional>Company or product website</FieldLabel>
+                <input
+                  type="text"
+                  inputMode="url"
+                  name="website"
+                  value={formData.website}
+                  onChange={handleChange}
+                  onKeyDown={nextOnEnter(1)}
+                  placeholder="yourproduct.com"
+                  className="booking-input"
+                />
+              </div>
+
+              <div>
+                <FieldLabel optional>Inspiration & references</FieldLabel>
                 <textarea
                   name="inspirationReferences"
                   value={formData.inspirationReferences}
                   onChange={handleChange}
                   rows={2}
-                  placeholder="Paste links to videos, YouTube/Vimeo references, or visual styles you like..."
+                  placeholder="Links to videos or styles you like…"
                   className="booking-input resize-none"
                 />
               </div>
@@ -755,167 +481,93 @@ Budget: ${formData.budget}
           </div>
         </Step>
 
-        {/* ── STEP 5: DEADLINE & VIDEO LENGTH ─────────────────── */}
+        {/* ── STEP 2: SCOPE ───────────────────────────────────── */}
         <Step>
           <div className="space-y-9">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="label !text-accent">
-                  Step 05 / 07 • Timeline & Length
-                </span>
+            <StepHeader step={2} kicker="Scope" title="How long, and by when?">
+              A rough idea is enough. If you&apos;re not sure about length, I&apos;ll recommend one.
+            </StepHeader>
+
+            <div className="pt-1">
+              <FieldLabel>Video length</FieldLabel>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {VIDEO_LENGTHS.map((len) => {
+                  const selected = formData.videoLength === len.id
+                  return (
+                    <button
+                      key={len.id}
+                      type="button"
+                      onClick={() => set('videoLength', len.id)}
+                      className={`${optionClass(selected)} px-4 py-4 min-h-[84px] flex flex-col justify-center`}
+                    >
+                      <span className="text-sm sm:text-base font-semibold tracking-tight">{len.id}</span>
+                      <span className={`mt-1 text-xs ${selected ? 'text-accent-soft' : 'text-ink-muted'}`}>{len.label}</span>
+                    </button>
+                  )
+                })}
               </div>
-              <h2 className="mt-4 text-[clamp(1.9rem,2.7vw,2.8rem)] leading-[1.06] tracking-[-0.025em] font-medium text-ink-primary">
-                Deadline & video duration
-              </h2>
-              <p className="mt-3 text-ink-muted text-base md:text-[1.05rem] leading-relaxed max-w-[52ch]">
-                Select your target delivery date and anticipated video length.
-              </p>
+              {lengthInfo && lengthInfo.from > 0 && (
+                <p className="text-ink-muted text-sm mt-3">
+                  Videos of this length usually start from ${lengthInfo.from.toLocaleString('en-US')}.
+                </p>
+              )}
             </div>
 
-            {/* Deadline selection */}
             <div>
-              <label className="block label !text-ink-secondary mb-3">
-                Timeline / Deadline <span className="text-accent">*</span>
-              </label>
+              <FieldLabel>Timeline</FieldLabel>
               <div className="grid grid-cols-2 gap-3">
                 {DEADLINE_OPTIONS.map((opt) => {
-                  const isSelected = formData.deadline === opt.id
+                  const selected = formData.deadline === opt.id
                   return (
                     <button
                       key={opt.id}
                       type="button"
-                      onClick={() => {
-                        setStepError('')
-                        setFormData((prev) => ({ ...prev, deadline: opt.id }))
-                      }}
-                      className={`p-4 sm:p-5 rounded-xl border text-left transition-all duration-200 cursor-pointer ${
-                        isSelected
-                          ? 'bg-accent/10 text-ink-primary border-accent'
-                          : 'bg-transparent border-line-strong text-ink-secondary hover:border-ink-muted hover:text-ink-primary'
-                      }`}
+                      onClick={() => set('deadline', opt.id)}
+                      className={`${optionClass(selected)} p-4 sm:p-5`}
                     >
                       <div className="text-sm sm:text-[0.95rem] font-medium">{opt.label}</div>
-                      <div className={`mt-1 text-xs ${isSelected ? 'text-accent-soft' : 'text-ink-subtle'}`}>
-                        {opt.note}
-                      </div>
+                      <div className={`mt-1 text-xs ${selected ? 'text-accent-soft' : 'text-ink-subtle'}`}>{opt.note}</div>
                     </button>
                   )
                 })}
               </div>
-            </div>
-
-            {/* Video length selection */}
-            <div className="pt-1">
-              <label className="block label !text-ink-secondary mb-3">
-                Estimated Video Length <span className="text-accent">*</span>
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                {Object.keys(PROJECT_FORM_CONFIG.videoLengths).map((len) => {
-                  const isSelected = formData.videoLength === len
-                  const info = PROJECT_FORM_CONFIG.videoLengths[len]
-                  return (
-                    <button
-                      key={len}
-                      type="button"
-                      onClick={() => handleSelectVideoLength(len)}
-                      className={`px-1.5 py-2.5 sm:px-2 sm:py-3 rounded-xl border text-center transition-all duration-200 cursor-pointer flex flex-col items-center justify-center min-h-[84px] sm:min-h-[96px] ${
-                        isSelected
-                          ? 'bg-accent/10 text-ink-primary border-accent'
-                          : 'bg-transparent border-line-strong text-ink-secondary hover:border-ink-muted hover:text-ink-primary'
-                      }`}
-                    >
-                      <div className="text-sm sm:text-base font-semibold tracking-tight mb-1">{len}</div>
-                      <div
-                        className={`text-[0.66rem] sm:text-[0.7rem] leading-[1.25] text-center font-medium ${
-                          isSelected ? 'text-accent-soft' : 'text-ink-muted'
-                        }`}
-                      >
-                        {info.label}
-                      </div>
-                    </button>
-                  )
-                })}
-              </div>
-              {formData.videoLength && (
-                <p className="text-ink-muted text-sm mt-3">
-                  💡 {PROJECT_FORM_CONFIG.videoLengths[formData.videoLength]?.helperText}
-                </p>
-              )}
             </div>
           </div>
         </Step>
 
-        {/* ── STEP 6: BUDGET LOGIC ────────────────────────────── */}
+        {/* ── STEP 3: BUDGET ──────────────────────────────────── */}
         <Step>
           <div className="space-y-9">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="label !text-accent">
-                  Step 06 / 07 • Investment
-                </span>
-              </div>
-              <h2 className="mt-4 text-[clamp(1.9rem,2.7vw,2.8rem)] leading-[1.06] tracking-[-0.025em] font-medium text-ink-primary">
-                Select your budget
-              </h2>
-              <p className="mt-3 text-ink-muted text-base md:text-[1.05rem] leading-relaxed max-w-[52ch]">
-                Calibrated tiers reflecting turnaround speed and video complexity.
-              </p>
-            </div>
+            <StepHeader step={3} kicker="Budget" title="What's your budget?">
+              Pick what feels right. It helps me suggest the best approach, not rule anything out.
+            </StepHeader>
 
             <div className="pt-1 space-y-3">
-              {Object.keys(PROJECT_FORM_CONFIG.budgets).map((budgetKey) => {
-                const isSelected = formData.budget === budgetKey
-                const config = PROJECT_FORM_CONFIG.budgets[budgetKey]
-                const isAllowed = isBudgetAllowed(budgetKey, formData.videoLength)
-
+              {BUDGETS.map((b) => {
+                const selected = formData.budget === b.id
+                const note = selected ? budgetNote(b.id, formData.videoLength) : ''
                 return (
                   <button
-                    key={budgetKey}
+                    key={b.id}
                     type="button"
-                    onClick={() => {
-                      if (isAllowed) handleSelectBudget(budgetKey)
-                    }}
-                    disabled={!isAllowed}
-                    className={`w-full p-5 sm:px-6 rounded-xl border text-left transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 ${
-                      !isAllowed
-                        ? 'opacity-35 cursor-not-allowed bg-transparent border-line'
-                        : isSelected
-                        ? 'bg-accent/10 text-ink-primary border-accent cursor-pointer'
-                        : 'bg-transparent border-line-strong text-ink-primary hover:border-ink-muted cursor-pointer'
-                    }`}
+                    onClick={() => set('budget', b.id)}
+                    className={`${optionClass(selected)} w-full p-5 sm:px-6 flex items-center justify-between gap-4`}
                   >
-                    <div className="space-y-0.5">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium text-base sm:text-lg tracking-tight">
-                          {budgetKey}
-                        </span>
+                    <div className="space-y-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-medium text-base sm:text-lg tracking-tight text-ink-primary">{b.id}</span>
                         <span
                           className={`text-[0.65rem] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider ${
-                            isSelected ? 'bg-accent text-accent-ink' : 'bg-white/[0.06] text-ink-secondary'
+                            selected ? 'bg-accent text-accent-ink' : 'bg-white/[0.06] text-ink-secondary'
                           }`}
                         >
-                          {config.badge}
+                          {b.badge}
                         </span>
-                        {!isAllowed && (
-                          <span className="text-[0.65rem] text-red-400 border border-red-500/20 px-1.5 py-0.5 rounded">
-                            Video length ({formData.videoLength}) exceeds tier
-                          </span>
-                        )}
                       </div>
-                      <p className={`text-xs ${isSelected ? 'text-ink-secondary' : 'text-ink-muted'}`}>
-                        {config.helperText}
-                      </p>
+                      <p className={`text-xs ${selected ? 'text-ink-secondary' : 'text-ink-muted'}`}>{b.note}</p>
+                      {note && <p className="text-xs text-accent-soft pt-1">{note}</p>}
                     </div>
-
-                    <div className="shrink-0 flex items-center gap-1.5 self-end sm:self-center">
-                      <div
-                        className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                          isSelected ? 'border-accent' : 'border-line-strong'
-                        }`}
-                      >
-                        {isSelected && <div className="w-2 h-2 bg-accent rounded-full" />}
-                      </div>
-                    </div>
+                    <Radio selected={selected} />
                   </button>
                 )
               })}
@@ -923,121 +575,133 @@ Budget: ${formData.budget}
           </div>
         </Step>
 
-        {/* ── STEP 7: REVIEW TEMPLATE & SUBMIT ────────────────── */}
+        {/* ── STEP 4: YOU ─────────────────────────────────────── */}
         <Step>
           <div className="space-y-9">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="label !text-accent">
-                  Step 07 / 07 • Final Review
-                </span>
+            <StepHeader step={4} kicker="About you" title="Who should I reply to?">
+              I&apos;ll get back to you within 24 hours.
+            </StepHeader>
+
+            <div className="pt-1 grid gap-7 sm:grid-cols-2 sm:gap-6">
+              <div>
+                <FieldLabel>Your name</FieldLabel>
+                <input
+                  type="text"
+                  name="fullName"
+                  autoComplete="name"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  ref={focusOnDesktop}
+                  placeholder="Jane Doe"
+                  className="booking-input"
+                />
               </div>
-              <h2 className="mt-4 text-[clamp(1.9rem,2.7vw,2.8rem)] leading-[1.06] tracking-[-0.025em] font-medium text-ink-primary">
-                Review your project brief
-              </h2>
-              <p className="mt-3 text-ink-muted text-base md:text-[1.05rem] leading-relaxed max-w-[52ch]">
-                Everything you selected is formatted below. Click &quot;Send it over&quot; to submit.
-              </p>
+              <div>
+                <FieldLabel>Email</FieldLabel>
+                <input
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  onKeyDown={formData.preferredContact === 'Email' ? nextOnEnter(4) : undefined}
+                  placeholder="jane@company.com"
+                  className="booking-input"
+                />
+              </div>
             </div>
 
-            {/* Template Summary Card */}
-            <div className="p-5 sm:p-6 border border-line rounded-2xl space-y-4 relative overflow-hidden">
-              <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
-                <span className="text-xs font-mono font-semibold tracking-wider text-neutral-400 uppercase">
-                  Project Brief Template
-                </span>
-                <span className="text-[0.68rem] px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono">
-                  ● Ready
-                </span>
+            <div>
+              <FieldLabel>Best way to reach you</FieldLabel>
+              <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                {CONTACT_METHODS.map((m) => {
+                  const selected = formData.preferredContact === m.id
+                  return (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => selectContact(m.id)}
+                      className={`${optionClass(selected)} px-3 sm:px-4 py-4 text-[0.8rem] sm:text-[0.95rem] font-medium flex items-center justify-center sm:justify-start gap-2.5 min-w-0`}
+                    >
+                      <span className="hidden sm:flex"><Radio selected={selected} /></span>
+                      {m.label}
+                    </button>
+                  )
+                })}
               </div>
 
+              <AnimatePresence initial={false}>
+                {activeContact.field && (
+                  <motion.div
+                    key={activeContact.id}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="pt-7">
+                      <FieldLabel>{activeContact.field}</FieldLabel>
+                      <input
+                        type={activeContact.id === 'WhatsApp' ? 'tel' : 'text'}
+                        name="contactDetail"
+                        value={formData.contactDetail}
+                        onChange={handleChange}
+                        onKeyDown={nextOnEnter(4)}
+                        placeholder={activeContact.placeholder}
+                        className="booking-input"
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </Step>
+
+        {/* ── STEP 5: REVIEW & SEND ───────────────────────────── */}
+        <Step>
+          <div className="space-y-9">
+            <StepHeader step={5} kicker="Review" title="Look good?">
+              Check the details below, then hit &quot;Send it over&quot;.
+            </StepHeader>
+
+            <div className="p-5 sm:p-6 border border-line rounded-2xl">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                {/* Client Name */}
-                <div className="p-4 rounded-lg border border-line">
-                  <div className="flex justify-between items-center text-neutral-400 mb-0.5">
-                    <span>Client Name</span>
-                    <button type="button" onClick={() => setCurrentStep(1)} className="text-[0.65rem] underline text-white/70 hover:text-white cursor-pointer">
-                      Edit
-                    </button>
-                  </div>
-                  <div className="text-white font-semibold text-sm">{formData.fullName}</div>
-                </div>
-
-                {/* Email */}
-                <div className="p-4 rounded-lg border border-line">
-                  <div className="flex justify-between items-center text-neutral-400 mb-0.5">
-                    <span>Email Address</span>
-                    <button type="button" onClick={() => setCurrentStep(2)} className="text-[0.65rem] underline text-white/70 hover:text-white cursor-pointer">
-                      Edit
-                    </button>
-                  </div>
-                  <div className="text-white font-semibold truncate">{formData.email}</div>
-                </div>
-
-                {/* Preferred Contact */}
-                <div className="p-4 rounded-lg border border-line sm:col-span-2">
-                  <div className="flex justify-between items-center text-neutral-400 mb-0.5">
-                    <span>Preferred Communication</span>
-                    <button type="button" onClick={() => setCurrentStep(3)} className="text-[0.65rem] underline text-white/70 hover:text-white cursor-pointer">
-                      Edit
-                    </button>
-                  </div>
-                  <div className="text-white font-medium">
-                    {formData.preferredContact}
-                    {formData.preferredContact !== 'Email' && formData.contactDetail && (
-                      <span className="text-neutral-400 ml-1.5 font-mono text-[0.75rem]">
-                        ({formData.contactDetail})
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Timeline & Duration & Budget */}
-                <div className="p-4 rounded-lg border border-line sm:col-span-2 flex flex-wrap justify-between items-center gap-2">
-                  <div>
-                    <span className="text-neutral-400 block text-[0.7rem]">Timeline</span>
-                    <span className="text-white font-semibold">{formData.deadline}</span>
-                  </div>
-                  <div>
-                    <span className="text-neutral-400 block text-[0.7rem]">Duration</span>
-                    <span className="text-white font-semibold">{formData.videoLength}</span>
-                  </div>
-                  <div>
-                    <span className="text-neutral-400 block text-[0.7rem]">Target Budget</span>
-                    <span className="text-white font-semibold">{formData.budget}</span>
-                  </div>
-                  <button type="button" onClick={() => setCurrentStep(5)} className="text-[0.65rem] underline text-white/70 hover:text-white cursor-pointer">
-                    Edit
-                  </button>
-                </div>
-
-                {/* Project Description */}
-                <div className="p-4 rounded-lg border border-line sm:col-span-2">
-                  <div className="flex justify-between items-center text-neutral-400 mb-1">
-                    <span>Project Description</span>
-                    <button type="button" onClick={() => setCurrentStep(4)} className="text-[0.65rem] underline text-white/70 hover:text-white cursor-pointer">
-                      Edit
-                    </button>
-                  </div>
+                <ReviewItem label="Project" onEdit={() => setCurrentStep(1)} wide>
                   <p className="text-neutral-200 text-xs leading-relaxed max-h-24 overflow-y-auto whitespace-pre-wrap">
                     {formData.projectDescription}
                   </p>
-                </div>
-
-                {/* Inspiration */}
-                {formData.inspirationReferences && (
-                  <div className="p-4 rounded-lg border border-line sm:col-span-2">
-                    <div className="flex justify-between items-center text-neutral-400 mb-1">
-                      <span>Inspiration Links & Style</span>
-                      <button type="button" onClick={() => setCurrentStep(4)} className="text-[0.65rem] underline text-white/70 hover:text-white cursor-pointer">
-                        Edit
-                      </button>
+                  {(formData.website || formData.inspirationReferences) && (
+                    <div className="mt-3 space-y-1 text-neutral-400 break-all">
+                      {formData.website && <p>Website: <span className="text-neutral-200">{formData.website}</span></p>}
+                      {formData.inspirationReferences && (
+                        <p className="whitespace-pre-wrap max-h-16 overflow-y-auto">
+                          References: <span className="text-neutral-200">{formData.inspirationReferences}</span>
+                        </p>
+                      )}
                     </div>
-                    <p className="text-neutral-300 text-xs leading-relaxed break-all max-h-16 overflow-y-auto whitespace-pre-wrap">
-                      {formData.inspirationReferences}
-                    </p>
-                  </div>
-                )}
+                  )}
+                </ReviewItem>
+
+                <ReviewItem label="Scope" onEdit={() => setCurrentStep(2)}>
+                  <div className="text-white font-semibold text-sm">{formData.videoLength}</div>
+                  <div className="text-neutral-300 mt-0.5">{formData.deadline}</div>
+                </ReviewItem>
+
+                <ReviewItem label="Budget" onEdit={() => setCurrentStep(3)}>
+                  <div className="text-white font-semibold text-sm">{formData.budget}</div>
+                </ReviewItem>
+
+                <ReviewItem label="You" onEdit={() => setCurrentStep(4)} wide>
+                  <div className="text-white font-semibold text-sm">{formData.fullName}</div>
+                  <div className="text-neutral-300 mt-0.5 truncate">{formData.email}</div>
+                  {formData.preferredContact !== 'Email' && (
+                    <div className="text-neutral-400 mt-0.5">
+                      {formData.preferredContact}: <span className="text-neutral-200">{formData.contactDetail}</span>
+                    </div>
+                  )}
+                </ReviewItem>
               </div>
             </div>
           </div>

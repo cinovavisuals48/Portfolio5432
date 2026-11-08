@@ -7,12 +7,20 @@ const INITIAL_FORM_DATA = {
   email: '',
   preferredContact: 'Email',
   contactDetail: '',
+  website: '',
   projectDescription: '',
   inspirationReferences: '',
   deadline: 'Within 1–2 weeks',
-  videoLength: '20–40s',
-  budget: '$600–$1,000',
+  videoLength: '',
+  budget: '',
 }
+
+// v2 = the 5-step form. Older saved drafts (7 steps, more contact
+// options) are dropped so nobody lands on a step that no longer exists.
+const FORM_KEY = 'moulidoesmotion_booking_form_v2'
+const STEP_KEY = 'moulidoesmotion_booking_step_v2'
+const LEGACY_KEYS = ['moulidoesmotion_booking_form', 'moulidoesmotion_booking_step']
+export const TOTAL_STEPS = 5
 
 const BookingContext = createContext({
   isBookingOpen: false,
@@ -35,15 +43,16 @@ export function BookingProvider({ children }) {
   // Load saved state from localStorage on client mount
   useEffect(() => {
     try {
-      const savedData = localStorage.getItem('moulidoesmotion_booking_form')
+      LEGACY_KEYS.forEach((k) => localStorage.removeItem(k))
+      const savedData = localStorage.getItem(FORM_KEY)
       if (savedData) {
         const parsed = JSON.parse(savedData)
         setFormData((prev) => ({ ...prev, ...parsed }))
       }
-      const savedStep = localStorage.getItem('moulidoesmotion_booking_step')
+      const savedStep = localStorage.getItem(STEP_KEY)
       if (savedStep) {
         const stepNum = parseInt(savedStep, 10)
-        if (stepNum >= 1 && stepNum <= 7) {
+        if (stepNum >= 1 && stepNum <= TOTAL_STEPS) {
           setCurrentStep(stepNum)
         }
       }
@@ -58,7 +67,7 @@ export function BookingProvider({ children }) {
   useEffect(() => {
     if (!isHydrated) return
     try {
-      localStorage.setItem('moulidoesmotion_booking_form', JSON.stringify(formData))
+      localStorage.setItem(FORM_KEY, JSON.stringify(formData))
     } catch (e) {}
   }, [formData, isHydrated])
 
@@ -66,7 +75,7 @@ export function BookingProvider({ children }) {
   useEffect(() => {
     if (!isHydrated) return
     try {
-      localStorage.setItem('moulidoesmotion_booking_step', currentStep.toString())
+      localStorage.setItem(STEP_KEY, currentStep.toString())
     } catch (e) {}
   }, [currentStep, isHydrated])
 
@@ -88,8 +97,8 @@ export function BookingProvider({ children }) {
     setFormData(INITIAL_FORM_DATA)
     setCurrentStep(1)
     try {
-      localStorage.removeItem('moulidoesmotion_booking_form')
-      localStorage.removeItem('moulidoesmotion_booking_step')
+      localStorage.removeItem(FORM_KEY)
+      localStorage.removeItem(STEP_KEY)
     } catch (e) {}
   }, [])
 

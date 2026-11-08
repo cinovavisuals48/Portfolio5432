@@ -72,7 +72,7 @@ export default function BookProject() {
           </Reveal>
         </div>
 
-        {/* Right: the brief (same 7 steps and logic as before) */}
+        {/* Right: the brief (5-step brief: project, scope, budget, you, review) */}
         <div className="lg:col-span-7">
           <Reveal delay={0.35}>
             <BookingStepper />
