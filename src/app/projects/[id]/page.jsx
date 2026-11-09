@@ -6,7 +6,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import { motion } from 'framer-motion'
-import { projects } from '../../../data/projects'
+import { projects, categoryLabel } from '../../../data/projects'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import SmoothScroll from '../../../components/SmoothScroll'
@@ -41,7 +41,7 @@ export default function VideoDetailPage() {
           <div className="container-site">
             <div className="flex items-center justify-between mb-10">
               <Link href="/projects" className="btn-back">← All projects</Link>
-              <p className="label">{project.category}</p>
+              <p className="label">{categoryLabel(project)}</p>
             </div>
 
             <h1 className="display text-[clamp(3.4rem,11vw,12rem)] mb-10 md:mb-14">

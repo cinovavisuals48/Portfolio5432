@@ -13,7 +13,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { AnimatePresence, motion, useSpring } from 'framer-motion'
-import { projects } from '../data/projects'
+import { projects, categoryLabel } from '../data/projects'
 import VideoPreview from './VideoPreview'
 import { Reveal, Line, SectionLabel, Arrow, EASE } from './Reveal'
 
@@ -114,7 +114,7 @@ function FollowPreview({ current, active, total, listRef }) {
         <span>
           <span className="text-ink-primary">({pad(active + 1)}/{pad(total)})</span>&nbsp; {current.title}
         </span>
-        <span>{current.category}</span>
+        <span>{categoryLabel(current)}</span>
       </div>
       <div className="mt-4 h-px bg-line overflow-hidden" aria-hidden>
         <motion.div
@@ -211,8 +211,8 @@ export default function Projects() {
                         </h3>
                         <div className="mt-4 flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
                           <p className="label">
-                            {project.category}
-                            {project.tags?.length ? <span className="text-ink-subtle"> &nbsp;/&nbsp; {project.tags.filter((t) => t !== project.category).slice(0, 2).join(', ')}</span> : null}
+                            {categoryLabel(project)}
+                            {project.tags?.length ? <span className="text-ink-subtle"> &nbsp;/&nbsp; {project.tags.filter((t) => t !== project.category && t !== 'Spec work').slice(0, 2).join(', ')}</span> : null}
                           </p>
                           <span
                             className={`label inline-flex items-center gap-2 text-ink-primary transition-all duration-500 ${

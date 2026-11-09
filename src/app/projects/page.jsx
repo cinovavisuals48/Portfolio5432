@@ -44,7 +44,8 @@ export default function ProjectsPage() {
                 SaaS explainers, product videos and UI animations. Tap any project to watch it.
               </p>
 
-              {/* Filter */}
+              {/* Filter: only shown once there are at least two kinds of project */}
+              {categories.length > 2 && (
               <div className="lg:col-span-7 flex flex-wrap gap-x-5 gap-y-3 lg:justify-end" role="group" aria-label="Filter by category">
                 {categories.map((category) => {
                   const count = category === 'All'
@@ -65,6 +66,7 @@ export default function ProjectsPage() {
                   )
                 })}
               </div>
+              )}
             </div>
 
             {/* Grid */}

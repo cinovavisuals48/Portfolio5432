@@ -36,8 +36,9 @@ export const projects = [
     // PROJECT TITLE - What you want to call this project
     title: 'Gemini',
     
-    // CATEGORY - One of: 'SaaS Explainer', 'UI Animation', 'Product Launch', 'Concept Spec', 'Motion System'
+    // CATEGORY - What kind of piece it is, e.g. 'SaaS Explainer', 'UI Animation', 'Product Launch'
     category: 'SaaS Explainer',
+    spec: true, // personal / unofficial work, shown as "Spec"
     
     // DESCRIPTION - 1-2 sentences about the project
     description: 'A motion concept for Gemini Guided Learning. It explores how AI can make learning feel more hands-on, using smooth transitions and small interactions to walk people through complex information.',
@@ -51,58 +52,63 @@ export const projects = [
     thumbnailUrl: '/thumbnails/gemini.jpg',
     
     // TAGS - 2-3 short tags describing the work
-    tags: ['Product Explainer', 'SaaS', 'UI Animation'],
+    tags: ['Spec work', 'Product Explainer', 'SaaS', 'UI Animation'],
   },
   {
     id: 'feedbask',
     title: 'Feedbask',
-    category: 'Concept Spec',
+    category: 'SaaS Explainer',
+    spec: true, // personal / unofficial work, shown as "Spec"
     description: 'A spec explainer for Feedbask, a platform that helps businesses collect and manage customer feedback in one place. I used UI animation and smooth transitions to make the workflow easy to follow. The goal was to keep it clean and modern while showing how teams collect feedback, track ideas and improve their product faster.',
     videoEmbedUrl: 'https://player.vimeo.com/video/1191850183',
     thumbnailUrl: '/thumbnails/feedbask.jpg',
-    tags: ['Product Explainer', 'SaaS', 'UI Animation'],
+    tags: ['Spec work', 'Product Explainer', 'SaaS', 'UI Animation'],
   },
   {
     id: 'uber',
     title: 'Uber',
     category: 'SaaS Explainer',
+    spec: true, // personal / unofficial work, shown as "Spec"
     description: 'A motion concept for Uber that walks through booking a ride. It uses smooth transitions and app UI interactions to show how simple it is to get from A to B, and highlights the key features along the way.',
     videoEmbedUrl: 'https://player.vimeo.com/video/1191852242',
     thumbnailUrl: '/thumbnails/uber.jpg',
-    tags: ['UI Animation'],
+    tags: ['Spec work', 'UI Animation'],
   },
   {
     id: 'apple-music',
     title: 'Apple Music',
     category: 'UI Animation',
+    spec: true, // personal / unofficial work, shown as "Spec"
     shortUiAnimation: true,
     description: 'A short UI animation for Apple Music, focused on smooth transitions.',
     videoEmbedUrl: 'https://player.vimeo.com/video/1191975722',
     thumbnailUrl: '/thumbnails/apple.jpg',
     aspectRatio: '1 / 1',
-    tags: ['UI Animation'],
+    tags: ['Spec work', 'UI Animation'],
   },
 {
     id: 'dropbox',
     title: 'Dropbox',
     category: 'UI Animation',
+    spec: true, // personal / unofficial work, shown as "Spec"
     shortUiAnimation: true,
     description: 'A short UI animation for Dropbox, focused on smooth transitions.',
     videoEmbedUrl: 'https://player.vimeo.com/video/1192225465',
     thumbnailUrl: '/thumbnails/dropbox.jpg',
     aspectRatio: '1 / 1',
-    tags: ['UI Animation'],
+    tags: ['Spec work', 'UI Animation'],
   },
   {
     id: 'instagram',
     title: 'Instagram',
     category: 'UI Animation',
+    spec: true, // personal / unofficial work, shown as "Spec"
     shortUiAnimation: true,
     description: 'A short UI animation for Instagram, focused on smooth transitions.',
     videoEmbedUrl: 'https://player.vimeo.com/video/1192225464',
     thumbnailUrl: '/thumbnails/instagram.jpg',
     aspectRatio: '1 / 1',
-    tags: ['UI Animation'],
+    tags: ['Spec work', 'UI Animation'],
   },
   // ─────────────────────────────────────────────────────────────
   // ADD YOUR NEW PROJECTS BELOW (copy the template):
@@ -112,11 +118,12 @@ export const projects = [
   //   id: 'your-project-id',
   //   title: 'Your Project Title',
   //   category: 'SaaS Explainer',
+  //   spec: true, // remove for paid client work
   //   description: 'Describe your project in 1-2 sentences.',
   //   videoEmbedUrl: 'https://player.vimeo.com/video/YOUR_VIDEO_ID',
   //   thumbnailUrl: '/thumbnails/your-thumbnail.jpg',
   //   aspectRatio: '1 / 1', // Optional: use this for square or custom video ratios
-  //   tags: ['Tag 1', 'Tag 2', 'Tag 3'],
+  //   tags: ['Spec work', 'Tag 1', 'Tag 2'],
   // },
   //
   // ─────────────────────────────────────────────────────────────
@@ -125,12 +132,12 @@ export const projects = [
 // Get first 3 projects for homepage featured section
 export const featuredProjects = projects.slice(0, 3)
 
-// Available categories for filtering (if you add filtering later)
+// Label shown under each project, e.g. "SaaS Explainer · Spec".
+// Set spec: false (or remove it) on paid client work.
+export const categoryLabel = (project) => (project.spec ? `${project.category} · Spec` : project.category)
+
+// Filters on the All work page: only categories that have projects.
 export const categories = [
   'All',
-  'SaaS Explainer',
-  'UI Animation',
-  'Product Launch',
-  'Concept Spec',
-  'Motion System',
+  ...new Set(projects.filter((p) => !p.shortUiAnimation).map((p) => p.category)),
 ]

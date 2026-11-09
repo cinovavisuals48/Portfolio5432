@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import VideoPreview from './VideoPreview'
 import { Reveal, Arrow } from './Reveal'
+import { categoryLabel } from '../data/projects'
 
 export default function ProjectCard({ project, index = 0, previewOnly = false }) {
   const [hovered, setHovered] = useState(false)
@@ -43,7 +44,7 @@ export default function ProjectCard({ project, index = 0, previewOnly = false })
           </span>
         )}
       </div>
-      <p className="label mt-2 pl-[2.1rem]">{project.category}</p>
+      <p className="label mt-2 pl-[2.1rem]">{categoryLabel(project)}</p>
     </>
   )
 
