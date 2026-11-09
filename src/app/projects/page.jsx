@@ -96,13 +96,13 @@ export default function ProjectsPage() {
             {shortUiAnimations.length > 0 && (
               <section className="mt-28 md:mt-36">
                 <div className="grid gap-6 lg:grid-cols-12 pb-6 border-b border-line mb-10">
-                  <p className="label lg:col-span-3">Short UI animations</p>
+                  <p className="label lg:col-span-3">Experiments</p>
                   <div className="lg:col-span-9">
                     <h2 className="display text-[clamp(2.4rem,5vw,5rem)]">
-                      <Line>Micro UI <span className="serif-italic">motion</span> previews</Line>
+                      <Line>UI <span className="serif-italic">animations</span></Line>
                     </h2>
                     <p className="mt-4 text-ink-muted max-w-[52ch]">
-                      Short UI animations I made to practise and try out new ideas.
+                      Short pieces I made to practise and try out new ideas.
                     </p>
                   </div>
                 </div>
